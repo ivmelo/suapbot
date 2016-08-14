@@ -149,7 +149,6 @@ $response = Telegram::sendMessage($message2);
 
 });
 
-/*
 Route::get('/suap', function(){
     return view('suaplogin');
 });
@@ -170,12 +169,9 @@ Route::post('/suap', function(Illuminate\Http\Request $request){
 Route::post('/continue', function(Illuminate\Http\Request $request){
     return 'worked';
 });
-*/
 
 Route::get('/', function () {
-    return '<a href="https://telegram.me/suapbot">https://telegram.me/suapbot</a>';
-
-    //return view('welcome');
+    return view('welcome');
 });
 
 Route::auth();
