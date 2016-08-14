@@ -38,40 +38,45 @@ class GradesCommand extends Command
         if ($user) {
 
             if ($user->suap_id && $user->suap_key) {
-                $client = new SUAPClient($user->suap_id, $user->suap_key, true);
+                try {
+                    $client = new SUAPClient($user->suap_id, $user->suap_key, true);
 
-                $grades = $client->getGrades();
+                    $grades = $client->getGrades();
 
-                //$grades_json = json_encode($grades);
+                    //$grades_json = json_encode($grades);
 
-                // $filtered_grades = [];
-                //
-                // if (count($args) > 0) {
-                //     foreach ($grades as $grade) {
-                //         foreach ($args as $arg) {
-                //             if (strpos($grade['disciplina'], $arg) !== false) {
-                //                 array_push($filtered_grades, $grade);
-                //                 continue;
-                //             }
-                //         }
-                //     }
-                // }
-                //
-                // if (count($filtered_grades) > 0) {
-                //     $grades = $filtered_grades;
-                // }
+                    // $filtered_grades = [];
+                    //
+                    // if (count($args) > 0) {
+                    //     foreach ($grades as $grade) {
+                    //         foreach ($args as $arg) {
+                    //             if (strpos($grade['disciplina'], $arg) !== false) {
+                    //                 array_push($filtered_grades, $grade);
+                    //                 continue;
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                    //
+                    // if (count($filtered_grades) > 0) {
+                    //     $grades = $filtered_grades;
+                    // }
 
-                $grades_response = $this->buildTextResponse($grades);
+                    $grades_response = $this->buildTextResponse($grades);
 
-                $this->replyWithMessage([
-                    'text' => $grades_response,
-                    'parse_mode' => 'markdown'
-                ]);
+                    $this->replyWithMessage([
+                        'text' => $grades_response,
+                        'parse_mode' => 'markdown'
+                    ]);
 
-                $course_data_json = json_encode($grades);
-                $user->course_data = $course_data_json;
+                    $course_data_json = json_encode($grades);
+                    $user->course_data = $course_data_json;
 
-                $user->save();
+                    $user->save();
+                } catch (\Exception $e) {
+                    $this->replyWithMessage(['text' => 'Houve um erro ao conectar-se ao SUAP. Por favor, verifique se o SUAP está online e tente novamente mais tarde.']);
+                }
+
             } else {
                 $this->replyWithMessage(['text' => 'Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente.']);
             }

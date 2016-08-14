@@ -53,30 +53,38 @@ class AuthorizeCommand extends Command
                     ]);
                 } else {
                     // use try catch
-                    $client = new SUAPClient($id, $key, true);
 
-                    $suap_data = $client->getStudentData();
+                    try {
+                        $client = new SUAPClient($id, $key, true);
 
-                    if ($suap_data) {
-                        $user->suap_id = $id;
-                        $user->suap_key = $key;
-                        $user->email = $suap_data['email_pessoal'];
+                        $suap_data = $client->getStudentData();
 
-                        // get courses data
-                        $course_data = $client->getGrades();
-                        $course_data_json = json_encode($course_data);
-                        $user->course_data = $course_data_json;
+                        if ($suap_data) {
+                            $user->suap_id = $id;
+                            $user->suap_key = $key;
+                            $user->email = $suap_data['email_pessoal'];
 
-                        $user->save();
+                            // get courses data
+                            $course_data = $client->getGrades();
+                            $course_data_json = json_encode($course_data);
+                            $user->course_data = $course_data_json;
+
+                            $user->save();
+                        }
+
+                        $suap_data_json = json_encode($suap_data);
+
+                        //$grades_response = $this->buildTextResponse($suap_data_json);
+
+                        $this->replyWithMessage([
+                            'text' => 'Autorizado com sucesso. Digite /notas para ver suas notas.'//$suap_data_json,
+                        ]);
+                    } catch (\Exception $e) {
+                        $this->replyWithMessage([
+                            'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente.'//$suap_data_json,
+                        ]);
                     }
 
-                    $suap_data_json = json_encode($suap_data);
-
-                    //$grades_response = $this->buildTextResponse($suap_data_json);
-
-                    $this->replyWithMessage([
-                        'text' => 'Autorizado com sucesso. Digite /notas para ver suas notas.'//$suap_data_json,
-                    ]);
                 }
 
             } else {
