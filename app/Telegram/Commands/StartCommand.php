@@ -51,11 +51,11 @@ class StartCommand extends Command
             $user->first_name = $first_name;
             $user->telegram_id = $telegram_id;
 
-            if (array_key_exists('last_name', $updates['message']['from'])) {
+            if (isset($updates['message']['from']['last_name'])) {
                 $user->last_name = $updates['message']['from']['last_name'];
             }
 
-            if (array_key_exists('username', $updates['message']['from'])) {
+            if (isset($updates['message']['from']['username'])) {
                 $user->username = $updates['message']['from']['username'];
             }
 
@@ -84,10 +84,11 @@ class StartCommand extends Command
 
         if (! $user->suap_id) {
             //$message = 'Primeiro, preciso do seu IFRN ID para que eu possa conectar-me ao SUAP e pegar as informações do seu curso. Se você é um aluno, o seu IFRN ID é o seu número de matricula. Digite-o agora.';
-            $message = 'Primeiro, você precisa me dar acesso aos seus dados do SUAP. Não se preocupe, você só tem que fazer isso uma vez. Para isso, preciso da sua matrícula e da sua chave de acesso, que pode ser encontrada na seção "Meus Dados" do SUAP, na aba "Dados Pessoais". Quando você estiver com a sua chave de acesso, use o comando /autorizar <matricula> <chave_de_acesso> para autenticar. A sua chave de acesso é somente leitura e será utilizada apenas para acessar o seu boletim quando você solicitar.';
+            $message = 'Primeiro, você precisa me dar acesso aos seus dados do SUAP. Não se preocupe, você só tem que fazer isso uma vez. Para isso, preciso da sua matrícula e da sua chave de acesso *(não confundir com senha do SUAP)*, que pode ser encontrada na seção "Meus Dados" do SUAP, na aba "Dados Pessoais". Quando você estiver com a sua chave de acesso, use o comando /autorizar <matricula> <chave_de_acesso> para autenticar. A sua chave de acesso é somente leitura e será utilizada apenas para acessar o seu boletim quando você solicitar.';
 
             $this->replyWithMessage([
                 'text' => $message,
+                'parse_mode' => 'markdown',
                 'reply_markup' => ['force_reply']
             ]);
         }

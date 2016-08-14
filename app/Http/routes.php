@@ -37,23 +37,14 @@ Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
 
     Telegram::commandsHandler(true);
+});
 
-
-
-/*
-    $updates = Telegram::getWebhookUpdates();
-    $telegram_id = $updates['message']['from']['id'];
-    $text = $updates['message']['text'];
-    $user = User::where('telegram_id', $telegram_id)->first();
-
-    if (! $user->suap_id) {
-        $user->suap_id = $text;
-        $user->save();
-    }*/
+Route::get('/', function () {
+    return redirect()->to('https://telegram.me/suapbot');
 });
 
 
-
+/*
 Route::post('webhooks/telegrama', function(){
     //echo Telegram::getMe();
 
@@ -149,7 +140,6 @@ $response = Telegram::sendMessage($message2);
 
 });
 
-/*
 Route::get('/suap', function(){
     return view('suaplogin');
 });
@@ -172,12 +162,7 @@ Route::post('/continue', function(Illuminate\Http\Request $request){
 });
 */
 
-Route::get('/', function () {
-    return '<a href="https://telegram.me/suapbot">https://telegram.me/suapbot</a>';
 
-    //return view('welcome');
-});
+//Route::auth();
 
-Route::auth();
-
-Route::get('/home', 'HomeController@index');
+//Route::get('/home', 'HomeController@index');
