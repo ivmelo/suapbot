@@ -35,6 +35,7 @@ Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
+    Telegram::addCommand(\App\Telegram\Commands\SobreCommand::class);
 
     Telegram::commandsHandler(true);
 });
