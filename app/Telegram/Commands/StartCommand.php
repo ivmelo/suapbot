@@ -16,7 +16,7 @@ class StartCommand extends Command
     /**
      * @var string Command Description
      */
-    protected $description = 'Realiza a autenticação no SUAP.';
+    protected $description = 'Inicia a interação com o bot.';
 
     /**
      * @inheritdoc
