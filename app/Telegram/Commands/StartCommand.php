@@ -31,7 +31,7 @@ class StartCommand extends Command
         $telegram_id = $updates['message']['from']['id'];
         $first_name = $updates['message']['from']['first_name'];
 
-        $message = 'Olá, ' . $first_name . '! Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas e faltas. Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas.';
+        $message = 'Olá, ' . $first_name . '! Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas e faltas. Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas. (Em breve.)';
 
 
         // This will send a message using `sendMessage` method behind the scenes to
@@ -84,8 +84,7 @@ class StartCommand extends Command
 
         if (! $user->suap_id) {
             //$message = 'Primeiro, preciso do seu IFRN ID para que eu possa conectar-me ao SUAP e pegar as informações do seu curso. Se você é um aluno, o seu IFRN ID é o seu número de matricula. Digite-o agora.';
-            $message = 'Primeiro, você precisa me dar acesso aos seus dados do SUAP. Não se preocupe, você só tem que fazer isso uma vez. Para isso, preciso da sua matrícula e da sua chave de acesso, que pode ser encontrada na seção "Meus Dados" do SUAP, na aba "Dados Pessoais". Quando você estiver com o seu chave de acesso, use o comando /autorizar <matricula> <chave_de_acesso> para autenticar. A sua chave de acesso é somente leitura e não será utilizada apenas para acessar o seu boletim quando você solicitar.';
-
+            $message = 'Primeiro, você precisa me dar acesso aos seus dados do SUAP. Não se preocupe, você só tem que fazer isso uma vez. Para isso, preciso da sua matrícula e da sua chave de acesso, que pode ser encontrada na seção "Meus Dados" do SUAP, na aba "Dados Pessoais". Quando você estiver com a sua chave de acesso, use o comando /autorizar <matricula> <chave_de_acesso> para autenticar. A sua chave de acesso é somente leitura e será utilizada apenas para acessar o seu boletim quando você solicitar.';
 
             $this->replyWithMessage([
                 'text' => $message,
