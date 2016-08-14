@@ -11,7 +11,7 @@
 |
 */
 
-Route::post('webhooks/telegrama', function(){
+Route::post('webhooks/telegram', function(){
     // error message
     $updates = Telegram::getWebhookUpdates();
 
@@ -31,7 +31,7 @@ Route::post('webhooks/telegrama', function(){
     $response = Telegram::sendMessage($message);
 });
 
-Route::post('webhooks/telegram', function(){
+Route::post('webhooks/telegrama', function(){
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
@@ -149,6 +149,7 @@ $response = Telegram::sendMessage($message2);
 
 });
 
+/*
 Route::get('/suap', function(){
     return view('suaplogin');
 });
@@ -169,9 +170,12 @@ Route::post('/suap', function(Illuminate\Http\Request $request){
 Route::post('/continue', function(Illuminate\Http\Request $request){
     return 'worked';
 });
+*/
 
 Route::get('/', function () {
-    return view('welcome');
+    return '<a href="https://telegram.me/suapbot">https://telegram.me/suapbot</a>';
+
+    //return view('welcome');
 });
 
 Route::auth();
