@@ -11,7 +11,7 @@
 |
 */
 
-Route::post('webhooks/telegram', function(){
+Route::post('webhooks/telegrama', function(){
     // error message
     $updates = Telegram::getWebhookUpdates();
 
@@ -31,7 +31,7 @@ Route::post('webhooks/telegram', function(){
     $response = Telegram::sendMessage($message);
 });
 
-Route::post('webhooks/telegrama', function(){
+Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
