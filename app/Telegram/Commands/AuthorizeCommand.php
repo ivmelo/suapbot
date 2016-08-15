@@ -88,7 +88,6 @@ Digite /notas para ver suas notas ou /help para ver uma lista de comandos dispon
                             'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.'
                         ]);
                     }
-
                 }
 
             } else {

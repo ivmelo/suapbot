@@ -29,8 +29,16 @@ class SobreCommand extends Command
 
 
         $this->replyWithMessage([
-            'text' => 'Desenvolvido por: *Ivanilson Melo*
+            'text' => 'O @suapbot foi desenvolvido por: *Ivanilson Melo*
 http://github.com/ivmelo
+
+Aluno do curso de Tecnologia em Análise e Desenvolvimento de Sistemas do IFRN.
+
+Para ajuda, suporte, sugestões, ou para remover suas informações do bot, contate-me no telegram: @ivanilsonmelo.
+
+Achou o bot útil? Compatilhe com seus os amigos.
+
+Obrigado por usar o @suapbot.
 ',
             'parse_mode' => 'markdown'
         ]);
