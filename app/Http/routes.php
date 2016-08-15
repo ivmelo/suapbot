@@ -12,9 +12,16 @@
 */
 
 Route::get('job', function () {
-    dispatch(new App\Jobs\MonitorReportCardChanges(App\User::find(1)));
 
-    return 'Done!';
+    $users = App\User::where('notify', true)
+    ->where('suap_id', '!=', null)
+    ->where('suap_key', '!=', 'null')->get();
+
+    foreach ($users as $user) {
+        dispatch(new App\Jobs\MonitorReportCardChanges($user));
+    }
+
+    echo $users->count() . ' Jobs dispatched.';
 });
 
 Route::get('dev/diff', function(){

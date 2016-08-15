@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('APP_QUEUE_DRIVER', 'sync'),
 
     /*
     |--------------------------------------------------------------------------
