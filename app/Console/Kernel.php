@@ -41,7 +41,6 @@ class Kernel extends ConsoleKernel
             echo $users->count() . ' Jobs dispatched.\n';
 
         })->everyMinute();
-        // })->hourly();
 
     }
 }
