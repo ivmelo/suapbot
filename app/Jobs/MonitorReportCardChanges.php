@@ -11,7 +11,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-
+/*
+ * This Job monitors if the user's report card (boletim) has changes
+ * and notifies the user in case there is.
+ */
 class MonitorReportCardChanges extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
@@ -63,7 +66,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 Telegram::sendMessage($message);
 
                 // debug only
-                print('Uma ou mais disciplinas foram adicionadas ou removidas do seu boletim. Digite /notas para ver o seu boletim atualizado!');
+                print('Report card change. User notified.');
             } else {
                 $updates = [];
 
@@ -84,7 +87,6 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 // If there was an update
                 if (count($updates) > 0) {
                     // Handle report card update.
-                    //print_r($updates);
 
                     Telegram::sendChatAction([
                         'chat_id' => $this->user->telegram_id,
@@ -93,8 +95,6 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
                     // Parse grades into a readable format.
                     $grades_response = Markify::parseBoletim($updates);
-
-                    print($grades_response);
 
                     // Send grades to the user.
                     $message = [
@@ -112,13 +112,13 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
                 } else {
                     // Nothing has changed. Do nothing.
-                    print('Sem mudanças.');
+                    print('No changes.');
                 }
             }
 
         } catch (\Exception $e) {
             // Error fetching data from SUAP, or parsing report card data.
-            print($e->getMessage());
+            print('Exception: ' . $e->getMessage());
         }
 
     }

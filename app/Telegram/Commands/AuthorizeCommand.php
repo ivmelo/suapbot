@@ -17,7 +17,7 @@ class AuthorizeCommand extends Command
     /**
      * @var string Command Description
      */
-    protected $description = 'Autoriza a sua conta do SUAP. Para usar, digite /autorizar <matricula> <chave_de_acesso>.';
+    protected $description = 'Autoriza o acesso a sua conta do SUAP.';
 
     /**
      * @inheritdoc
@@ -74,25 +74,37 @@ class AuthorizeCommand extends Command
 
                         $suap_data_json = json_encode($suap_data);
 
+                        $name = $suap_data['nome'];
+                        $situation = $suap_data['situacao'];
+                        $program = $suap_data['curso'];
+                        $email = $suap_data['email_pessoal'];
+
                         //$grades_response = $this->buildTextResponse($suap_data_json);
 
                         $this->replyWithMessage([
-                            'text' => 'Autorizado com sucesso. Digite /notas para ver suas notas.'//$suap_data_json,
+                            'parse_mode' => 'markdown',
+                            'text' => 'Massa! Sua conta foi autorizada com sucesso.
+
+*Nome:* ' . $name . '
+*Curso:* ' . $program . '
+*Situação:* ' . $situation . '
+
+Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'//$suap_data_json,
                         ]);
                     } catch (\Exception $e) {
                         $this->replyWithMessage([
-                            'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente.'//$suap_data_json,
+                            'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.'
                         ]);
                     }
 
                 }
 
             } else {
-                $this->replyWithMessage(['text' => 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave>']);
+                $this->replyWithMessage(['text' => 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.']);
             }
 
         } else {
-            $this->replyWithMessage(['text' => 'Houve um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
+            $this->replyWithMessage(['text' => 'Ocorreu um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
         }
 
 
