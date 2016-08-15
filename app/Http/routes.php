@@ -11,6 +11,12 @@
 |
 */
 
+Route::get('job', function () {
+    dispatch(new App\Jobs\MonitorReportCardChanges(App\User::find(1)));
+
+    return 'Done!';
+});
+
 Route::get('dev/diff', function(){
     // 1 materia a menos
     //$current_json = '[{"diario":7441,"codigo":"TEC.0025","disciplina":"Arquitetura de Software","carga_horaria":80,"aulas":54,"faltas":0,"frequencia":67,"situacao":"cursando","bm1_nota":null,"bm1_faltas":6,"bm2_nota":null,"bm2_faltas":12,"media":null,"naf_nota":null,"naf_faltas":null,"mfd":null},{"diario":9693,"codigo":"TEC.0077","disciplina":"Desenvolvimento de Jogos","carga_horaria":80,"aulas":76,"faltas":32,"frequencia":58,"situacao":"cursando","bm1_nota":90,"bm1_faltas":14,"bm2_nota":null,"bm2_faltas":18,"media":36,"naf_nota":null,"naf_faltas":null,"mfd":36},{"diario":7440,"codigo":"TEC.0023","disciplina":"Desenvolvimento de Sistemas Distribu\u00eddos","carga_horaria":120,"aulas":98,"faltas":12,"frequencia":88,"situacao":"cursando","bm1_nota":82,"bm1_faltas":2,"bm2_nota":null,"bm2_faltas":10,"media":null,"naf_nota":null,"naf_faltas":null,"mfd":null},{"diario":7428,"codigo":"TEC.0004","disciplina":"Epistemologia da Ci\u00eancia","carga_horaria":40,"aulas":16,"faltas":16,"frequencia":null,"situacao":"cancelado","bm1_nota":null,"bm1_faltas":16,"bm2_nota":null,"bm2_faltas":null,"media":null,"naf_nota":null,"naf_faltas":null,"mfd":null},{"diario":7439,"codigo":"TEC.0027","disciplina":"Estrutura de Dados N\u00e3o-Lineares","carga_horaria":80,"aulas":56,"faltas":9,"frequencia":84,"situacao":"cursando","bm1_nota":54,"bm1_faltas":2,"bm2_nota":null,"bm2_faltas":7,"media":22,"naf_nota":null,"naf_faltas":null,"mfd":22},{"diario":7436,"codigo":"TEC.0005","disciplina":"Metodologia do Trabalho Cient\u00edfico","carga_horaria":40,"aulas":42,"faltas":10,"frequencia":77,"situacao":"cursando","bm1_nota":70,"bm1_faltas":4,"bm2_nota":null,"bm2_faltas":6,"media":null,"naf_nota":null,"naf_faltas":null,"mfd":null},{"diario":7438,"codigo":"TEC.0024","disciplina":"Processo de Software","carga_horaria":80,"aulas":70,"faltas":14,"frequencia":80,"situacao":"cursando","bm1_nota":88,"bm1_faltas":4,"bm2_nota":null,"bm2_faltas":10,"media":35,"naf_nota":null,"naf_faltas":null,"mfd":35},{"diario":7442,"codigo":"TEC.0026","disciplina":"Programa\u00e7\u00e3o e Administra\u00e7\u00e3o de Banco de Dados","carga_horaria":80,"aulas":72,"faltas":13,"frequencia":82,"situacao":"cursando","bm1_nota":null,"bm1_faltas":9,"bm2_nota":null,"bm2_faltas":4,"media":null,"naf_nota":null,"naf_faltas":null,"mfd":null}]';

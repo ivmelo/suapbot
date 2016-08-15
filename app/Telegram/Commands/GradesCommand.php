@@ -63,7 +63,7 @@ class GradesCommand extends Command
 
             } else {
                 // User has not set SUAP credentials.
-                $this->replyWithMessage(['text' => 'Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente.']);
+                $this->replyWithMessage(['text' => 'Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /help.']);
             }
 
         } else {

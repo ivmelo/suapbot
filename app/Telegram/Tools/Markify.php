@@ -3,7 +3,8 @@
 namespace App\Telegram\Tools;
 
 /**
- * Markfy. Provides helpers to parse boletim data.
+ * Markify. Provides helpers to parse boletim data into a readable format.
+ * THIS CLASS IS SUPPOSED TO LOOK UGLY. DON'T CHANGE IT IF YOU'RE NOT SURE OF WHAT YOU'RE DOING.
  */
 class Markify
 {
@@ -12,41 +13,49 @@ class Markify
 
         foreach ($grades as $grade) {
             # code...
-            $course_info = '*' .$grade['disciplina'] . '*
-' . 'Aulas: ' . $grade['aulas'] . '
-Faltas:  ' . $grade['faltas'] . ' ';
+            $course_info = '*' .$grade['disciplina'] . '*';
 
-            if ($grade['situacao'] != 'cursando') {
+            if(isset($grade['aulas']) && $grade['aulas']) {
+                $course_info = $course_info . '
+' . 'Aulas: ' . $grade['aulas'];
+            }
+
+            if(isset($grade['faltas']) && $grade['faltas']) {
+                $course_info = $course_info . '
+Faltas:  ' . $grade['faltas'] . ' ';
+            }
+
+            if (isset($grade['situacao']) && $grade['situacao'] != 'cursando') {
                 $course_info = $course_info . '
 Situação: ' . ucfirst($grade['situacao']) . ' ';
             }
 
-            if ($grade['frequencia']) {
+            if (isset($grade['frequencia']) && $grade['frequencia']) {
                 $course_info = $course_info . '
 Frequência: ' . $grade['frequencia'] . '% ';
             }
 
-            if ($grade['bm1_nota']) {
+            if (isset($grade['bm1_nota']) && $grade['bm1_nota']) {
                 $course_info = $course_info . '
 N1: ' . $grade['bm1_nota'] . ' ';
             }
 
-            if ($grade['bm2_nota']) {
+            if (isset($grade['bm2_nota']) && $grade['bm2_nota']) {
                 $course_info = $course_info . '
 N2: ' . $grade['bm2_nota'] . ' ';
             }
 
-            if ($grade['media']) {
+            if (isset($grade['media']) && $grade['media']) {
                 $course_info = $course_info . '
 Média: ' . $grade['media'] . ' ';
             }
 
-            if ($grade['naf_nota']) {
+            if (isset($grade['naf_nota']) && $grade['naf_nota']) {
                 $course_info = $course_info . '
 NAF: ' . $grade['naf_nota'] . ' ';
             }
 
-            if ($grade['mfd']) {
+            if (isset($grade['mfd']) && $grade['mfd']) {
                 $course_info = $course_info . '
 NAF: ' . $grade['mfd'];
             }
