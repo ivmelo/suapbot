@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\User;
+use App\Jobs\MonitorReportCardChanges;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,5 +28,18 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->call(function(){
+
+            $users = User::where('notify', true)
+            ->where('suap_id', '!=', null)
+            ->where('suap_key', '!=', 'null')->get();
+
+            foreach ($users as $user) {
+                dispatch(new MonitorReportCardChanges($user));
+            }
+
+            echo $users->count() . ' Jobs dispatched.\n';
+
+        })->everyMinute();
     }
 }
