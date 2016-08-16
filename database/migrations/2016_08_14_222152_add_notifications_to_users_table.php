@@ -14,7 +14,7 @@ class AddNotificationsToUsersTable extends Migration
     {
         // Add notify property to users table.
         Schema::table('users', function ($table) {
-            $table->boolean('notify')->default(true)->after('course_data');
+            $table->boolean('notify')->default(false)->after('course_data');
         });
     }
 

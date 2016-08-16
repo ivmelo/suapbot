@@ -82,6 +82,10 @@ class AuthorizeCommand extends Command
 
 Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'
                         ]);
+
+                        // Activate notifications.
+                        $this->triggerCommand('notificar');
+
                     } catch (\Exception $e) {
                         // Authorization error.
                         $this->replyWithMessage([
