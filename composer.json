@@ -7,7 +7,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "ivmelo/suapclient": "@dev",
+        "ivmelo/suapclient": "^0.0.1",
         "irazasyed/telegram-bot-sdk": "^2.0",
         "pda/pheanstalk": "~3.0"
     },

@@ -26,8 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Dispatch jobs to scan user's report card.
         $schedule->call(function(){
 
             $users = User::where('notify', true)
