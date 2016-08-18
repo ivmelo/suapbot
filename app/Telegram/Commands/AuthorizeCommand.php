@@ -68,8 +68,8 @@ class AuthorizeCommand extends Command
 
                         // Grab user info for display.
                         $name = $suap_data['nome'];
-                        $situation = $suap_data['situacao'];
                         $program = $suap_data['curso'];
+                        $situation = $suap_data['situacao'];
 
                         // All set, message user.
                         $this->replyWithMessage([

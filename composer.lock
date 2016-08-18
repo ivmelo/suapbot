@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "66279ceaeb2efa5a1aa72aedc9b76598",
-    "content-hash": "012941608fa6b157c42a457026bfb5c0",
+    "hash": "bccc6f87b07ffbee91e6764dd449a5e9",
+    "content-hash": "d4439a581ea78bc88d4f42474daf2c23",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -445,16 +445,16 @@
         },
         {
             "name": "ivmelo/suapclient",
-            "version": "v0.0.1",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-client.git",
-                "reference": "66045d3092db7d557db67612667da3428f75073b"
+                "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-client/zipball/66045d3092db7d557db67612667da3428f75073b",
-                "reference": "66045d3092db7d557db67612667da3428f75073b",
+                "url": "https://api.github.com/repos/ivmelo/suap-client/zipball/b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
+                "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
                 "shasum": ""
             },
             "require": {
@@ -477,7 +477,7 @@
                 }
             ],
             "description": "A client to access data from SUAP.",
-            "time": "2016-08-16 00:24:46"
+            "time": "2016-08-17 04:55:50"
         },
         {
             "name": "jakub-onderka/php-console-color",
