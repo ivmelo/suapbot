@@ -45,6 +45,16 @@ N1: ' . $grade['bm1_nota'] . ' ';
 N2: ' . $grade['bm2_nota'] . ' ';
             }
 
+            if (isset($grade['bm3_nota']) && $grade['bm3_nota']) {
+                $course_info = $course_info . '
+N1: ' . $grade['bm3_nota'] . ' ';
+            }
+
+            if (isset($grade['bm4_nota']) && $grade['bm4_nota']) {
+                $course_info = $course_info . '
+N1: ' . $grade['bm4_nota'] . ' ';
+            }
+
             if (isset($grade['media']) && $grade['media']) {
                 $course_info = $course_info . '
 Média: ' . $grade['media'] . ' ';
@@ -57,7 +67,7 @@ NAF: ' . $grade['naf_nota'] . ' ';
 
             if (isset($grade['mfd']) && $grade['mfd']) {
                 $course_info = $course_info . '
-NAF: ' . $grade['mfd'];
+MFD/Conceito: ' . $grade['mfd'];
             }
 
             $course_info = $course_info . '
