@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7149070c19d58bac2bb32c3e69990080",
-    "content-hash": "17274bcd34a86a113f13f6d653445717",
+    "hash": "c67ab4823acc4db14bf6e695ba406c8e",
+    "content-hash": "f93967137a78d87b2c6bf63bd732ff00",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -445,16 +445,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "v0.0.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7"
+                "reference": "e7dccbf9545cd3d9b8ad3afc004369acfb7573bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
-                "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/e7dccbf9545cd3d9b8ad3afc004369acfb7573bb",
+                "reference": "e7dccbf9545cd3d9b8ad3afc004369acfb7573bb",
                 "shasum": ""
             },
             "require": {
@@ -476,8 +476,8 @@
                     "email": "meloivanilson@gmail.com"
                 }
             ],
-            "description": "A client to access data from SUAP.",
-            "time": "2016-08-17 04:55:50"
+            "description": "Uma API PHP para o SUAP.",
+            "time": "2016-08-20 03:56:05"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -3630,7 +3630,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ivmelo/suap-api-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -41,4 +41,26 @@ class Speaker
     public static function authorizationCredentialsMissing() {
         return 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.';
     }
+
+    // When user authorizes SUAP access.
+    public static function authorized($name, $program, $situation) {
+        return "Pronto, sua conta foi autorizada com sucesso. \n\n" .
+                "*Nome:* $name \n" .
+                "*Curso:* $program \n" .
+                "*Situação:* $situation \n\n" .
+                "Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'";
+    }
+
+    public static function tutorial() {
+        return "Primeiro, preciso de autorização para acessar o seu boletim no SUAP.\n\n" .
+               "Para isso, preciso de sua matrícula e chave de acesso *(não confundir com senha do SUAP)*. A chave de acesso é *somente leitura* e não permite alterar no seus dados no SUAP.\n\n" .
+               "Para pegar a sua chave de acesso siga os seguintes passos:\n\n" .
+               "1 - Faça login no SUAP. https://suap.ifrn.edu.br;\n" .
+               "2 - Clique em “Meus Dados”;\n" .
+               "3 - Acesse a aba “Dados Pessoais”;\n" .
+               "4 - Na ultima linha da tabela de “Dados Gerais” procure pela “Chave de Acesso” (Vai ser algo parecido com 5e8h9);\n" .
+               "5 - Copie ou anote a sua chave de acesso.\n\n" .
+               "Pronto! Agora basta digitar:\n\n" .
+               "/autorizar <sua-matricula> <chave-de-acesso>';\n";
+    }
 }
