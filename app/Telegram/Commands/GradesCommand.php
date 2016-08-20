@@ -43,21 +43,39 @@ class GradesCommand extends Command
                 try {
                     // Get grades from SUAP.
                     $client = new SUAPClient($user->suap_id, $user->suap_key, true);
-                    $grades = $client->getGrades();
 
-                    // Parse grades into a readable format.
-                    $grades_response = Markify::parseBoletim($grades);
+                    // If filtering...
+                    if ($arguments) {
+                        $grades = $client->filterCoursesByName(trim($arguments));
 
-                    // Send grades to the user.
-                    $this->replyWithMessage([
-                        'text' => $grades_response,
-                        'parse_mode' => 'markdown'
-                    ]);
+                        // No filter results.
+                        if (empty($grades)) {
+                            $this->replyWithMessage([
+                                'text' => 'Não foram encontradas disciplinas contendo o(s) termo(s) "' . $arguments . '" no seu boletim.',
+                                'parse_mode' => 'markdown'
+                            ]);
+                        }
+                    } else {
+                        // No filter. Get all and save to DB.
+                        $grades = $client->getGrades();
 
-                    // Store JSON grades data in the DB.
-                    $course_data_json = json_encode($grades);
-                    $user->course_data = $course_data_json;
-                    $user->save();
+                        // Store JSON grades data in the DB.
+                        $course_data_json = json_encode($grades);
+                        $user->course_data = $course_data_json;
+                        $user->save();
+                    }
+
+                    // If results, parse grades and display them.
+                    if (! empty($grades)) {
+                        $grades_response = Markify::parseBoletim($grades);
+
+                        // Send grades to the user.
+                        $this->replyWithMessage([
+                            'text' => $grades_response,
+                            'parse_mode' => 'markdown'
+                        ]);
+                    }
+
                 } catch (\Exception $e) {
                     // Error fetching data from suap.
                     $this->replyWithMessage(['text' => Speaker::suapError()]);
