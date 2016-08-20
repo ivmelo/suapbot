@@ -44,7 +44,7 @@ class Speaker
 
     // When user authorizes SUAP access.
     public static function authorized($name, $program, $situation) {
-        return "Pronto, sua conta foi autorizada com sucesso. \n\n" .
+        return "Pronto, sua conta foi autorizada com sucesso. 🙂\n\n" .
                 "*Nome:* $name \n" .
                 "*Curso:* $program \n" .
                 "*Situação:* $situation \n\n" .
