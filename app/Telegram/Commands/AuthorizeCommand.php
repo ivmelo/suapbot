@@ -6,6 +6,7 @@ use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
+use App\Telegram\Tools\Speaker;
 
 class AuthorizeCommand extends Command
 {
@@ -88,18 +89,16 @@ Digite /notas para ver suas notas ou /help para ver uma lista de comandos dispon
 
                     } catch (\Exception $e) {
                         // Authorization error.
-                        $this->replyWithMessage([
-                            'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.'
-                        ]);
+                        $this->replyWithMessage(['text' => Speaker::authorizationError()]);
                     }
                 }
 
             } else {
-                $this->replyWithMessage(['text' => 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.']);
+                $this->replyWithMessage(['text' => Speaker::authorizationCredentialsMissing()]);
             }
 
         } else {
-            $this->replyWithMessage(['text' => 'Ocorreu um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
 
     }

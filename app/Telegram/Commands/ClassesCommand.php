@@ -9,18 +9,17 @@ use \Ivmelo\SUAPClient\SUAPClient;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 
-
-class GradesCommand extends Command
+class ClassesCommand extends Command
 {
     /**
      * @var string Command Name
      */
-    protected $name = 'notas';
+    protected $name = 'aulas';
 
     /**
      * @var string Command Description
      */
-    protected $description = 'Mostra as suas notas e faltas.';
+    protected $description = 'Mostra locais e horários de aula.';
 
     /**
      * @inheritdoc
@@ -41,12 +40,14 @@ class GradesCommand extends Command
             // User has set credentials.
             if ($user->suap_id && $user->suap_key) {
                 try {
-                    // Get grades from SUAP.
+                    // Get schedule from SUAP.
                     $client = new SUAPClient($user->suap_id, $user->suap_key, true);
-                    $grades = $client->getGrades();
+                    $grades = $client->getSchedule();
 
                     // Parse grades into a readable format.
-                    $grades_response = Markify::parseBoletim($grades);
+                    //$grades_response = Markify::parseBoletim($grades);
+
+                    $grades_response = json_encode($grades);
 
                     // Send grades to the user.
                     $this->replyWithMessage([
@@ -55,8 +56,8 @@ class GradesCommand extends Command
                     ]);
 
                     // Store JSON grades data in the DB.
-                    $course_data_json = json_encode($grades);
-                    $user->course_data = $course_data_json;
+                    //$course_data_json = json_encode($grades);
+                    //$user->course_data = $course_data_json;
                     $user->save();
                 } catch (\Exception $e) {
                     // Error fetching data from suap.

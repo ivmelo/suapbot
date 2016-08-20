@@ -6,6 +6,7 @@ use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
+use App\Telegram\   Tools\Speaker;
 
 class NotifyCommand extends Command
 {
@@ -60,7 +61,7 @@ class NotifyCommand extends Command
             }
 
         } else {
-            $this->replyWithMessage(['text' => 'Ocorreu um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 
