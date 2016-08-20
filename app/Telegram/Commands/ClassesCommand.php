@@ -47,11 +47,15 @@ class ClassesCommand extends Command
                     $day = $this->getDayNumber($arguments);
                     $schedule = $client->getSchedule($day);
 
+                    print_r($day);
+
+                    $has_classes = false;
+
                     // Titles for class schedule...
                     $titles = [
-                        "Opa, aqui estão suas aulas de hoje:\n\n",
-                        "Estas são as suas aulas de hoje:\n\n",
-                        "Alguém disse aulas? As de hoje são:\n\n",
+                        "Opa, aqui estão suas aulas do dia:\n\n",
+                        "Estas são as suas aulas do dia:\n\n",
+                        "Alguém disse aulas? As do dia são:\n\n",
                         "Não vá se atrasar, hein...\n\n",
                         "Toma aê, campeão...\n\n",
                     ];
@@ -63,9 +67,21 @@ class ClassesCommand extends Command
                     foreach ($schedule as $shift => $hours) {
                         foreach ($hours as $time => $class) {
                             if ($class) {
+                                $has_classes = true;
                                 $schedule_response .= "*" . $time . ":* \n";
                                 $schedule_response .= $class['disciplina'] . "\n_" . $class['local'] . "_\n\n";
                             }
+                        }
+                    }
+
+                    if (! $has_classes) {
+                        if ($this->isToday($day)) {
+                            // No classes today.
+                            $schedule_response = "Sem aulas hoje. o/";
+
+                        } else {
+                            // No classes for the requested day.
+                            $schedule_response = "Você não tem aulas no dia socitado.";
                         }
                     }
 
@@ -90,6 +106,17 @@ class ClassesCommand extends Command
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
+    }
+
+    /**
+     * Returns wether the informed day is today or not.
+     *
+     * @var     int Day of the week.
+     *
+     * @return  boolean Wether it's today or not.
+     */
+    private function isToday($day) {
+        return $day == date('w') + 1;
     }
 
     /**
@@ -144,10 +171,11 @@ class ClassesCommand extends Command
                 return 7;
                 break;
 
+            case 8:
             case 1:
             case 'domingo':
             case 'sunday':
-                return 1;
+                return 8;
                 break;
 
             default:
