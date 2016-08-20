@@ -74,7 +74,7 @@ class AuthorizeCommand extends Command
                         // All set, message user.
                         $this->replyWithMessage([
                             'parse_mode' => 'markdown',
-                            'text' => 'Massa! Sua conta foi autorizada com sucesso.
+                            'text' => 'Pronto, sua conta foi autorizada com sucesso.
 
 *Nome:* ' . $name . '
 *Curso:* ' . $program . '

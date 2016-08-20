@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bccc6f87b07ffbee91e6764dd449a5e9",
-    "content-hash": "d4439a581ea78bc88d4f42474daf2c23",
+    "hash": "7149070c19d58bac2bb32c3e69990080",
+    "content-hash": "17274bcd34a86a113f13f6d653445717",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -444,16 +444,16 @@
             "time": "2015-12-27 20:25:51"
         },
         {
-            "name": "ivmelo/suapclient",
+            "name": "ivmelo/suap-api-php",
             "version": "v0.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ivmelo/suap-client.git",
+                "url": "https://github.com/ivmelo/suap-api-php.git",
                 "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-client/zipball/b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
                 "reference": "b17b68835a61b1e5a89c1160d6f84ab2ec66e2a7",
                 "shasum": ""
             },
@@ -3274,23 +3274,23 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.3.7",
+            "version": "1.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716"
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4e8f0da10ac5802913afc151413bc8c53b6c2716",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/be2c607e43ce4c89ecd60e75c6a85c126e754aea",
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.4"
+                "phpunit/phpunit": "^4.8 || ^5.0"
             },
             "type": "library",
             "extra": {
@@ -3320,7 +3320,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-05-17 03:18:57"
+            "time": "2016-08-18 05:49:44"
         },
         {
             "name": "sebastian/exporter",
