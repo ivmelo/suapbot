@@ -47,17 +47,17 @@ class ClassesCommand extends Command
                     $day = $this->getDayNumber($arguments);
                     $schedule = $client->getSchedule($day);
 
-                    print_r($day);
+                    print_r(date('w'));
 
                     $has_classes = false;
 
                     // Titles for class schedule...
                     $titles = [
-                        "Opa, aqui estão suas aulas do dia:\n\n",
-                        "Estas são as suas aulas do dia:\n\n",
-                        "Alguém disse aulas? As do dia são:\n\n",
-                        "Não vá se atrasar, hein...\n\n",
-                        "Toma aê, campeão...\n\n",
+                        "Opa, aqui estão suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
+                        "Estas são as suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
+                        "Alguém disse aulas? As suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
+                        "Suas aulas d" . Speaker::getDayOfTheWeek($day, true) . "são estas. Não vá se atrasar, hein...\n\n",
+                        "Toma aê, campeão... Aulas d" . Speaker::getDayOfTheWeek($day, true) . "\n\n",
                     ];
 
                     // Chose a random message from the list.
@@ -128,6 +128,12 @@ class ClassesCommand extends Command
      */
     private function getDayNumber($day) {
         switch ($day) {
+            case 1:
+            case 'domingo':
+            case 'sunday':
+                return 1;
+                break;
+
             case 2:
             case 'segunda':
             case 'segunda-feira':
@@ -171,15 +177,7 @@ class ClassesCommand extends Command
                 return 7;
                 break;
 
-            case 8:
-            case 1:
-            case 'domingo':
-            case 'sunday':
-                return 8;
-                break;
-
             default:
-                // 'hoje' || 'today' || ''
                 return date('w') + 1;
                 break;
         }

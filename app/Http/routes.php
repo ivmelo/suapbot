@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('day_name', function(){
+    return App\Telegram\Tools\Speaker::getDayOfTheWeek(1, true);
+});
+
 Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
