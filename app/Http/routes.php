@@ -19,6 +19,7 @@ Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\ClassesCommand::class);
+    Telegram::addCommand(\App\Telegram\Commands\CalendarioCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\SobreCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\NotifyCommand::class);

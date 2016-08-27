@@ -6,7 +6,7 @@ use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
-use App\Telegram\   Tools\Speaker;
+use App\Telegram\Tools\Speaker;
 
 class NotifyCommand extends Command
 {

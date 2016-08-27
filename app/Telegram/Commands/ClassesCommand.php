@@ -47,21 +47,14 @@ class ClassesCommand extends Command
                     $day = $this->getDayNumber($arguments);
                     $schedule = $client->getSchedule($day);
 
-                    print_r(date('w'));
+                    // Choose the appropriate message.
+                    if ($this->isToday($day)) {
+                        $schedule_response = "*Suas aulas de hoje são:*\n\n";
+                    } else {
+                        $schedule_response = "*Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
+                    }
 
                     $has_classes = false;
-
-                    // Titles for class schedule...
-                    $titles = [
-                        "Opa, aqui estão suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
-                        "Estas são as suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
-                        "Alguém disse aulas? As suas aulas d" . Speaker::getDayOfTheWeek($day, true) . ":\n\n",
-                        "Suas aulas d" . Speaker::getDayOfTheWeek($day, true) . "são estas. Não vá se atrasar, hein...\n\n",
-                        "Toma aê, campeão... Aulas d" . Speaker::getDayOfTheWeek($day, true) . "\n\n",
-                    ];
-
-                    // Chose a random message from the list.
-                    $schedule_response = $titles[random_int(0, count($titles) - 1)];
 
                     // Format response message.
                     foreach ($schedule as $shift => $hours) {
@@ -175,6 +168,15 @@ class ClassesCommand extends Command
             case 'sabado':
             case 'saturday':
                 return 7;
+                break;
+
+            case 'amanhã':
+            case 'amanha':
+            case 'tomorrow':
+                $day = date('w') + 2;
+                if ($day > 8)
+                    $day = 1;
+                return $day;
                 break;
 
             default:

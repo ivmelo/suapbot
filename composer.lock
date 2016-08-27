@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c67ab4823acc4db14bf6e695ba406c8e",
-    "content-hash": "f93967137a78d87b2c6bf63bd732ff00",
+    "hash": "9e87d613080e0335db79241c9bb793e4",
+    "content-hash": "8fcba95fbed9a055aa3641e4cddac4fe",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -445,16 +445,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "dev-master",
+            "version": "v0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "e7dccbf9545cd3d9b8ad3afc004369acfb7573bb"
+                "reference": "4746572dde6020c1fe6223ad14d5985400961e79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/e7dccbf9545cd3d9b8ad3afc004369acfb7573bb",
-                "reference": "e7dccbf9545cd3d9b8ad3afc004369acfb7573bb",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/4746572dde6020c1fe6223ad14d5985400961e79",
+                "reference": "4746572dde6020c1fe6223ad14d5985400961e79",
                 "shasum": ""
             },
             "require": {
@@ -477,7 +477,7 @@
                 }
             ],
             "description": "Uma API PHP para o SUAP.",
-            "time": "2016-08-20 03:56:05"
+            "time": "2016-08-21 00:21:52"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -626,16 +626,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.2.43",
+            "version": "v5.2.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "5490b8f00564bb60839002f86828e27edd1e5610"
+                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/5490b8f00564bb60839002f86828e27edd1e5610",
-                "reference": "5490b8f00564bb60839002f86828e27edd1e5610",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f24b7acfb494437ef00bdd062bed61eb21535546",
+                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546",
                 "shasum": ""
             },
             "require": {
@@ -716,7 +716,7 @@
                 "pusher/pusher-php-server": "Required to use the Pusher broadcast driver (~2.0).",
                 "symfony/css-selector": "Required to use some of the crawler integration testing tools (2.8.*|3.0.*).",
                 "symfony/dom-crawler": "Required to use most of the crawler integration testing tools (2.8.*|3.0.*).",
-                "symfony/psr-http-message-bridge": "Required to psr7 bridging features (0.2.*)."
+                "symfony/psr-http-message-bridge": "Required to use psr7 bridging features (0.2.*)."
             },
             "type": "library",
             "extra": {
@@ -752,7 +752,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-08-10 12:23:59"
+            "time": "2016-08-23 13:03:29"
         },
         {
             "name": "league/flysystem",
@@ -3630,9 +3630,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ivmelo/suap-api-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
