@@ -97,6 +97,8 @@ Route::post('webhooks/telegram', function(){
     Telegram::addCommand(\App\Telegram\Commands\NotifyCommand::class);
 
     Telegram::commandsHandler(true);
+
+    return response()->json('telegram.me/suapbot', 200);
 });
 
 Route::get('/', function () {
