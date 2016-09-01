@@ -43,8 +43,13 @@ class GradesCommand extends Command
                     $client = new SUAPClient($user->suap_id, $user->suap_key, true);
                     $grades = $client->getGrades();
 
-                    // Parse grades into a readable format.
-                    $grades_response = Markify::parseBoletim($grades);
+                    // No courses in report card. Maybe the next semester is coming...?
+                    if (empty($grades)) {
+                        $grades_response = "Oops... Parece que o seu boletim já foi atualizado para o próximo semestre. \n\nTe avisarei quando novas disciplinas forem adicionadas lá. \n\nEnquanto isso, aproveite as férias. 🙂";
+                    } else {
+                        // Parse grades into a readable format.
+                        $grades_response = Markify::parseBoletim($grades);
+                    }
 
                     // Send grades to the user.
                     $this->replyWithMessage([
