@@ -65,6 +65,11 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
                 Telegram::sendMessage($message);
 
+                // Save report card updates.
+                $course_data_json = json_encode($new_data);
+                $this->user->course_data = $course_data_json;
+                $this->user->save();
+
                 // debug only
                 print('Report card change. User notified.');
             } else {

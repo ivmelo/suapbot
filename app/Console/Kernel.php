@@ -41,8 +41,8 @@ class Kernel extends ConsoleKernel
 
         // })->everyMinute();
         // })->everyTenMinutes();
-        })->everyThirtyMinutes();
-        // })->hourly();
+        // })->everyThirtyMinutes();
+        })->hourly();
 
     }
 }
