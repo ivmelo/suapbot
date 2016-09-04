@@ -74,6 +74,11 @@ class GradesCommand extends Command
                             'text' => $grades_response,
                             'parse_mode' => 'markdown'
                         ]);
+                    } else {
+                        $this->replyWithMessage([
+                            'text' => 'Seu boletim parece estar vazio.',
+                            'parse_mode' => 'markdown'
+                        ]);
                     }
 
                 } catch (\Exception $e) {

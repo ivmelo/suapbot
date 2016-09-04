@@ -31,9 +31,17 @@ Route::post('webhooks/telegram', function(){
     ], 200);
 });
 
-Route::get('/', function () {
-    return redirect()->to('https://telegram.me/suapbot');
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+
+Route::get('/', function(){
+    return 'suapbot';
 });
+
+// Route::get('/', function () {
+//     return redirect()->to('https://telegram.me/suapbot');
+// });
 
 // Route::get('job', function () {
 //

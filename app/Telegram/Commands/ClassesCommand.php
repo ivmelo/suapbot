@@ -86,6 +86,11 @@ class ClassesCommand extends Command
 
                     $user->save();
                 } catch (\Exception $e) {
+                    $this->replyWithMessage([
+                        'text' => $e->getMessage(),
+                        'parse_mode' => 'markdown'
+                    ]);
+
                     // Error fetching data from suap.
                     $this->replyWithMessage(['text' => Speaker::suapError()]);
                 }
