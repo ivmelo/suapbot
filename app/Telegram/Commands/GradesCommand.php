@@ -63,6 +63,20 @@ class GradesCommand extends Command
                         $course_data_json = json_encode($grades);
                         $user->course_data = $course_data_json;
                         $user->save();
+
+                        // No grades.
+                        if (empty($grades)) {
+                            if ($user->notify) {
+                                $notify_message = 'Mas fique de olho, te avisarei quando novas disciplinas forem adicionadas lá. 🙂';
+                            } else {
+                                $notify_message = 'Caso queira receber notificações quando novas disciplinas forem adicionadas, use o comando /notificar.';
+                            }
+
+                            $this->replyWithMessage([
+                                'text' => 'Não há disciplinas no seu boletim. ' . $notify_message,
+                                'parse_mode' => 'markdown'
+                            ]);
+                        }
                     }
 
                     // If results, parse grades and display them.
@@ -72,11 +86,6 @@ class GradesCommand extends Command
                         // Send grades to the user.
                         $this->replyWithMessage([
                             'text' => $grades_response,
-                            'parse_mode' => 'markdown'
-                        ]);
-                    } else {
-                        $this->replyWithMessage([
-                            'text' => 'Seu boletim parece estar vazio.',
                             'parse_mode' => 'markdown'
                         ]);
                     }

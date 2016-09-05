@@ -445,16 +445,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "v0.1.1",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "eb59e7df3e9a7fbb40198a9ec29f0fb017975449"
+                "reference": "873a84e23eb94311dc7862f2e7edda2c6957e85e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/eb59e7df3e9a7fbb40198a9ec29f0fb017975449",
-                "reference": "eb59e7df3e9a7fbb40198a9ec29f0fb017975449",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/873a84e23eb94311dc7862f2e7edda2c6957e85e",
+                "reference": "873a84e23eb94311dc7862f2e7edda2c6957e85e",
                 "shasum": ""
             },
             "require": {
@@ -477,7 +477,7 @@
                 }
             ],
             "description": "Uma API PHP para o SUAP.",
-            "time": "2016-09-04 19:57:46"
+            "time": "2016-09-04 23:10:35"
         },
         {
             "name": "jakub-onderka/php-console-color",
