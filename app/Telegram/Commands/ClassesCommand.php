@@ -70,7 +70,7 @@ class ClassesCommand extends Command
                     if (! $has_classes) {
                         if ($this->isToday($day)) {
                             // No classes today.
-                            $schedule_response = "Sem aulas hoje. 😃";
+                            $schedule_response = "Sem aulas hoje. 😃 \nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
 
                         } else {
                             // No classes for the requested day.
