@@ -6,6 +6,7 @@ use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
+use App\Telegram\Tools\Speaker;
 
 class AuthorizeCommand extends Command
 {
@@ -74,13 +75,7 @@ class AuthorizeCommand extends Command
                         // All set, message user.
                         $this->replyWithMessage([
                             'parse_mode' => 'markdown',
-                            'text' => 'Massa! Sua conta foi autorizada com sucesso.
-
-*Nome:* ' . $name . '
-*Curso:* ' . $program . '
-*Situação:* ' . $situation . '
-
-Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'
+                            'text' => Speaker::authorized($name, $program, $situation)
                         ]);
 
                         // Activate notifications.
@@ -88,18 +83,16 @@ Digite /notas para ver suas notas ou /help para ver uma lista de comandos dispon
 
                     } catch (\Exception $e) {
                         // Authorization error.
-                        $this->replyWithMessage([
-                            'text' => 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.'
-                        ]);
+                        $this->replyWithMessage(['text' => Speaker::authorizationError()]);
                     }
                 }
 
             } else {
-                $this->replyWithMessage(['text' => 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.']);
+                $this->replyWithMessage(['text' => Speaker::authorizationCredentialsMissing()]);
             }
 
         } else {
-            $this->replyWithMessage(['text' => 'Ocorreu um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
 
     }

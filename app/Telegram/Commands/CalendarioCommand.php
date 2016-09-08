@@ -8,17 +8,17 @@ use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
 use App\Telegram\Tools\Speaker;
 
-class SobreCommand extends Command
+class CalendarioCommand extends Command
 {
     /**
      * @var string Command Name
      */
-    protected $name = 'sobre';
+    protected $name = 'calendario';
 
     /**
      * @var string Command Description
      */
-    protected $description = 'Info sobre o bot.';
+    protected $description = 'Envia calendário acadêmico.';
 
     /**
      * @inheritdoc
@@ -30,7 +30,7 @@ class SobreCommand extends Command
 
         // And send message.
         $this->replyWithMessage([
-            'text' => Speaker::about(),
+            'text' => "Calendário Acadêmico 2016: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-escolar-2016-aprovado-pelo-conselho-escolar",
             'parse_mode' => 'markdown'
         ]);
     }

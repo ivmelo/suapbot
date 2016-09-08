@@ -7,6 +7,8 @@ use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use \Ivmelo\SUAPClient\SUAPClient;
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
+
 
 class GradesCommand extends Command
 {
@@ -41,39 +43,66 @@ class GradesCommand extends Command
                 try {
                     // Get grades from SUAP.
                     $client = new SUAPClient($user->suap_id, $user->suap_key, true);
-                    $grades = $client->getGrades();
 
-                    // No courses in report card. Maybe the next semester is coming...?
-                    if (empty($grades)) {
-                        $grades_response = "Oops... Parece que o seu boletim já foi atualizado para o próximo semestre. \n\nTe avisarei quando novas disciplinas forem adicionadas lá. \n\nEnquanto isso, aproveite as férias. 🙂";
+                    // If filtering...
+                    if ($arguments) {
+                        $grades = $client->filterCoursesByName(trim($arguments));
+
+                        // No filter results.
+                        if (empty($grades)) {
+                            $this->replyWithMessage([
+                                'text' => 'Não foram encontradas disciplinas contendo o(s) termo(s) "' . $arguments . '" no seu boletim.',
+                                'parse_mode' => 'markdown'
+                            ]);
+                        }
                     } else {
-                        // Parse grades into a readable format.
-                        $grades_response = Markify::parseBoletim($grades);
+                        // No filter. Get all and save to DB.
+                        $grades = $client->getGrades();
+
+                        // Store JSON grades data in the DB.
+                        $course_data_json = json_encode($grades);
+                        $user->course_data = $course_data_json;
+                        $user->save();
+
+                        // No grades.
+                        if (empty($grades)) {
+                            if ($user->notify) {
+                                $notify_message = 'Mas fique de olho, te avisarei quando novas disciplinas forem adicionadas lá. 🙂';
+                            } else {
+                                $notify_message = 'Caso queira receber notificações quando novas disciplinas forem adicionadas, use o comando /notificar.';
+                            }
+
+                            $this->replyWithMessage([
+                                'text' => 'Não há disciplinas no seu boletim. ' . $notify_message,
+                                'parse_mode' => 'markdown'
+                            ]);
+                        }
                     }
 
-                    // Send grades to the user.
-                    $this->replyWithMessage([
-                        'text' => $grades_response,
-                        'parse_mode' => 'markdown'
-                    ]);
+                    // If results, parse grades and display them.
+                    if (! empty($grades)) {
+                        $grades_response = Markify::parseBoletim($grades);
 
-                    // Store JSON grades data in the DB.
-                    $course_data_json = json_encode($grades);
-                    $user->course_data = $course_data_json;
-                    $user->save();
+                        // Send grades to the user.
+                        $this->replyWithMessage([
+                            'text' => $grades_response,
+                            'parse_mode' => 'markdown'
+                        ]);
+                    }
+
                 } catch (\Exception $e) {
                     // Error fetching data from suap.
-                    $this->replyWithMessage(['text' => 'Houve um erro ao conectar-se ao SUAP. Por favor, verifique se o SUAP está online e tente novamente mais tarde.']);
+                    $this->replyWithMessage(['text' => Speaker::suapError()]);
                 }
 
             } else {
                 // User has not set SUAP credentials.
-                $this->replyWithMessage(['text' => 'Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /help.']);
+                $this->replyWithMessage(['text' => Speaker::noCredentials()]);
             }
 
         } else {
             // User was not found.
-            $this->replyWithMessage(['text' => 'Houve um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.']);
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 
