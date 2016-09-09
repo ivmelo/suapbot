@@ -74,8 +74,10 @@ class ClassesCommand extends Command
 
                         } else {
                             // No classes for the requested day.
-                            $schedule_response = "Você não tem aulas no dia socitado.";
+                            $schedule_response = "Você não tem aulas no dia socitado. \nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
                         }
+                    } else {
+                        $schedule_response .= "Para ver aulas de outros dias, digite /aulas <dia-da-semana>.";
                     }
 
                     // Send schedule to the user.
