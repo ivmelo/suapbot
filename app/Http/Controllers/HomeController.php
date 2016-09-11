@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\User;
+use Telegram;
 
 class HomeController extends Controller
 {
@@ -36,7 +37,7 @@ class HomeController extends Controller
      */
     public function sendMessage(Request $request)
     {
-        // $users = User::all();
+        $users = User::all();
 
         $this->validate($request, [
             'message' => 'required'
@@ -47,11 +48,24 @@ class HomeController extends Controller
 
         foreach ($users as $user) {
             if ($user->telegram_id != null) {
-                # code...
+                try {
+                    Telegram::sendMessage([
+                      'chat_id' => $user->telegram_id,
+                      'text' => $request->message
+                    ]);
+
+                    array_push($sent, $user);
+                } catch (\Exception $e) {
+                    $message = $e->getMessage();
+                }
             }
             # code...
         }
 
-        dd($request->message);
+        print_r($request->message);
+
+        print_r($sent);
+
+        print_r($not_sent);
     }
 }
