@@ -67,14 +67,16 @@ class StartCommand extends Command
             $response .= sprintf('/%s - %s' . PHP_EOL, $name, $command->getDescription());
         }
 
-        // Reply with the commands list
-        $this->replyWithMessage(['text' => $response]);
-
         if (! $user->suap_id) {
             $this->replyWithMessage([
                 'text' => Speaker::tutorial(),
                 'parse_mode' => 'markdown',
-                'reply_markup' => ['force_reply']
+            ]);
+        } else {
+            // Reply with the commands list
+            $this->replyWithMessage([
+                'text' => $response,
+                'reply_markup' => Speaker::getReplyKeyboardMarkup()
             ]);
         }
 

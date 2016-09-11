@@ -37,7 +37,7 @@ Route::get('/home', 'HomeController@index');
 Route::post('/home', 'HomeController@sendMessage');
 
 Route::get('/', function(){
-    return 'suapbot';
+    return redirect('/home');
 });
 
 // Route::get('/', function () {

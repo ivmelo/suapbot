@@ -6,6 +6,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\User;
 use Telegram;
+use App\Telegram\Tools\Speaker;
 
 class HomeController extends Controller
 {
@@ -48,15 +49,19 @@ class HomeController extends Controller
 
         foreach ($users as $user) {
             if ($user->telegram_id != null) {
-                try {
+                try{
+
                     Telegram::sendMessage([
                       'chat_id' => $user->telegram_id,
-                      'text' => $request->message
+                      'text' => $request->message,
+                      'parse_mode' => 'markdown',
+                      'reply_markup' => Speaker::getReplyKeyboardMarkup()
                     ]);
 
                     array_push($sent, $user);
                 } catch (\Exception $e) {
                     $message = $e->getMessage();
+                    array_push($not_sent, [$user, $message]);
                 }
             }
             # code...

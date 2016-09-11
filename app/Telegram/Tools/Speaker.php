@@ -2,6 +2,8 @@
 
 namespace App\Telegram\Tools;
 
+use Telegram;
+
 /**
  * This class provides strings for the most common messages used through the application.
  * It avoids duplicating them, and helps keep the code clean.
@@ -15,7 +17,7 @@ class Speaker
      * @return String The message.
      */
     public static function suapError() {
-        return 'Houve um erro ao conectar-se ao SUAP. Por favor, verifique se o SUAP está online e tente novamente mais tarde.';
+        return '❌ Houve um erro ao conectar-se ao SUAP. Por favor, verifique se o SUAP está online e tente novamente mais tarde.';
     }
 
     /**
@@ -24,7 +26,7 @@ class Speaker
      * @return String The message.
      */
     public static function noCredentials() {
-        return 'Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /help.';
+        return '⚠️ Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /help.';
     }
 
     /**
@@ -33,7 +35,7 @@ class Speaker
      * @return String The message.
      */
     public static function userNotFound() {
-        return 'Houve um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.';
+        return '⚠️ Houve um erro ao recuperar suas credenciais de acesso. Por favor, digite /start e tente novamente.';
     }
 
     /**
@@ -42,7 +44,7 @@ class Speaker
      * @return String The message.
      */
     public static function about() {
-        return "O @suapbot foi desenvolvido por: *Ivanilson Melo*\n" .
+        return "ℹ️ O @suapbot foi desenvolvido por: *Ivanilson Melo*\n" .
         "http://github.com/ivmelo\n\n" .
         "Aluno do curso de Tecnologia em Análise e Desenvolvimento de Sistemas do IFRN.\n\n" .
         "Para ajuda, suporte, sugestões, ou para remover suas informações do bot, contate-me no telegram: @ivanilsonmelo.\n\n" .
@@ -56,7 +58,7 @@ class Speaker
      * @return String The message.
      */
     public static function authorizationError() {
-        return 'Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.';
+        return '❌ Ocorreu um erro ao autorizar o seu acesso. Por favor, verifique suas credenciais e tente novamente. Caso precise de ajuda, digite /start e siga o tutorial.';
     }
 
     /**
@@ -65,7 +67,7 @@ class Speaker
      * @return String The message.
      */
     public static function authorizationCredentialsMissing() {
-        return 'Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.';
+        return '⚠️ Por favor, envie suas credenciais no formato: /autorizar <matricula> <chave-de-acesso>. Caso precise de ajuda, digite /start e siga o tutorial.';
     }
 
     /**
@@ -74,11 +76,11 @@ class Speaker
      * @return String The message.
      */
     public static function authorized($name, $program, $situation) {
-        return "Pronto, sua conta foi autorizada com sucesso. 🙂\n\n" .
+        return "✅ Pronto, sua conta foi autorizada com sucesso. 🙂\n\n" .
                 "*Nome:* $name \n" .
                 "*Curso:* $program \n" .
                 "*Situação:* $situation \n\n" .
-                "Digite /notas para ver suas notas, /aulas para ver as aulas de hoje ou /help para ver uma lista de comandos disponíveis.'";
+                "ℹ️ Digite /notas para ver suas notas, /aulas para ver as aulas de hoje ou /help para ver uma lista de comandos disponíveis.'";
     }
 
     /**
@@ -96,7 +98,31 @@ class Speaker
                "4 - Na ultima linha da tabela de “Dados Gerais” procure pela “Chave de Acesso” (Vai ser algo parecido com 5e8h9);\n" .
                "5 - Copie ou anote a sua chave de acesso.\n\n" .
                "Pronto! Agora basta digitar:\n\n" .
-               "/autorizar <sua-matricula> <chave-de-acesso>';\n";
+               "/autorizar <sua-matricula> <chave-de-acesso>\n";
+    }
+
+    /**
+     * Return a keyboard for the bot.
+     *
+     * @return String The message.
+     */
+    public static function getReplyKeyboardMarkup() {
+        // keyboard system...
+        $keyboard = [
+            ['/aulas', '/notas'],
+            ['/aulas amanhã', '/calendario'],
+            // ['/help', '/sobre']
+        ];
+
+        $reply_markup = Telegram::replyKeyboardMarkup([
+          'keyboard' => $keyboard,
+          'resize_keyboard' => true,
+          'one_time_keyboard' => false
+        ]);
+
+        // $reply_markup = Telegram::replyKeyboardHide();
+
+        return $reply_markup;
     }
 
     /**
