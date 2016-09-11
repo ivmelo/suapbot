@@ -45,7 +45,13 @@ class ClassesCommand extends Command
 
                     // Get schedule for the requested day of the week.
                     $day = $this->getDayNumber($arguments);
-                    $schedule = $client->getSchedule($day);
+                    $schedule = $client->getSchedule($day, env('CURRENT_TERM_SUPERIOR'));
+
+                    // Schedule empty, might be a technical student...
+                    if (empty($schedule)) {
+                        $this->replyWithChatAction(['action' => Actions::TYPING]);
+                        $schedule = $client->getSchedule($day, env('CURRENT_TERM_TECNICO'));
+                    }
 
                     // Choose the appropriate message.
                     if ($this->isToday($day)) {

@@ -78,7 +78,7 @@ class Speaker
                 "*Nome:* $name \n" .
                 "*Curso:* $program \n" .
                 "*Situação:* $situation \n\n" .
-                "Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'";
+                "Digite /notas para ver suas notas, /aulas para ver as aulas de hoje ou /help para ver uma lista de comandos disponíveis.'";
     }
 
     /**

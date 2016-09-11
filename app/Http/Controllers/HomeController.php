@@ -28,4 +28,30 @@ class HomeController extends Controller
         $users = User::all();
         return view('home', compact('users'));
     }
+
+    /**
+     * Send a message to all users.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendMessage(Request $request)
+    {
+        // $users = User::all();
+
+        $this->validate($request, [
+            'message' => 'required'
+        ]);
+
+        $sent = [];
+        $not_sent = [];
+
+        foreach ($users as $user) {
+            if ($user->telegram_id != null) {
+                # code...
+            }
+            # code...
+        }
+
+        dd($request->message);
+    }
 }

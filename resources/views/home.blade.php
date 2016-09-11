@@ -36,6 +36,16 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <form action="{{ url('home') }}" method="post">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <textarea name="message" rows="8" placeholder="Message goes here..." class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" name="button" class="btn btn-info pull-right">Send!</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
