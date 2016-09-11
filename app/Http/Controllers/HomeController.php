@@ -67,10 +67,12 @@ class HomeController extends Controller
             # code...
         }
 
-        print_r($request->message);
+        return view('report', ['sent' => $sent, 'not_sent' => $not_sent, 'message' => $request->message]);
 
-        print_r($sent);
-
-        print_r($not_sent);
+        // print_r($request->message);
+        //
+        // print_r($sent);
+        //
+        // print_r($not_sent);
     }
 }

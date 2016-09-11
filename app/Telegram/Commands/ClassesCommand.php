@@ -55,9 +55,9 @@ class ClassesCommand extends Command
 
                     // Choose the appropriate message.
                     if ($this->isToday($day)) {
-                        $schedule_response = "*📅 Suas aulas de hoje são:*\n\n";
+                        $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
                     } else {
-                        $schedule_response = "*📅 Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
+                        $schedule_response = "*📚 Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
                     }
 
                     $has_classes = false;
