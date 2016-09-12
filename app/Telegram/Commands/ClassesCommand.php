@@ -133,62 +133,112 @@ class ClassesCommand extends Command
      * @return  int    Int representation of the day of the week.
      */
     private function getDayNumber($day) {
+        $day = trim(mb_strtolower($day));
+
         switch ($day) {
             case 1:
             case 'domingo':
             case 'sunday':
+            case 'sun':
+            case 'dom':
                 return 1;
                 break;
 
             case 2:
             case 'segunda':
+            case 'seg':
             case 'segunda-feira':
+            case 'segunda feira':
             case 'monday':
+            case 'mon':
+            case 'dia da preguiça':
+            case 'garfield':
+            case 'queria estar morta':
+            case 'pior dia':
+            case 'pior dia da semana':
+            case 'prefiro morrer':
                 return 2;
                 break;
 
             case 3:
             case 'terça':
             case 'terca':
+            case 'ter':
             case 'terça-feira':
+            case 'terca-feira':
+            case 'terça feira':
+            case 'terca feira':
             case 'tuesday':
+            case 'tue':
                 return 3;
                 break;
 
             case 4:
             case 'quarta':
+            case 'qua':
             case 'quarta-feira':
+            case 'quarta feira':
             case 'wednesday':
+            case 'wed':
+            case 'weed':
                 return 4;
                 break;
 
             case 5:
             case 'quinta':
+            case 'qui':
             case 'quinta-feira':
+            case 'quinta feira':
             case 'thrusday':
+            case 'thr':
+            case 'thu':
                 return 5;
                 break;
 
             case 6:
             case 'sexta':
+            case 'sex':
             case 'sexta-feira':
+            case 'sexta feira':
             case 'friday':
+            case 'fri':
                 return 6;
                 break;
 
             case 7:
             case 'sábado':
             case 'sabado':
+            case 'sáb':
+            case 'sab':
             case 'saturday':
+            case 'sat':
+            case 'caturday':
                 return 7;
                 break;
 
             case 'amanhã':
             case 'amanha':
+            case 'amn':
             case 'tomorrow':
+            case 'tmr':
                 $day = date('w') + 2;
                 if ($day > 8)
                     $day = 1;
+                return $day;
+                break;
+
+            case 'depois de amanhã':
+            case 'depois de amanhã':
+            case 'depois damanhã':
+            case 'depois damanha':
+                $day = date('w') + 3;
+                if ($day == 9) {
+                    $day = 1;
+                } else if ($day == 10) {
+                    $day = 2;
+                } else if ($day == 11) {
+                    $day = 3;
+                }
                 return $day;
                 break;
 
