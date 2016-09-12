@@ -157,6 +157,7 @@ class ClassesCommand extends Command
             case 'pior dia':
             case 'pior dia da semana':
             case 'prefiro morrer':
+            case 'hello darkness my old friend':
                 return 2;
                 break;
 
