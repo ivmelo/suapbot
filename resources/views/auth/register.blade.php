@@ -10,7 +10,7 @@
                     <p>
                         You must use <a href="https://telegram.me/suapbot">@suapbot</a> to register.
                     </p>
-                    <!--{--
+                    <!--{{--
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {{ csrf_field() }}
 
@@ -79,7 +79,7 @@
                         </div>
                     </form>
                 </div>
-                --}-->
+                --}}-->
             </div>
         </div>
     </div>
