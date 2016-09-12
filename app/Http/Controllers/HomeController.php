@@ -64,15 +64,8 @@ class HomeController extends Controller
                     array_push($not_sent, [$user, $message]);
                 }
             }
-            # code...
         }
 
         return view('report', ['sent' => $sent, 'not_sent' => $not_sent, 'message' => $request->message]);
-
-        // print_r($request->message);
-        //
-        // print_r($sent);
-        //
-        // print_r($not_sent);
     }
 }
