@@ -81,7 +81,7 @@ class GradesCommand extends Command
 
                     // If results, parse grades and display them.
                     if (! empty($grades)) {
-                        $grades_response = "*📚 Suas notas e faltas:*\n\n";
+                        $grades_response = "*📚 Suas notas e frequência:*\n\n";
 
                         $grades_response .= Markify::parseBoletim($grades);
 
