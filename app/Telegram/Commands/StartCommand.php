@@ -29,7 +29,7 @@ class StartCommand extends Command
         $telegram_id = $updates['message']['from']['id'];
         $first_name = $updates['message']['from']['first_name'];
 
-        $message = 'Olá, ' . $first_name . '! Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas e faltas.'; //Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas (em breve).
+        $message = 'Olá ' . $first_name . '. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais e horários de aula.'; //Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas (em breve).
 
         $this->replyWithMessage(['text' => $message]);
 
@@ -67,14 +67,16 @@ class StartCommand extends Command
             $response .= sprintf('/%s - %s' . PHP_EOL, $name, $command->getDescription());
         }
 
-        // Reply with the commands list
-        $this->replyWithMessage(['text' => $response]);
-
         if (! $user->suap_id) {
             $this->replyWithMessage([
                 'text' => Speaker::tutorial(),
                 'parse_mode' => 'markdown',
-                'reply_markup' => ['force_reply']
+            ]);
+        } else {
+            // Reply with the commands list
+            $this->replyWithMessage([
+                'text' => $response,
+                'reply_markup' => Speaker::getReplyKeyboardMarkup()
             ]);
         }
 

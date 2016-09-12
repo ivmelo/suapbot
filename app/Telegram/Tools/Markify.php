@@ -11,7 +11,7 @@ class Markify
         $response_text = '';
 
         foreach ($grades as $grade) {
-            $course_info = "*" . $grade['disciplina'] . "*\n";
+            $course_info = "*📓 " . $grade['disciplina'] . "*\n";
 
             if(isset($grade['aulas']) && $grade['aulas']) {
                 $course_info .= "Aulas: " . $grade['aulas'] . "\n";

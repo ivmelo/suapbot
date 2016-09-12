@@ -73,9 +73,11 @@ class AuthorizeCommand extends Command
                         $situation = $suap_data['situacao'];
 
                         // All set, message user.
+                        // And set up keyboard.
                         $this->replyWithMessage([
                             'parse_mode' => 'markdown',
-                            'text' => Speaker::authorized($name, $program, $situation)
+                            'text' => Speaker::authorized($name, $program, $situation),
+                            'reply_markup' => Speaker::getReplyKeyboardMarkup()
                         ]);
 
                         // Activate notifications.

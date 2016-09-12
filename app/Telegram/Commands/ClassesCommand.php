@@ -45,13 +45,19 @@ class ClassesCommand extends Command
 
                     // Get schedule for the requested day of the week.
                     $day = $this->getDayNumber($arguments);
-                    $schedule = $client->getSchedule($day);
+                    $schedule = $client->getSchedule($day, env('CURRENT_TERM_SUPERIOR'));
+
+                    // Schedule empty, might be a technical student...
+                    if (empty($schedule)) {
+                        $this->replyWithChatAction(['action' => Actions::TYPING]);
+                        $schedule = $client->getSchedule($day, env('CURRENT_TERM_TECNICO'));
+                    }
 
                     // Choose the appropriate message.
                     if ($this->isToday($day)) {
-                        $schedule_response = "*Suas aulas de hoje são:*\n\n";
+                        $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
                     } else {
-                        $schedule_response = "*Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
+                        $schedule_response = "*📚 Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
                     }
 
                     $has_classes = false;
@@ -61,8 +67,8 @@ class ClassesCommand extends Command
                         foreach ($hours as $time => $class) {
                             if ($class) {
                                 $has_classes = true;
-                                $schedule_response .= "*" . $time . ":* \n";
-                                $schedule_response .= $class['disciplina'] . "\n_" . $class['local'] . "_\n\n";
+                                $schedule_response .= "*⏰ " . $time . ":* \n";
+                                $schedule_response .= "📓 *" . $class['disciplina'] . "*\n_🏫 " . $class['local'] . "_\n\n";
                             }
                         }
                     }
@@ -70,11 +76,11 @@ class ClassesCommand extends Command
                     if (! $has_classes) {
                         if ($this->isToday($day)) {
                             // No classes today.
-                            $schedule_response = "Sem aulas hoje. 😃 \nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
+                            $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
 
                         } else {
                             // No classes for the requested day.
-                            $schedule_response = "Você não tem aulas no dia socitado. \nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
+                            $schedule_response = "ℹ️ Você não tem aulas no dia socitado. \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
                         }
                     } else {
                         $schedule_response .= "Para ver aulas de outros dias, digite /aulas <dia-da-semana>.";

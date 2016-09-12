@@ -42,7 +42,7 @@ class NotifyCommand extends Command
 
                     $this->replyWithMessage([
                         'parse_mode' => 'markdown',
-                        'text' => 'As notificações de atualização de boletim foram *ativadas*. Você irá receber notificações quando houver novas faltas, aulas ou notas no seu boletim. Para desativar digite /notificar.'
+                        'text' => "✅ As notificações de atualização de boletim foram *ATIVADAS*. \n\nVocê irá receber notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara desativar digite /notificar."
                     ]);
                 } else {
                     $user->notify = false;
@@ -50,7 +50,7 @@ class NotifyCommand extends Command
 
                     $this->replyWithMessage([
                         'parse_mode' => 'markdown',
-                        'text' => 'As notificações de atualização de boletim foram *desativadas*. Você não receberá mais notificações quando houver novas faltas, aulas ou notas no seu boletim. Para reativar digite /notificar.'
+                        'text' => "🚫 As notificações de atualização de boletim foram *DESATIVADAS*. \n\nVocê não receberá mais notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara reativar digite /notificar."
                     ]);
                 }
             } else {

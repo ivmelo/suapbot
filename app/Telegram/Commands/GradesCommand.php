@@ -51,7 +51,7 @@ class GradesCommand extends Command
                         // No filter results.
                         if (empty($grades)) {
                             $this->replyWithMessage([
-                                'text' => 'Não foram encontradas disciplinas contendo o(s) termo(s) "' . $arguments . '" no seu boletim.',
+                                'text' => 'ℹ️ Não foram encontradas disciplinas contendo o(s) termo(s) "' . $arguments . '" no seu boletim.',
                                 'parse_mode' => 'markdown'
                             ]);
                         }
@@ -81,7 +81,9 @@ class GradesCommand extends Command
 
                     // If results, parse grades and display them.
                     if (! empty($grades)) {
-                        $grades_response = Markify::parseBoletim($grades);
+                        $grades_response = "*📚 Suas notas e frequência:*\n\n";
+
+                        $grades_response .= Markify::parseBoletim($grades);
 
                         // Send grades to the user.
                         $this->replyWithMessage([
