@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">Users ({{ $users->count() }})</div>
 
@@ -13,21 +13,38 @@
                             <tr>
                                 <th>#</th>
                                 <th>First Name</th>
-                                <th>Last Name</th>
                                 <th>Username</th>
                                 <th>Telegram ID</th>
                                 <th>Email</th>
+                                <th>SUAP ID</th>
+                                <th>Ntf</th>
+                                <th>Created</th>
+                                <th>Updated</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $user)
                             <tr>
                                 <td>{{ $user->id }}</td>
-                                <td>{{ $user->first_name }}</td>
-                                <td>{{ $user->last_name }}</td>
+                                <td>
+                                    {{ $user->first_name }} {{ $user->last_name }}
+                                    @if($user->is_admin)
+                                    <span class="label label-success">Admin</span>
+                                    @endif
+                                </td>
                                 <td><a href="{{ $user->username ? 'https://telegram.me/'.$user->username : '#' }}" target="_blank">{{ $user->username ? '@'.$user->username : '' }}</a></td>
                                 <td>{{ $user->telegram_id }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->suap_id }}</td>
+                                <td>
+                                    @if($user->notify)
+                                    <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>
+                                    @else
+                                    <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>
+                                    @endif
+                                </td>
+                                <td>{{ $user->created_at->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $user->updated_at->format('d/m/Y H:i:s') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
