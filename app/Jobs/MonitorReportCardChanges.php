@@ -71,7 +71,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 $this->user->save();
 
                 // debug only
-                print('Report card change. User notified.');
+                print('#UID: ' . $this->user->id . ' | Courses added/removed. User notified.\n');
             } else {
                 $updates = [];
 
@@ -118,6 +118,8 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                     $this->user->course_data = $course_data_json;
                     $this->user->save();
 
+                    print('#UID: ' . $this->user->id . ' | Report card updated. User notified.\n');
+
                 } else {
                     // Nothing has changed. Do nothing.
                     print('No changes.');
@@ -126,7 +128,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
         } catch (\Exception $e) {
             // Error fetching data from SUAP, or parsing report card data.
-            print('Exception: ' . $e->getMessage());
+            print('#UID: ' . $this->user->id . ' | Exception: ' . $e->getMessage());
         }
 
     }
