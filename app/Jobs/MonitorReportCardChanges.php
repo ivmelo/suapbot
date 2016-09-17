@@ -6,6 +6,7 @@ use Telegram;
 use App\User;
 use App\Jobs\Job;
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
 use \Ivmelo\SUAPClient\SUAPClient;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
