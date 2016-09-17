@@ -6,6 +6,7 @@ use Telegram;
 use App\User;
 use App\Jobs\Job;
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
 use \Ivmelo\SUAPClient\SUAPClient;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -60,7 +61,8 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 $message = [
                     'chat_id' => $this->user->telegram_id,
                     'text' => 'Uma ou mais disciplinas foram adicionadas ou removidas do seu boletim. Digite /notas para ver o seu boletim atualizado.',
-                    'parse_mode' => 'markdown'
+                    'parse_mode' => 'markdown',
+                    'reply_markup' => Speaker::getReplyKeyboardMarkup()
                 ];
 
                 Telegram::sendMessage($message);
@@ -101,14 +103,15 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                     // Parse grades into a readable format.
                     $grades_response = Markify::parseBoletim($updates);
 
-                    $grades_response = "_Boletim Atualizado_\n"
+                    $grades_response = "*📚 BOLETIM ATUALIZADO*\n\n"
                         . $grades_response . "Digite /notas para ver o boletim completo.";
 
-                    // Send grades to the user.
+                    // Send updates to the user.
                     $message = [
                         'chat_id' => $this->user->telegram_id,
                         'text' => $grades_response,
-                        'parse_mode' => 'markdown'
+                        'parse_mode' => 'markdown',
+                        'reply_markup' => Speaker::getReplyKeyboardMarkup()
                     ];
 
                     Telegram::sendMessage($message);

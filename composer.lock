@@ -445,16 +445,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "v0.1.6",
+            "version": "v0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "f1df1b9774c4de9a3711a3b0245e3f01cca9a1c6"
+                "reference": "b01040b5c27c715dc699be36566d42219621acbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/f1df1b9774c4de9a3711a3b0245e3f01cca9a1c6",
-                "reference": "f1df1b9774c4de9a3711a3b0245e3f01cca9a1c6",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/b01040b5c27c715dc699be36566d42219621acbd",
+                "reference": "b01040b5c27c715dc699be36566d42219621acbd",
                 "shasum": ""
             },
             "require": {
@@ -477,7 +477,7 @@
                 }
             ],
             "description": "Uma API PHP para o SUAP.",
-            "time": "2016-09-16 06:28:32"
+            "time": "2016-09-17 00:44:40"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1008,16 +1008,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3"
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/4dd659edadffdc2143e4753df655d866dbfeedf0",
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0",
                 "shasum": ""
             },
             "require": {
@@ -1055,7 +1055,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2016-04-19 13:41:41"
+            "time": "2016-09-16 12:04:44"
         },
         {
             "name": "paragonie/random_compat",
