@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c67ab4823acc4db14bf6e695ba406c8e",
-    "content-hash": "f93967137a78d87b2c6bf63bd732ff00",
+    "hash": "becd0850b34b2b8d318bfc3b40ded6aa",
+    "content-hash": "86f93e9a83878a6ddc6264a4cf26cee2",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -445,7 +445,7 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "dev-master",
+            "version": "v0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
@@ -3630,9 +3630,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ivmelo/suap-api-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
