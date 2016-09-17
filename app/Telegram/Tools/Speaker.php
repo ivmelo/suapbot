@@ -26,7 +26,7 @@ class Speaker
      * @return String The message.
      */
     public static function noCredentials() {
-        return '⚠️ Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /help.';
+        return '⚠️ Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /start.';
     }
 
     /**
