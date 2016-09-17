@@ -60,7 +60,8 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 $message = [
                     'chat_id' => $this->user->telegram_id,
                     'text' => 'Uma ou mais disciplinas foram adicionadas ou removidas do seu boletim. Digite /notas para ver o seu boletim atualizado.',
-                    'parse_mode' => 'markdown'
+                    'parse_mode' => 'markdown',
+                    'reply_markup' => Speaker::getReplyKeyboardMarkup()
                 ];
 
                 Telegram::sendMessage($message);
