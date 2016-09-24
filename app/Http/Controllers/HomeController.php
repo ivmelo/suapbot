@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Telegram;
 use App\Telegram\Tools\Speaker;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,16 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('home', compact('users'));
+
+        $stats['total'] = $users->count();
+        $stats['active'] = User::where('suap_id', '!=', 'null')->count();
+        $stats['today'] = User::where('created_at', 'like' ,Carbon::now()->toDateString().'%')->count();
+        $stats['week'] = User::whereBetween('created_at', [Carbon::today()->subWeek()->toDateString().'%', Carbon::today()->toDateString().'%'])->count();
+
+        return view('home', [
+            'users' => $users,
+            'stats' => $stats,
+        ]);
     }
 
     /**
@@ -66,6 +76,10 @@ class HomeController extends Controller
             }
         }
 
-        return view('report', ['sent' => $sent, 'not_sent' => $not_sent, 'message' => $request->message]);
+        return view('report', [
+            'sent' => $sent,
+            'not_sent' => $not_sent,
+            'message' => $request->message
+        ]);
     }
 }
