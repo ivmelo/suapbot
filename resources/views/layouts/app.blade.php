@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css">
 
     <style media="screen">
-        body {
-            margin-top: 4em;
-        }
+    body {
+        padding-top: 4em;
+    }
     </style>
 
     @yield('styles')
@@ -25,23 +25,22 @@
             </a>
 
             @if(Auth::user())
-            <a href="{{ url('users') }}" class="item">
-                Users
-            </a>
+                <a href="{{ url('users') }}" class="item">
+                    Users
+                </a>
 
-            <div class="ui simple right dropdown item">
-                {{ Auth::user()->first_name }}
-                <span class="dropdown icon"></span>
-                <div class="menu">
-                    <a href="{{ url('logout') }}" class="item">Logout</a>
+                <div class="ui simple right dropdown item">
+                    {{ Auth::user()->first_name }}
+                    <span class="dropdown icon"></span>
+                    <div class="menu">
+                        <a href="{{ url('logout') }}" class="item">Logout</a>
+                    </div>
                 </div>
-            </div>
             @endif
         </div>
     </div>
 
     @yield('content')
-
     @yield('modals')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

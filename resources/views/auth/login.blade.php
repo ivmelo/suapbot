@@ -7,7 +7,7 @@
             {{ csrf_field() }}
             <div class="ui segment">
                 <h2 class="ui image header">
-                    <!-- <img src="assets/images/logo.png" class="image"> -->
+                {{-- <img src="assets/images/logo.png" class="image"> --}}
                     <div class="content">
                         Log-in to SUAP Bot
                     </div>
@@ -65,13 +65,8 @@
 
 @section('scripts')
 <script>
-$('.message .close')
-.on('click', function() {
-    $(this)
-    .closest('.message')
-    .transition('fade')
-    ;
-})
-;
+$('.message .close').on('click', function() {
+    $(this).closest('.message').transition('fade');
+});
 </script>
 @endsection
