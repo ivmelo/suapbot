@@ -36,10 +36,6 @@
                     <a href="{{ url('logout') }}" class="item">Logout</a>
                 </div>
             </div>
-            @else
-            <div class="right item">
-                <a href="{{ url('login') }}" class="ui green button">Login</a>
-            </div>
             @endif
         </div>
     </div>

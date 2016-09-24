@@ -7,10 +7,9 @@
         <thead>
             <tr>
                 <th>#ID</th>
-                <th>First Name</th>
-                <th>Telegram #ID</th>
+                <th>Name</th>
                 <th>Email</th>
-                <th>Notify</th>
+                <th>Not.</th>
                 <th>Created</th>
                 <th>Updated</th>
             </tr>
@@ -29,7 +28,6 @@
                         </div>
                     </h4>
                 </td>
-                <td>{{ $user->telegram_id }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
                     @if($user->suap_id)

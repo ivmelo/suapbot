@@ -42,9 +42,7 @@
         <thead>
             <tr>
                 <th>#ID</th>
-                <th>First Name</th>
-                <!-- <th>Username</th> -->
-                <th>Telegram #ID</th>
+                <th>Name</th>
                 <th>Email</th>
                 <th>Not.</th>
                 <th>Created</th>
@@ -65,7 +63,6 @@
                         </div>
                     </h4>
                 </td>
-                <td>{{ $user->telegram_id }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
                     @if($user->suap_id)
@@ -82,33 +79,14 @@
             @endforeach
         </tbody>
     </table>
-</div>
+
+    <button class="ui right floated right labeled red icon broadcast button">
+      <i class="right announcement icon"></i>
+      Broadcast Message
+    </button></div>
 @endsection
 
 @section('modals')
-<!-- <div class="modal fade" id="broadcastMessageModal" tabindex="-1" role="dialog" aria-labelledby="broadcastMessageModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{{ url('home') }}" method="post">
-                {{ csrf_field() }}
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="broadcastMessageModalLabel">Broadcast Message</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <textarea name="message" rows="8" placeholder="Message to broadcast..." class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" name="button" class="btn btn-info pull-right">Send!</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> -->
-
 <div class="ui broadcast modal">
     <div class="header">
         New Broadcast
@@ -122,9 +100,6 @@
         </div>
     </div>
     <div class="actions">
-        <button class="ui black deny button">
-            Cancel
-        </button>
         <button class="ui positive right labeled icon button" role="submit">
             Send
             <i class="send icon"></i>
@@ -136,8 +111,8 @@
 
 @section('scripts')
 <script>
-$('.ui.broadcast.modal')
-  .modal('show')
-;
+    $('.broadcast.button').on('click', function(){
+        $('.ui.broadcast.modal').modal('show');
+    });
 </script>
 @endsection
