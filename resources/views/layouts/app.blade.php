@@ -18,7 +18,7 @@
     @yield('styles')
 </head>
 <body>
-    <div class="ui fixed menu">
+    <div class="ui inverted fixed menu">
         <div class="ui container">
             <a class="header item" href="{{ url('/') }}">
                 SUAP Bot
