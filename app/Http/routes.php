@@ -35,6 +35,7 @@ Route::auth();
 
 Route::get('/home', 'HomeController@index');
 Route::post('/home', 'HomeController@sendMessage');
+Route::get('/users', 'UserController@index');
 
 Route::get('/', function(){
     return redirect('/home');
