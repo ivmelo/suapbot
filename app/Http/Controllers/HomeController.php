@@ -33,7 +33,7 @@ class HomeController extends Controller
         $stats['total'] = $users->count();
         $stats['active'] = User::where('suap_id', '!=', 'null')->count();
         $stats['today'] = User::where('created_at', 'like' ,Carbon::now()->toDateString().'%')->count();
-        $stats['yesterday'] = User::where('created_at', 'like' ,Carbon::yesterday()->format('Y-m-d').'%')->count();
+        $stats['week'] = User::whereBetween('created_at', [Carbon::today()->subWeek()->toDateString().'%', Carbon::today()->toDateString().'%'])->count();
 
         return view('home', [
             'users' => $users,

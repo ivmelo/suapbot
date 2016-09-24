@@ -25,15 +25,15 @@
                 {{ $stats['today'] }}
             </div>
             <div class="label">
-                New Users Today
+                New Today
             </div>
         </div>
         <div class="statistic">
             <div class="value">
-                {{ $stats['yesterday'] }}
+                {{ $stats['week'] }}
             </div>
             <div class="label">
-                New Users Yesterday
+                New This Week
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
 @endsection
 
 @section('modals')
-<div class="modal fade" id="broadcastMessageModal" tabindex="-1" role="dialog" aria-labelledby="broadcastMessageModalLabel">
+<!-- <div class="modal fade" id="broadcastMessageModal" tabindex="-1" role="dialog" aria-labelledby="broadcastMessageModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ url('home') }}" method="post">
@@ -107,5 +107,37 @@
             </form>
         </div>
     </div>
+</div> -->
+
+<div class="ui broadcast modal">
+    <div class="header">
+        New Broadcast
+    </div>
+    <div class="content">
+        <form action="{{ url('home') }}" method="post" class="ui form">
+            {{ csrf_field() }}
+
+        <div class="field">
+            <textarea name="message" rows="8" placeholder="Message to broadcast..." class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="ui black deny button">
+            Cancel
+        </button>
+        <button class="ui positive right labeled icon button" role="submit">
+            Send
+            <i class="send icon"></i>
+        </button>
+        </form>
+    </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$('.ui.broadcast.modal')
+  .modal('show')
+;
+</script>
 @endsection
