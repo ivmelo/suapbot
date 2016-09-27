@@ -7,7 +7,7 @@ use App\User;
 use App\Jobs\Job;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
-use \Ivmelo\SUAPClient\SUAPClient;
+use \Ivmelo\SUAP\SUAP;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,7 +45,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
         try {
             // Get grades from SUAP.
-            $client = new SUAPClient($this->user->suap_id, $this->user->suap_key, true);
+            $client = new SUAP($this->user->suap_id, $this->user->suap_key, true);
             $new_data = $client->getGrades();
 
             $current_data = json_decode($current_json, true);

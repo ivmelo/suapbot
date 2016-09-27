@@ -1,13 +1,13 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "name": "ivmelo/suapbot",
+    "description": "A BOT for SUAP.",
+    "keywords": ["bot", "suap"],
+    "license": "Copyright 2016 - Ivanilson Melo.",
     "type": "project",
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "ivmelo/suap-api-php": "0.1.*",
+        "ivmelo/suap-api-php": "@dev",
         "irazasyed/telegram-bot-sdk": "^2.0",
         "pda/pheanstalk": "~3.0"
     },

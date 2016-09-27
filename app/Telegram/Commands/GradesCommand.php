@@ -5,7 +5,7 @@ namespace App\Telegram\Commands;
 use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAPClient\SUAPClient;
+use \Ivmelo\SUAP\SUAP;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 
@@ -42,7 +42,7 @@ class GradesCommand extends Command
             if ($user->suap_id && $user->suap_key) {
                 try {
                     // Get grades from SUAP.
-                    $client = new SUAPClient($user->suap_id, $user->suap_key, true);
+                    $client = new SUAP($user->suap_id, $user->suap_key, true);
 
                     // If filtering...
                     if ($arguments) {

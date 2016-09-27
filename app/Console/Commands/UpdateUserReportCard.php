@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\User;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
-use \Ivmelo\SUAPClient\SUAPClient;
+use \Ivmelo\SUAP\SUAP;
 
 class UpdateUserReportCard extends Command
 {
@@ -91,7 +91,7 @@ class UpdateUserReportCard extends Command
          if ($user->suap_id && $user->suap_key) {
              try {
                  // Get grades from SUAP.
-                 $client = new SUAPClient($user->suap_id, $user->suap_key, true);
+                 $client = new SUAP($user->suap_id, $user->suap_key, true);
                  $new_data = $client->getGrades();
 
                  $current_data = json_decode($current_json, true);

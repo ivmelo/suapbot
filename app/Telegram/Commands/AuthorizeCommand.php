@@ -5,7 +5,7 @@ namespace App\Telegram\Commands;
 use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAPClient\SUAPClient;
+use \Ivmelo\SUAP\SUAP;
 use App\Telegram\Tools\Speaker;
 
 class AuthorizeCommand extends Command
@@ -50,7 +50,7 @@ class AuthorizeCommand extends Command
 
                     // Validate SUAP credentials.
                     try {
-                        $client = new SUAPClient($id, $key, true);
+                        $client = new SUAP($id, $key, true);
                         $suap_data = $client->getStudentData();
 
                         // Save user credentials and Email.
