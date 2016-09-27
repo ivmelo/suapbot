@@ -46,9 +46,12 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
         try {
             // Get grades from SUAP.
             $client = new SUAP($this->user->suap_id, $this->user->suap_key, true);
-            $new_data = $client->getGrades();
+            $grades = $client->getGrades();
+
+            $new_data = $grades['data'];
 
             $current_data = json_decode($current_json, true);
+            $current_data = $current_data['data'];
 
             if (count($new_data) != count($current_data)) {
                 // One or more courses were added or removed.

@@ -67,11 +67,27 @@ class Markify
             $response_text .= $course_info . "\n";
         }
 
-        $response_text .= "ℹ️ " . $grades['total_carga_horaria'] . " Aulas.\n";
-        $response_text .= $grades['total_aulas'] . " aulas dadas, ";
-        $response_text .= $grades['total_faltas'] . " faltas. (Total)\n";
-        $response_text .= "*" . $grades['total_frequencia'] . "% de frequência.*\n";
 
+        // Total course stats.
+        $course_stats = '';
+
+        // if (isset($grades['total_carga_horaria'])) {
+        //     $course_stats .= "Total: " . $grades['total_carga_horaria'] . " aulas.\n";
+        // }
+
+        if (isset($grades['total_aulas'])) {
+            $course_stats .= $grades['total_aulas'] . " aulas, ";
+        }
+
+        if (isset($grades['total_faltas'])) {
+            $course_stats .= $grades['total_faltas'] . " faltas.\n";
+        }
+
+        if (isset($grades['total_frequencia'])) {
+            $course_stats .= $grades['total_frequencia'] . "% de frequência.\n";
+        }
+
+        $response_text .= "*" . $course_stats . "*";
 
         return $response_text;
     }
