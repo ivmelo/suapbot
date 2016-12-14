@@ -8,9 +8,12 @@ namespace App\Telegram\Tools;
 class Markify
 {
     public static function parseBoletim($grades) {
+
+        $grades_data = $grades['data'];
+
         $response_text = '';
 
-        foreach ($grades as $grade) {
+        foreach ($grades_data as $grade) {
             $course_info = "*📓 " . $grade['disciplina'] . "*\n";
 
             if(isset($grade['aulas'])) {
@@ -63,6 +66,31 @@ class Markify
 
             $response_text .= $course_info . "\n";
         }
+
+        // Total course stats.
+        $course_stats = '';
+
+        // if (isset($grades['total_carga_horaria'])) {
+        //     $course_stats .= "Total: " . $grades['total_carga_horaria'] . " aulas.\n";
+        // }
+
+        if (isset($grades['total_aulas'])) {
+            $course_stats .= $grades['total_aulas'] . " aulas, ";
+        }
+
+        if (isset($grades['total_faltas'])) {
+            $course_stats .= $grades['total_faltas'] . " faltas.\n";
+        }
+
+        if (isset($grades['total_frequencia'])) {
+            $course_stats .= $grades['total_frequencia'] . "% de frequência.\n";
+        }
+
+        if (isset($grades['total_carga_horaria'])) {
+            $course_stats .= "CH Total: " . $grades['total_carga_horaria'] . " aulas.\n";
+        }
+
+        $response_text .= "*" . $course_stats . "*\n";
 
         return $response_text;
     }
