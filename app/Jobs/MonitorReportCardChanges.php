@@ -51,7 +51,19 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
             $new_data = $grades['data'];
 
             $current_data = json_decode($current_json, true);
-            $current_data = $current_data['data'];
+
+            // addapts for new format of data.
+            // during the first run will verify
+            // and get new data from suap without notifying the user
+            if (! isset($current_data['data'])) {
+                $course_data_json = json_encode($grades);
+                $this->user->course_data = $course_data_json;
+                $this->user->save();
+            } else {
+                // Already using the new format.
+                $current_data = $current_data['data'];
+            }
+
 
             if (count($new_data) != count($current_data)) {
                 // One or more courses were added or removed.
@@ -71,7 +83,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 Telegram::sendMessage($message);
 
                 // Save report card updates.
-                $course_data_json = json_encode($new_data);
+                $course_data_json = json_encode($grades);
                 $this->user->course_data = $course_data_json;
                 $this->user->save();
 
@@ -103,8 +115,12 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                         'action' => Telegram\Bot\Actions::TYPING
                     ]);
 
+                    $updated_data = $grades;
+
+                    $updated_data['data'] = $updates;
+
                     // Parse grades into a readable format.
-                    $grades_response = Markify::parseBoletim($updates);
+                    $grades_response = Markify::parseBoletim($updated_data);
 
                     $grades_response = "*📚 BOLETIM ATUALIZADO*\n\n"
                         . $grades_response . "Digite /notas para ver o boletim completo.";
@@ -120,7 +136,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                     Telegram::sendMessage($message);
 
                     // Save report card updates.
-                    $course_data_json = json_encode($new_data);
+                    $course_data_json = json_encode($grades);
                     $this->user->course_data = $course_data_json;
                     $this->user->save();
 
@@ -134,7 +150,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
         } catch (\Exception $e) {
             // Error fetching data from SUAP, or parsing report card data.
-            print('#UID: ' . $this->user->id . ' | Exception: ' . $e->getMessage() . "\n");
+            print('#UID: ' . $this->user->id . ' | Exception: ' . $e . "\n");
         }
 
     }

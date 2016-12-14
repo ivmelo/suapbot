@@ -67,7 +67,6 @@ class Markify
             $response_text .= $course_info . "\n";
         }
 
-
         // Total course stats.
         $course_stats = '';
 
@@ -87,7 +86,11 @@ class Markify
             $course_stats .= $grades['total_frequencia'] . "% de frequência.\n";
         }
 
-        $response_text .= "*" . $course_stats . "*";
+        if (isset($grades['total_carga_horaria'])) {
+            $course_stats .= "CH Total: " . $grades['total_carga_horaria'] . " aulas.\n";
+        }
+
+        $response_text .= "*" . $course_stats . "*\n";
 
         return $response_text;
     }

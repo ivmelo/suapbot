@@ -85,69 +85,90 @@ class UpdateUserReportCard extends Command
      * @param App\User $user the user whose report card will be updated.
      */
      private function updateReportCard($user) {
+
          // Current data from database.
          $current_json = $user->course_data;
 
-         if ($user->suap_id && $user->suap_key) {
-             try {
-                 // Get grades from SUAP.
-                 $client = new SUAP($user->suap_id, $user->suap_key, true);
-                 $new_data = $client->getGrades();
+         try {
+             // Get grades from SUAP.
+             $client = new SUAP($user->suap_id, $user->suap_key, true);
+             $grades = $client->getGrades();
 
-                 $current_data = json_decode($current_json, true);
+             $new_data = $grades['data'];
 
+             $current_data = json_decode($current_json, true);
+
+             // addapts for new format of data.
+             // during the first run will verify
+             // and get new data from suap without notifying the user
+             if (! isset($current_data['data'])) {
+                 $course_data_json = json_encode($grades);
+                 $user->course_data = $course_data_json;
+                 $user->save();
+             } else {
+                 // Already using the new format.
+                 $current_data = $current_data['data'];
+             }
+
+
+             if (count($new_data) != count($current_data)) {
                  // One or more courses were added or removed.
-                 if (count($new_data) != count($current_data)) {
 
-                     // Save report card updates.
-                     $course_data_json = json_encode($new_data);
-                     $user->course_data = $course_data_json;
-                     $user->save();
+                 // Save report card updates.
+                 $course_data_json = json_encode($grades);
+                 $user->course_data = $course_data_json;
+                 $user->save();
 
-                     $this->info('Courses added/removed. Updates saved.');
-                 } else {
-                     $updates = [];
+                 // debug only
+                 $this->info('#UID: ' . $user->id . " | Courses added/removed. User notified.\n");
+             } else {
+                 $updates = [];
 
-                     // Compare course data.
-                     for ($i = 0; $i < count($current_data); $i++) {
-                         // Grab data for current course.
-                         $current_course_data = $current_data[$i];
-                         $new_course_data = $new_data[$i];
+                 // Compare course data.
+                 for ($i = 0; $i < count($current_data); $i++) {
+                     // Grab data for current course.
+                     $current_course_data = $current_data[$i];
+                     $new_course_data = $new_data[$i];
 
-                         // Compare the old course data with the new course data.
-                         if ($updated_data = array_diff_assoc($new_course_data, $current_course_data)) {
-                             // Add the course name to the list of updated info, so it can be displayed.
-                             $updated_data['disciplina'] = $current_course_data['disciplina'];
-                             array_push($updates, $updated_data);
-                         }
-                     }
-
-                     // If there was an update
-                     if (count($updates) > 0) {
-                         // Parse grades into a readable format.
-                         $grades_response = Markify::parseBoletim($updates);
-
-                         $grades_response = "*📚 BOLETIM ATUALIZADO*\n\n"
-                             . $grades_response . "Digite /notas para ver o boletim completo.";
-
-                         // Save report card updates.
-                         $course_data_json = json_encode($new_data);
-                         $user->course_data = $course_data_json;
-                         $user->save();
-
-                         $this->info($grades_response);
-                     } else {
-                         // Nothing has changed. Do nothing.
-                         $this->info('No changes.');
+                     // Compare the old course data with the new course data.
+                     if ($updated_data = array_diff_assoc($new_course_data, $current_course_data)) {
+                         // Add the course name to the list of updated info, so it can be displayed.
+                         $updated_data['disciplina'] = $current_course_data['disciplina'];
+                         array_push($updates, $updated_data);
                      }
                  }
 
-             } catch (\Exception $e) {
-                 // Error fetching data from SUAP, or parsing report card data.
-                 $this->error('Exception: ' . $e->getMessage());
+                 // If there was an update
+                 if (count($updates) > 0) {
+                     // Handle report card update.
+
+                     $updated_data = $grades;
+
+                     $updated_data['data'] = $updates;
+
+                     // Parse grades into a readable format.
+                     $grades_response = Markify::parseBoletim($updated_data);
+
+                     $grades_response = "*📚 BOLETIM ATUALIZADO*\n\n"
+                         . $grades_response . "Digite /notas para ver o boletim completo.";
+
+                     // Save report card updates.
+                     $course_data_json = json_encode($grades);
+                     $user->course_data = $course_data_json;
+                     $user->save();
+
+                     $this->info('#UID: ' . $user->id . " | Report card updated. User notified.\n");
+
+                 } else {
+                     // Nothing has changed. Do nothing.
+                     $this->info('#UID: ' . $user->id . " | No changes.\n");
+                 }
              }
-         } else {
-             $this->info('No SUAP credentials.');
+
+         } catch (\Exception $e) {
+             // Error fetching data from SUAP, or parsing report card data.
+             $this->error('#UID: ' . $user->id . ' | Exception: ' . $e . "\n");
          }
+
      }
 }
