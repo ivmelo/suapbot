@@ -48,9 +48,20 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
             $client = new SUAP($this->user->suap_id, $this->user->suap_key, true);
             $grades = $client->getGrades();
 
-            $new_data = $grades['data'];
-
             $current_data = json_decode($current_json, true);
+
+            // no changes. finish loop.
+            if ($current_data == $grades) {
+                return;
+            }
+
+            // deals with the case in which a report card
+            // that was previously filled comes out empty
+            if (isset($grades['data']) && ! empty($grades['data'])) {
+                $new_data = $grades['data'];
+            } else {
+                $new_data = $grades;
+            }
 
             // addapts for new format of data.
             // during the first run will verify
