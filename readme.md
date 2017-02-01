@@ -98,8 +98,6 @@ $ sudo supervisorctl start laravel-worker:*
 curl -X POST --data "url=https://url.da.sua.aplicacao/webhooks/telegram" https://api.telegram.org/botSEU_BOT_TOKEN/setWebhook
 ```
 
-Caso tenha d
-
 Se tudo ocorreu bem, o bot deve estar funcionando corretamente. Caso tenha dúvidas, use o pai google.
 
 Peace,
