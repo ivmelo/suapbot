@@ -1,7 +1,13 @@
-# suapbot
+# SUAPBot
 Bot do SUAP para telegram. Mostra notas, presença, horários e locais de aula e o calendário acadêmico.
 
-### Instruções de Deploy/Configuração de Ambiente
+## Tecnologias utilizadas
+- PHP7
+- MySQL/MariaDB
+- Beanstalkd
+- Supervisor
+
+## Instruções de Deploy/Configuração de Ambiente
 
 1. Clone o repositório do projeto.
 ```
@@ -87,6 +93,19 @@ $ sudo supervisorctl update
 $ sudo supervisorctl start laravel-worker:*
 ```
 
-1. Envie um request para o telegram para ajustar o webhook da sua aplicação.
+1. Envie um request para o telegram para configurar o webhook da sua aplicação.
+```
+curl -X POST --data "url=https://url.da.sua.aplicacao/webhooks/telegram" https://api.telegram.org/botSEU_BOT_TOKEN/setWebhook
+```
 
-Se tudo ocorreu bem, o bot deve estar funcionando corretamente.
+Caso tenha d
+
+Se tudo ocorreu bem, o bot deve estar funcionando corretamente. Caso tenha dúvidas, use o pai google.
+
+Peace,
+Ivanilson.
+
+
+### Licença
+
+Copyright (c) 2017 Ivanilson Melo
