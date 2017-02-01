@@ -1,21 +1,19 @@
 # suapbot
-SUAP Bot for telegram.
+Bot do SUAP para telegram. Mostra notas, presença, horários e locais de aula e o calendário acadêmico.
 
+### Instruções de Deploy/Configuração de Ambiente
 
-#### Deploy instructions:
-
-
-1. git clone
+1. Clone o repositório do projeto.
 ```
 $ git clone git@github.com:ivmelo/suapbot.git
 ```
 
-1. composer install
+1. Instale as dependências através do composer.
 ```
 $ composer install
 ```
 
-1. directory permissions
+1. Dependendo do seu ambiente de desenvolvimento/deployment, é necessário setar permissões em algumas pastas.
 ```
 $ sudo chown -R ubuntu:www-data storage
 $ sudo chown -R ubuntu:www-data vendor
@@ -26,45 +24,48 @@ $ sudo chmod -R 775 vendor
 ```
 
 
-1. set up telegram key
+1. Agora você precisará criar um bot no telegram. Para isso, contate o @botfather. Para mais informações, visite o link a seguir: https://core.telegram.org/bots 
 
-4. open .env
-4. add telegram key
-4. set APP_QUEUE to beanstalkd
-4. set database credentials
+1. Copie o arquivo .env para .env.example e 
+
+1. Adicione a chave do seu bot no campo TELEGRAM_BOT_TOKEN.
+
+1. Altere o campo APP_QUEUE to ```beanstalkd```.
+
+1. Preencha as credenciais do seu banco de dados.
 
 
-1. run migrations
+1. Execute as migrações.
 ```
 $ php artisan migrate
 ```
 
 
-1. set up queue (beanstalkd preferred) (default port and stuff is just fine for small environments)
+1. Configure o seu sistema de queues. O recomendado para o SUAPBot e que está sendo utilizado em produção é o beanstalkd. 
 ```
 $ sudo apt-get install beanstalkd
 $ sudo service start beanstalkd
 ```
 
-1. set up cron for scheduled jobs
+1. Configure o cron para as tarefas agendadas.
 ```
 $ crontab -e
 ```
 
-cron command to be put there
+1. Insira o seguinte comando no seu cron, ajustando conforme necessário.
 
 ```
 * * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1
 ```
 
-1. set up supervisor to run the task queue
+1. Configure o ```supervisor``` para executar as tarefas enfileiradas.
 ```
 $ sudo apt-get install supervisor
 
 $ nano /etc/supervisor/conf.d/suapbot-worker.conf
 ```
 
-content to be put there adjust accordingly
+Abaixo segue um exemplo de arquivo que pode ser ajustado para funcionar com o ```supervisor```.
 
 ```
 [program:laravel-worker]
@@ -78,7 +79,7 @@ redirect_stderr=true
 stdout_logfile=/home/forge/app.com/worker.log
 ```
 
-after that, start the proccess in supervisor
+Depois disso, inicie o supervisor.
 
 ```
 $ sudo supervisorctl reread
@@ -86,6 +87,6 @@ $ sudo supervisorctl update
 $ sudo supervisorctl start laravel-worker:*
 ```
 
-set up telegram webhook
+1. Envie um request para o telegram para ajustar o webhook da sua aplicação.
 
-1. check that everything is working. figure. it. out. how.
+Se tudo ocorreu bem, o bot deve estar funcionando corretamente.
