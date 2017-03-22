@@ -7,7 +7,7 @@ OBS: Este é o meu último ano no curso de TADS e consequentemente no IFRN, port
 
 O Bot continuará ativo enquanto eu for aluno da instituição. :)
 
-## Vangagens do SUAP Bot
+## Vantagens do SUAP Bot
 - Funciona para **TODOS OS CURSOS** tecnicos e superiores do IFRN;
 - Sua privacidade é mantida e suas conversas com o bot não são armazenadas;
 - O código é open source, qualquer pessoa pode utilizar, modificar, distribuir, inspecionar, basta que siga os termos da licença (GNU Affero General Public License).
