@@ -6,17 +6,20 @@ OBS: Este é o meu último ano no curso de TADS e consequentemente no IFRN, port
 O Bot continuará ativo enquanto eu for aluno da instituição. :)
 
 ## Vangagens do SUAP Bot
-- Funciona para *ALUNOS DE TODOS OS CURSOS* do IFRN;
+- Funciona para alunos de **TODOS OS CURSOS** do IFRN;
 - Sua privacidade é mantida e suas conversas com o bot não são armazenadas;
-- O código é open source, qualquer pessoa pode auditar.
+- O código é open source, qualquer pessoa pode utilizar, modificar, distribuir.
 
 ## Tecnologias utilizadas
 - PHP7
+- Laravel
 - MySQL/MariaDB
 - Beanstalkd
 - Supervisor
 
-## Desenvolvimento
+Entre outras...
+
+## Instalação (Desenvolvimento ou Produção)
 É altamente recomendado o uso de [Laravel Homestead](https://laravel.com/docs/5.4/homestead) para o desenvolvimento do projeto.
 
 Primeiro, clone o repositório:
@@ -62,6 +65,8 @@ php artisan migrate
 
 ### Cron
 O SUAPBot utiliza o [Cron](https://en.wikipedia.org/wiki/Cron) para tarefas agendadas.
+
+Para editar o seu crontab, execute:
 ```
 $ crontab -e
 ```
@@ -82,12 +87,12 @@ Para instalar o supervisor:
 sudo apt-get install supervisor
 ```
 
-Em seguida, deve-se criar um arquivo de configuração no diretório a seguir:
+Em seguida, deve-se criar um arquivo de configuração, como especificado a seguir:
 ```
 nano /etc/supervisor/conf.d/suapbot-worker.conf
 ```
 
-Abaixo segue um exemplo de arquivo de configuração que deve ser ajustado para funcionar no sue ambiente. (Basta modificar o caminho para o artisan e o caminho para o arquivo de log).
+Abaixo segue um exemplo de arquivo de configuração que deve ser ajustado para funcionar no seu ambiente. (Basta modificar o caminho para o artisan e o caminho para o arquivo de log).
 ```
 [program:laravel-worker]
 process_name=%(program_name)s_%(process_num)02d
@@ -108,12 +113,12 @@ sudo supervisorctl start laravel-worker:*
 ```
 
 ### Configurando Webhook do Telegram
-Os requests são passados para a aplicação através de um webhook entre o telegram e o webserver no qual o bot está sendo executado. Para isso, o telegram deve saber para qual URL deve enviar os requests conforme as mensagens sejam enviadas para o bot. Para isso, envia-se um request para o telegram com a url da aplicação.
+Os requests são passados para a aplicação através de um webhook entre o telegram e o webserver no qual o bot está sendo executado. O telegram deve saber para qual URL deve enviar os requests conforme as mensagens sejam enviadas para o bot. Para isso, envia-se um request para o telegram com a url da aplicação.
 ```
 curl -X POST --data "url=https://url.da.sua.aplicacao/webhooks/telegram" https://api.telegram.org/botSEU_BOT_TOKEN/setWebhook
 ```
 
-OBS: Durante o desenvolvimento, você não pode simplesmente mandar o telegram enviar os requests para localhost da sua máquina. Por isso, é necessário o uso de uma ferramenta de tunelamento para que possa criar um túnel entre a sua máquina e os servidores do telegram. Para isso, recomendo a ferramenta [ngrok](https://ngrok.com).
+OBS: Durante o desenvolvimento, você não pode simplesmente mandar o telegram enviar os requests para localhost da sua máquina. É necessário o uso de uma ferramenta de tunelamento para que possa criar um túnel entre a sua máquina e os servidores do telegram. Para isso, recomendo a ferramenta [ngrok](https://ngrok.com).
 
 
 ### Conclusão
@@ -121,8 +126,6 @@ Após seguir os passos acima, o Bot deve estar pronto para uso. Seja em desenvol
 
 Caso tenha dúvidas sobre o projeto abra um issue. Responderei assim que possível.
 
-Peace,
-Ivanilson Melo.
 
 ## Licença
 Copyright (C) 2016  Ivanilson Melo
