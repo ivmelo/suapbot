@@ -1,14 +1,16 @@
 # SUAP Bot
 Bot do SUAP para telegram. Mostra notas, presença, horários, locais de aula e calendário acadêmico.
 
+Utiliza a [SUAP API PHP](https://github.com/ivmelo/suap-api-php) para acessar os dados do SUAP.
+
 OBS: Este é o meu último ano no curso de TADS e consequentemente no IFRN, portanto, em breve não terei mais tempo (nem interesse) em manter este projeto. Por este motivo, estou deixando o código open-source para aqueles que como eu, não utilizam o Facebook ou preferem o Telegram.
 
 O Bot continuará ativo enquanto eu for aluno da instituição. :)
 
 ## Vangagens do SUAP Bot
-- Funciona para alunos de **TODOS OS CURSOS** do IFRN;
+- Funciona para **TODOS OS CURSOS** tecnicos e superiores do IFRN;
 - Sua privacidade é mantida e suas conversas com o bot não são armazenadas;
-- O código é open source, qualquer pessoa pode utilizar, modificar, distribuir.
+- O código é open source, qualquer pessoa pode utilizar, modificar, distribuir, inspecionar, basta que siga os termos da licença (GNU Affero General Public License).
 
 ## Tecnologias utilizadas
 - PHP7
@@ -16,8 +18,6 @@ O Bot continuará ativo enquanto eu for aluno da instituição. :)
 - MySQL/MariaDB
 - Beanstalkd
 - Supervisor
-
-Entre outras...
 
 ## Instalação (Desenvolvimento ou Produção)
 É altamente recomendado o uso de [Laravel Homestead](https://laravel.com/docs/5.4/homestead) para o desenvolvimento do projeto.
