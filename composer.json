@@ -1,8 +1,8 @@
 {
     "name": "ivmelo/suapbot",
-    "description": "A BOT for SUAP.",
+    "description": "Bot para acesso aos dados do SUAP.",
     "keywords": ["bot", "suap"],
-    "license": "Copyright 2016 - Ivanilson Melo.",
+    "license": "AGPL-3.0",
     "type": "project",
     "require": {
         "php": ">=5.5.9",
