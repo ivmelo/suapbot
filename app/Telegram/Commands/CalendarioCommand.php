@@ -30,7 +30,7 @@ class CalendarioCommand extends Command
 
         // And send message.
         $this->replyWithMessage([
-            'text' => "🗓 Calendário Acadêmico 2016: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-escolar-2016-aprovado-pelo-conselho-escolar",
+            'text' => "🗓 Calendário Acadêmico 2017: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017",
             'parse_mode' => 'markdown'
         ]);
     }
