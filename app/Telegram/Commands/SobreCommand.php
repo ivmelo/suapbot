@@ -2,11 +2,9 @@
 
 namespace App\Telegram\Commands;
 
-use App\User;
+use App\Telegram\Tools\Speaker;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAP\SUAP;
-use App\Telegram\Tools\Speaker;
 
 class SobreCommand extends Command
 {
@@ -21,7 +19,7 @@ class SobreCommand extends Command
     protected $description = 'Info sobre o bot.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
@@ -30,9 +28,8 @@ class SobreCommand extends Command
 
         // And send message.
         $this->replyWithMessage([
-            'text' => Speaker::about(),
-            'parse_mode' => 'markdown'
+            'text'       => Speaker::about(),
+            'parse_mode' => 'markdown',
         ]);
     }
-
 }

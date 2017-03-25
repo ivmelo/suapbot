@@ -2,13 +2,12 @@
 
 namespace App\Telegram\Commands;
 
-use App\User;
-use Telegram\Bot\Actions;
-use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAP\SUAP;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
-
+use App\User;
+use Ivmelo\SUAP\SUAP;
+use Telegram\Bot\Actions;
+use Telegram\Bot\Commands\Command;
 
 class GradesCommand extends Command
 {
@@ -23,7 +22,7 @@ class GradesCommand extends Command
     protected $description = 'Mostra as suas notas e faltas.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
@@ -51,8 +50,8 @@ class GradesCommand extends Command
                         // No filter results.
                         if (empty($grades)) {
                             $this->replyWithMessage([
-                                'text' => 'ℹ️ Não foram encontradas disciplinas contendo o(s) termo(s) "' . $arguments . '" no seu boletim.',
-                                'parse_mode' => 'markdown'
+                                'text'       => 'ℹ️ Não foram encontradas disciplinas contendo o(s) termo(s) "'.$arguments.'" no seu boletim.',
+                                'parse_mode' => 'markdown',
                             ]);
                         }
                     } else {
@@ -73,39 +72,35 @@ class GradesCommand extends Command
                             }
 
                             $this->replyWithMessage([
-                                'text' => 'Não há disciplinas no seu boletim. ' . $notify_message,
-                                'parse_mode' => 'markdown'
+                                'text'       => 'Não há disciplinas no seu boletim. '.$notify_message,
+                                'parse_mode' => 'markdown',
                             ]);
                         }
                     }
 
                     // If results, parse grades and display them.
-                    if (! empty($grades)) {
+                    if (!empty($grades)) {
                         $grades_response = "*📚 Suas notas e frequência:*\n\n";
 
                         $grades_response .= Markify::parseBoletim($grades);
 
                         // Send grades to the user.
                         $this->replyWithMessage([
-                            'text' => $grades_response,
-                            'parse_mode' => 'markdown'
+                            'text'       => $grades_response,
+                            'parse_mode' => 'markdown',
                         ]);
                     }
-
                 } catch (\Exception $e) {
                     // Error fetching data from suap.
                     $this->replyWithMessage(['text' => Speaker::suapError()]);
                 }
-
             } else {
                 // User has not set SUAP credentials.
                 $this->replyWithMessage(['text' => Speaker::noCredentials()]);
             }
-
         } else {
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
-
 }

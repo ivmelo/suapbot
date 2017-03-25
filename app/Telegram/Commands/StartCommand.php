@@ -2,10 +2,10 @@
 
 namespace App\Telegram\Commands;
 
+use App\Telegram\Tools\Speaker;
 use App\User;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use App\Telegram\Tools\Speaker;
 
 class StartCommand extends Command
 {
@@ -20,16 +20,15 @@ class StartCommand extends Command
     protected $description = 'Inicia a interação com o bot e mostra tutorial.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
-
         $updates = $this->getTelegram()->getWebhookUpdates();
         $telegram_id = $updates['message']['from']['id'];
         $first_name = $updates['message']['from']['first_name'];
 
-        $message = 'Olá ' . $first_name . '. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais e horários de aula.'; //Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas (em breve).
+        $message = 'Olá '.$first_name.'. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais e horários de aula.'; //Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas (em breve).
 
         $this->replyWithMessage(['text' => $message]);
 
@@ -40,7 +39,7 @@ class StartCommand extends Command
         $user = User::where('telegram_id', $telegram_id)->first();
 
         // User not found. It's their first access.
-        if (! $user) {
+        if (!$user) {
             // Grab data from telegram and save.
             $user = new User();
 
@@ -64,21 +63,20 @@ class StartCommand extends Command
         // Build the list
         $response = '';
         foreach ($commands as $name => $command) {
-            $response .= sprintf('/%s - %s' . PHP_EOL, $name, $command->getDescription());
+            $response .= sprintf('/%s - %s'.PHP_EOL, $name, $command->getDescription());
         }
 
-        if (! $user->suap_id) {
+        if (!$user->suap_id) {
             $this->replyWithMessage([
-                'text' => Speaker::tutorial(),
+                'text'       => Speaker::tutorial(),
                 'parse_mode' => 'markdown',
             ]);
         } else {
             // Reply with the commands list
             $this->replyWithMessage([
-                'text' => $response,
-                'reply_markup' => Speaker::getReplyKeyboardMarkup()
+                'text'         => $response,
+                'reply_markup' => Speaker::getReplyKeyboardMarkup(),
             ]);
         }
-
     }
 }

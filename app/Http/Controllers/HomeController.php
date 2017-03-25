@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use Illuminate\Http\Request;
-use App\User;
-use Telegram;
 use App\Telegram\Tools\Speaker;
+use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Telegram;
 
 class HomeController extends Controller
 {
@@ -32,7 +31,7 @@ class HomeController extends Controller
 
         $stats['total'] = $users->count();
         $stats['active'] = User::where('suap_id', '!=', 'null')->count();
-        $stats['today'] = User::where('created_at', 'like' ,Carbon::now()->toDateString().'%')->count();
+        $stats['today'] = User::where('created_at', 'like', Carbon::now()->toDateString().'%')->count();
         $stats['week'] = User::whereBetween('created_at', [Carbon::today()->subWeek()->toDateString().'%', Carbon::today()->toDateString().'%'])->count();
 
         return view('home', [
@@ -51,7 +50,7 @@ class HomeController extends Controller
         $users = User::all();
 
         $this->validate($request, [
-            'message' => 'required'
+            'message' => 'required',
         ]);
 
         $sent = [];
@@ -59,13 +58,12 @@ class HomeController extends Controller
 
         foreach ($users as $user) {
             if ($user->telegram_id != null) {
-                try{
-
+                try {
                     Telegram::sendMessage([
-                      'chat_id' => $user->telegram_id,
-                      'text' => $request->message,
-                      'parse_mode' => 'markdown',
-                      'reply_markup' => Speaker::getReplyKeyboardMarkup()
+                      'chat_id'      => $user->telegram_id,
+                      'text'         => $request->message,
+                      'parse_mode'   => 'markdown',
+                      'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                     ]);
 
                     array_push($sent, $user);
@@ -77,9 +75,9 @@ class HomeController extends Controller
         }
 
         return view('report', [
-            'sent' => $sent,
+            'sent'     => $sent,
             'not_sent' => $not_sent,
-            'message' => $request->message
+            'message'  => $request->message,
         ]);
     }
 }

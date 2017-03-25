@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\User;
 use App\Jobs\MonitorReportCardChanges;
+use App\User;
+use Illuminate\Console\Command;
 
 class DispatchMonitorJob extends Command
 {
