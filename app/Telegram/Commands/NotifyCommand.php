@@ -2,11 +2,11 @@
 
 namespace App\Telegram\Commands;
 
+use App\Telegram\Tools\Speaker;
 use App\User;
+use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAP\SUAP;
-use App\Telegram\Tools\Speaker;
 
 class NotifyCommand extends Command
 {
@@ -21,11 +21,10 @@ class NotifyCommand extends Command
     protected $description = 'Ativa/desativa notificação de atualização de boletim.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
-
         $updates = $this->getTelegram()->getWebhookUpdates();
         $telegram_id = $updates['message']['from']['id'];
         $this->replyWithChatAction(['action' => Actions::TYPING]);
@@ -36,13 +35,13 @@ class NotifyCommand extends Command
 
             // If the user is connected to SUAP.
             if ($user->suap_id && $user->suap_key) {
-                if (! $user->notify) {
+                if (!$user->notify) {
                     $user->notify = true;
                     $user->save();
 
                     $this->replyWithMessage([
                         'parse_mode' => 'markdown',
-                        'text' => "✅ As notificações de atualização de boletim foram *ATIVADAS*. \n\nVocê irá receber notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara desativar digite /notificar."
+                        'text'       => "✅ As notificações de atualização de boletim foram *ATIVADAS*. \n\nVocê irá receber notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara desativar digite /notificar.",
                     ]);
                 } else {
                     $user->notify = false;
@@ -50,19 +49,17 @@ class NotifyCommand extends Command
 
                     $this->replyWithMessage([
                         'parse_mode' => 'markdown',
-                        'text' => "🚫 As notificações de atualização de boletim foram *DESATIVADAS*. \n\nVocê não receberá mais notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara reativar digite /notificar."
+                        'text'       => "🚫 As notificações de atualização de boletim foram *DESATIVADAS*. \n\nVocê não receberá mais notificações quando houver novas faltas, aulas ou notas no seu boletim. \n\nPara reativar digite /notificar.",
                     ]);
                 }
             } else {
                 $this->replyWithMessage([
                     'parse_mode' => 'markdown',
-                    'text' => 'Você precisa autorizar o acesso ao SUAP antes de ativar as notificações. Caso precise de ajuda, digite /start e siga o tutorial.'
+                    'text'       => 'Você precisa autorizar o acesso ao SUAP antes de ativar as notificações. Caso precise de ajuda, digite /start e siga o tutorial.',
                 ]);
             }
-
         } else {
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
-
 }

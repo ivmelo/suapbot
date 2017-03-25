@@ -11,11 +11,11 @@
 |
 */
 
-Route::get('day_name', function(){
+Route::get('day_name', function () {
     return App\Telegram\Tools\Speaker::getDayOfTheWeek(1, true);
 });
 
-Route::post('webhooks/telegram', function(){
+Route::post('webhooks/telegram', function () {
     Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
     Telegram::addCommand(\App\Telegram\Commands\ClassesCommand::class);
@@ -27,7 +27,7 @@ Route::post('webhooks/telegram', function(){
     Telegram::commandsHandler(true);
 
     return response()->json([
-        'SUAPBot'
+        'SUAPBot',
     ], 200);
 });
 
@@ -37,6 +37,6 @@ Route::get('home', 'HomeController@index');
 Route::post('home', 'HomeController@sendMessage');
 Route::get('users', 'UserController@index');
 
-Route::get('/', function(){
+Route::get('/', function () {
     return redirect('home');
 });

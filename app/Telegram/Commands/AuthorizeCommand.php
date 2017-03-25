@@ -2,11 +2,11 @@
 
 namespace App\Telegram\Commands;
 
+use App\Telegram\Tools\Speaker;
 use App\User;
+use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAP\SUAP;
-use App\Telegram\Tools\Speaker;
 
 class AuthorizeCommand extends Command
 {
@@ -21,7 +21,7 @@ class AuthorizeCommand extends Command
     protected $description = 'Autoriza o acesso a sua conta do SUAP.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
@@ -30,7 +30,6 @@ class AuthorizeCommand extends Command
         $this->replyWithChatAction(['action' => Actions::TYPING]);
 
         $user = User::where('telegram_id', $telegram_id)->first();
-
 
         if ($user) {
             // Get arguments (matricula and access_key).
@@ -44,7 +43,7 @@ class AuthorizeCommand extends Command
                 // Verifies if the user already has SUAP credentials.
                 if ($user->suap_id && $user->suap_key) {
                     $this->replyWithMessage([
-                        'text' => 'Você já autorizou o acesso ao SUAP. Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.'
+                        'text' => 'Você já autorizou o acesso ao SUAP. Digite /notas para ver suas notas ou /help para ver uma lista de comandos disponíveis.',
                     ]);
                 } else {
 
@@ -75,27 +74,23 @@ class AuthorizeCommand extends Command
                         // All set, message user.
                         // And set up keyboard.
                         $this->replyWithMessage([
-                            'parse_mode' => 'markdown',
-                            'text' => Speaker::authorized($name, $program, $situation),
-                            'reply_markup' => Speaker::getReplyKeyboardMarkup()
+                            'parse_mode'   => 'markdown',
+                            'text'         => Speaker::authorized($name, $program, $situation),
+                            'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                         ]);
 
                         // Activate notifications.
                         $this->triggerCommand('notificar');
-
                     } catch (\Exception $e) {
                         // Authorization error.
                         $this->replyWithMessage(['text' => Speaker::authorizationError()]);
                     }
                 }
-
             } else {
                 $this->replyWithMessage(['text' => Speaker::authorizationCredentialsMissing()]);
             }
-
         } else {
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
-
     }
 }

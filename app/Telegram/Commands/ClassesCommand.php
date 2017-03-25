@@ -2,12 +2,11 @@
 
 namespace App\Telegram\Commands;
 
+use App\Telegram\Tools\Speaker;
 use App\User;
+use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
-use \Ivmelo\SUAP\SUAP;
-use App\Telegram\Tools\Markify;
-use App\Telegram\Tools\Speaker;
 
 class ClassesCommand extends Command
 {
@@ -22,7 +21,7 @@ class ClassesCommand extends Command
     protected $description = 'Mostra locais e horários de aula.';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handle($arguments)
     {
@@ -57,7 +56,7 @@ class ClassesCommand extends Command
                     if ($this->isToday($day)) {
                         $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
                     } else {
-                        $schedule_response = "*📚 Aulas d" . Speaker::getDayOfTheWeek($day, true) . ":*\n\n";
+                        $schedule_response = '*📚 Aulas d'.Speaker::getDayOfTheWeek($day, true).":*\n\n";
                     }
 
                     $has_classes = false;
@@ -67,29 +66,28 @@ class ClassesCommand extends Command
                         foreach ($hours as $time => $class) {
                             if ($class) {
                                 $has_classes = true;
-                                $schedule_response .= "*⏰ " . $time . ":* \n";
-                                $schedule_response .= "📓 *" . $class['disciplina'] . "*\n_🏫 " . $class['local'] . "_\n\n";
+                                $schedule_response .= '*⏰ '.$time.":* \n";
+                                $schedule_response .= '📓 *'.$class['disciplina']."*\n_🏫 ".$class['local']."_\n\n";
                             }
                         }
                     }
 
-                    if (! $has_classes) {
+                    if (!$has_classes) {
                         if ($this->isToday($day)) {
                             // No classes today.
                             $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
-
                         } else {
                             // No classes for the requested day.
                             $schedule_response = "ℹ️ Você não tem aulas no dia socitado. \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
                         }
                     } else {
-                        $schedule_response .= "Para ver aulas de outros dias, digite /aulas <dia-da-semana>.";
+                        $schedule_response .= 'Para ver aulas de outros dias, digite /aulas <dia-da-semana>.';
                     }
 
                     // Send schedule to the user.
                     $this->replyWithMessage([
-                        'text' => $schedule_response,
-                        'parse_mode' => 'markdown'
+                        'text'       => $schedule_response,
+                        'parse_mode' => 'markdown',
                     ]);
 
                     $user->save();
@@ -102,12 +100,10 @@ class ClassesCommand extends Command
                     // Error fetching data from suap.
                     $this->replyWithMessage(['text' => Speaker::suapError()]);
                 }
-
             } else {
                 // User has not set SUAP credentials.
                 $this->replyWithMessage(['text' => Speaker::noCredentials()]);
             }
-
         } else {
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
@@ -117,22 +113,24 @@ class ClassesCommand extends Command
     /**
      * Returns wether the informed day is today or not.
      *
-     * @var     int Day of the week.
+     * @var int Day of the week.
      *
-     * @return  boolean Wether it's today or not.
+     * @return bool Wether it's today or not.
      */
-    private function isToday($day) {
+    private function isToday($day)
+    {
         return $day == date('w') + 1;
     }
 
     /**
      * Converts a possible day of the week (in full or numeric) to a number.
      *
-     * @var     string Possible day of the week.
+     * @var string Possible day of the week.
      *
-     * @return  int    Int representation of the day of the week.
+     * @return int Int representation of the day of the week.
      */
-    private function getDayNumber($day) {
+    private function getDayNumber($day)
+    {
         $day = trim(mb_strtolower($day));
 
         switch ($day) {
@@ -223,8 +221,10 @@ class ClassesCommand extends Command
             case 'tomorrow':
             case 'tmr':
                 $day = date('w') + 2;
-                if ($day > 8)
+                if ($day > 8) {
                     $day = 1;
+                }
+
                 return $day;
                 break;
 
@@ -235,11 +235,12 @@ class ClassesCommand extends Command
                 $day = date('w') + 3;
                 if ($day == 9) {
                     $day = 1;
-                } else if ($day == 10) {
+                } elseif ($day == 10) {
                     $day = 2;
-                } else if ($day == 11) {
+                } elseif ($day == 11) {
                     $day = 3;
                 }
+
                 return $day;
                 break;
 
@@ -248,5 +249,4 @@ class ClassesCommand extends Command
                 break;
         }
     }
-
 }

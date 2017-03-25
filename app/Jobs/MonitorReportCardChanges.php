@@ -2,15 +2,14 @@
 
 namespace App\Jobs;
 
-use Telegram;
-use App\User;
-use App\Jobs\Job;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
-use \Ivmelo\SUAP\SUAP;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Ivmelo\SUAP\SUAP;
+use Telegram;
 
 /*
  * This Job monitors if the user's report card (boletim) has changes
@@ -57,7 +56,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
             // deals with the case in which a report card
             // that was previously filled comes out empty
-            if (isset($grades['data']) && ! empty($grades['data'])) {
+            if (isset($grades['data']) && !empty($grades['data'])) {
                 $new_data = $grades['data'];
             } else {
                 $new_data = $grades;
@@ -66,7 +65,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
             // addapts for new format of data.
             // during the first run will verify
             // and get new data from suap without notifying the user
-            if (! isset($current_data['data'])) {
+            if (!isset($current_data['data'])) {
                 $course_data_json = json_encode($grades);
                 $this->user->course_data = $course_data_json;
                 $this->user->save();
@@ -75,20 +74,19 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 $current_data = $current_data['data'];
             }
 
-
             if (count($new_data) != count($current_data)) {
                 // One or more courses were added or removed.
                 // Notify the user and show their new report card.
                 Telegram::sendChatAction([
                     'chat_id' => $this->user->telegram_id,
-                    'action' => Telegram\Bot\Actions::TYPING
+                    'action'  => Telegram\Bot\Actions::TYPING,
                 ]);
 
                 $message = [
-                    'chat_id' => $this->user->telegram_id,
-                    'text' => 'Uma ou mais disciplinas foram adicionadas ou removidas do seu boletim. Digite /notas para ver o seu boletim atualizado.',
-                    'parse_mode' => 'markdown',
-                    'reply_markup' => Speaker::getReplyKeyboardMarkup()
+                    'chat_id'      => $this->user->telegram_id,
+                    'text'         => 'Uma ou mais disciplinas foram adicionadas ou removidas do seu boletim. Digite /notas para ver o seu boletim atualizado.',
+                    'parse_mode'   => 'markdown',
+                    'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                 ];
 
                 Telegram::sendMessage($message);
@@ -99,7 +97,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 $this->user->save();
 
                 // debug only
-                print('#UID: ' . $this->user->id . " | Courses added/removed. User notified.\n");
+                echo '#UID: '.$this->user->id." | Courses added/removed. User notified.\n";
             } else {
                 $updates = [];
 
@@ -123,7 +121,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
 
                     Telegram::sendChatAction([
                         'chat_id' => $this->user->telegram_id,
-                        'action' => Telegram\Bot\Actions::TYPING
+                        'action'  => Telegram\Bot\Actions::TYPING,
                     ]);
 
                     $updated_data = $grades;
@@ -134,14 +132,14 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                     $grades_response = Markify::parseBoletim($updated_data);
 
                     $grades_response = "*📚 BOLETIM ATUALIZADO*\n\n"
-                        . $grades_response . "Digite /notas para ver o boletim completo.";
+                        .$grades_response.'Digite /notas para ver o boletim completo.';
 
                     // Send updates to the user.
                     $message = [
-                        'chat_id' => $this->user->telegram_id,
-                        'text' => $grades_response,
-                        'parse_mode' => 'markdown',
-                        'reply_markup' => Speaker::getReplyKeyboardMarkup()
+                        'chat_id'      => $this->user->telegram_id,
+                        'text'         => $grades_response,
+                        'parse_mode'   => 'markdown',
+                        'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                     ];
 
                     Telegram::sendMessage($message);
@@ -151,18 +149,15 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                     $this->user->course_data = $course_data_json;
                     $this->user->save();
 
-                    print('#UID: ' . $this->user->id . " | Report card updated. User notified.\n");
-
+                    echo '#UID: '.$this->user->id." | Report card updated. User notified.\n";
                 } else {
                     // Nothing has changed. Do nothing.
-                    print('#UID: ' . $this->user->id . " | No changes.\n");
+                    echo '#UID: '.$this->user->id." | No changes.\n";
                 }
             }
-
         } catch (\Exception $e) {
             // Error fetching data from SUAP, or parsing report card data.
-            print('#UID: ' . $this->user->id . ' | Exception: ' . $e . "\n");
+            echo '#UID: '.$this->user->id.' | Exception: '.$e."\n";
         }
-
     }
 }
