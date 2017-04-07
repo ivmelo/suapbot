@@ -78,35 +78,10 @@
             </tbody>
         </table>
 
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#broadcastModal">
+        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#broadcastModal">
           Broadcast Message
         </button>
     </div>
-@endsection
-
-@section('styles')
-<style media="screen">
-    .gravatar {
-        height: 50px;
-        width: 50px;
-    }
-
-    .led {
-        height: 10px;
-        width: 10px;
-        border-radius: 50%;
-        display: block;
-        margin: 0 auto;
-    }
-
-    .led.on {
-        background-color: #2ecc71;
-    }
-
-    .led.off {
-        background-color: #bdc3c7;
-    }
-</style>
 @endsection
 
 @section('modals')

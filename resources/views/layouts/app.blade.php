@@ -9,11 +9,33 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
+    <style media="screen">
+        .gravatar {
+            height: 50px;
+            width: 50px;
+        }
+
+        .led {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .led.on {
+            background-color: #2ecc71;
+        }
+
+        .led.off {
+            background-color: #bdc3c7;
+        }
+    </style>
+
     @yield('styles')
 </head>
 <body>
-
-    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse mb-3">
         <div class="container">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
