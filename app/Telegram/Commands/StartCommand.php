@@ -68,7 +68,7 @@ class StartCommand extends Command
 
         if (!$user->suap_id) {
             $this->replyWithMessage([
-                'text'       => Speaker::tutorial(),
+                'text'       => Speaker::tutorial($user),
                 'parse_mode' => 'markdown',
             ]);
         } else {

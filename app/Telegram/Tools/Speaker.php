@@ -26,9 +26,10 @@ class Speaker
      *
      * @return string The message.
      */
-    public static function noCredentials()
+    public static function noCredentials($user)
     {
-        return '⚠️ Você ainda não autorizou o acesso ao SUAP. Por favor, digite /autorizar <suap_id> <chave_de_acesso> e tente novamente. Para saber como obter a sua chave de acesso, use o comando /start.';
+        return "⚠️ Você ainda não autorizou o acesso ao SUAP. Para autorizar, por favor, acesse o link a seguir e siga as instruções: \n\n".
+        action('TelegramBotController@getAuth', $user->telegram_id);
     }
 
     /**
@@ -95,18 +96,12 @@ class Speaker
      *
      * @return string The message.
      */
-    public static function tutorial()
+    public static function tutorial($user)
     {
-        return "Primeiro, preciso de autorização para acessar o seu boletim no SUAP.\n\n".
-               "Para isso, preciso de sua matrícula e chave de acesso *(não confundir com senha do SUAP)*. A chave de acesso é *somente leitura* e não permite alterar no seus dados no SUAP.\n\n".
-               "Para pegar a sua chave de acesso siga os seguintes passos:\n\n".
-               "1 - Faça login no SUAP. https://suap.ifrn.edu.br;\n".
-               "2 - Clique em “Meus Dados”;\n".
-               "3 - Acesse a aba “Dados Pessoais”;\n".
-               "4 - Na ultima linha da tabela de “Dados Gerais” procure pela “Chave de Acesso” (Vai ser algo parecido com 5e8h9);\n".
-               "5 - Copie ou anote a sua chave de acesso.\n\n".
-               "Pronto! Agora basta digitar:\n\n".
-               "/autorizar <sua-matricula> <chave-de-acesso>\n";
+        return "Primeiramente, preciso de autorização para acessar o seu boletim no SUAP.\n".
+            "Para isso, preciso que você acesse e siga as instruções no link a seguir: \n\n".
+            action('TelegramBotController@getAuth', $user->telegram_id);
+
     }
 
     /**

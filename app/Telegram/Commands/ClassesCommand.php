@@ -102,7 +102,7 @@ class ClassesCommand extends Command
                 }
             } else {
                 // User has not set SUAP credentials.
-                $this->replyWithMessage(['text' => Speaker::noCredentials()]);
+                $this->replyWithMessage(['text' => Speaker::noCredentials($user)]);
             }
         } else {
             // User was not found.
