@@ -7,44 +7,42 @@
 
     <title>SUAP Bot</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css">
-
-    <style media="screen">
-    body {
-        padding-top: 4em;
-    }
-    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
     @yield('styles')
 </head>
 <body>
-    <div class="ui inverted fixed menu">
-        <div class="ui container">
-            <a class="header item" href="{{ url('/') }}">
-                SUAP Bot
-            </a>
 
-            @if(Auth::user())
-                <a href="{{ url('users') }}" class="item">
-                    Users
-                </a>
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+        <div class="container">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url('/') }}">SUAP Bot</a>
 
-                <div class="ui simple right dropdown item">
-                    {{ Auth::user()->first_name }}
-                    <span class="dropdown icon"></span>
-                    <div class="menu">
-                        <a href="{{ url('logout') }}" class="item">Logout</a>
-                    </div>
-                </div>
-            @endif
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    @if(Auth::user())
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ Auth::user()->first_name }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="{{ url('logout') }}">Logout</a>
+                            </div>
+                        </li>
+                    @endif
+                </ul>
+            </div>
         </div>
-    </div>
+    </nav>
 
     @yield('content')
     @yield('modals')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     @yield('scripts')
 </body>
 </html>
