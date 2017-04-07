@@ -69,7 +69,7 @@ class HomeController extends Controller
                     array_push($sent, $user);
                 } catch (\Exception $e) {
                     $message = $e->getMessage();
-                    array_push($not_sent, [$user, $message]);
+                    array_push($not_sent, ['user' => $user, 'message' => $message]);
                 }
             }
         }
