@@ -27,6 +27,14 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function refreshToken()
+    {
+        $suap = new SUAP($user->suap_token);
+        $data = $suap->autenticar($user->suap_id, $user->suap_key, true);
+        $this->suap_token = $data['token'];
+        $this->save();
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -36,8 +44,10 @@ class User extends Authenticatable
     public function authorize($suap_id, $suap_key)
     {
         // Validate SUAP credentials.
-        $client = new SUAP($suap_id, $suap_key, true);
-        $suap_data = $client->getStudentData();
+        $client = new SUAP();
+        $client->autenticar($suap_id, $suap_key, true);
+
+        $suap_data = $client->getMeusDados();
 
         // Save user credentials and Email.
         if ($suap_data) {

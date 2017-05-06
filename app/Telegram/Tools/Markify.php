@@ -9,60 +9,69 @@ class Markify
 {
     public static function parseBoletim($grades)
     {
-        $grades_data = $grades['data'];
-
         $response_text = '';
 
-        foreach ($grades_data as $grade) {
-            $course_info = '*📓 '.$grade['disciplina']."*\n";
+        // Stats.
+        $totalCargaHoraria = 0;
+        $totalAulas = 0;
+        $totalFaltas = 0;
 
-            if (isset($grade['aulas'])) {
-                $course_info .= 'Aulas: '.$grade['aulas']."\n";
+        foreach ($grades as $grade) {
+            $course_info = '*📓 '.explode( ' - ', $grade['disciplina'])[1]."*\n";
+
+            if (isset($grade['carga_horaria'])) {
+                $course_info .= 'Aulas: '.$grade['carga_horaria']."\n";
             }
 
-            if (isset($grade['faltas'])) {
-                $course_info .= 'Faltas: '.$grade['faltas']."\n";
+            if (isset($grade['numero_faltas'])) {
+                $course_info .= 'Faltas: '.$grade['numero_faltas']."\n";
             }
 
-            if (isset($grade['frequencia'])) {
-                $course_info .= 'Frequência: '.$grade['frequencia']."%\n";
+            if (isset($grade['percentual_carga_horaria_frequentada'])) {
+                $course_info .= 'Frequência: '.$grade['percentual_carga_horaria_frequentada']."%\n";
             }
 
-            if (isset($grade['bm1_nota'])) {
-                $course_info .= 'N1: '.$grade['bm1_nota']."\n";
+            if (isset($grade['nota_etapa_1']['nota'])) {
+                $course_info .= 'N1: '.$grade['nota_etapa_1']['nota']."\n";
             }
 
-            if (isset($grade['bm2_nota'])) {
-                $course_info .= 'N2: '.$grade['bm2_nota']."\n";
+            if (isset($grade['nota_etapa_2']['nota'])) {
+                $course_info .= 'N2: '.$grade['nota_etapa_2']['nota']."\n";
             }
 
-            if (isset($grade['bm3_nota'])) {
-                $course_info .= 'N3: '.$grade['bm3_nota']."\n";
+            if (isset($grade['nota_etapa_3']['nota'])) {
+                $course_info .= 'N3: '.$grade['nota_etapa_3']['nota']."\n";
             }
 
-            if (isset($grade['bm4_nota'])) {
-                $course_info .= 'N4: '.$grade['bm4_nota']."\n";
+            if (isset($grade['nota_etapa_4']['nota'])) {
+                $course_info .= 'N4: '.$grade['nota_etapa_4']['nota']."\n";
             }
 
-            if (isset($grade['media'])) {
-                $course_info .= 'Média: '.$grade['media']."\n";
+            if (isset($grade['media_disciplina'])) {
+                $course_info .= 'Média: '.$grade['media_disciplina']."\n";
             }
 
-            if (isset($grade['naf_nota'])) {
-                $course_info .= 'NAF: '.$grade['naf_nota']."\n";
+            if (isset($grade['nota_avaliacao_final']['nota'])) {
+                $course_info .= 'NAF: '.$grade['nota_avaliacao_final']['nota']."\n";
             }
 
-            if (isset($grade['mfd'])) {
-                $course_info .= 'MFD/Conceito: '.$grade['mfd']."\n";
+            if (isset($grade['media_final_disciplina'])) {
+                $course_info .= 'MFD/Conceito: '.$grade['media_final_disciplina']."\n";
             }
 
-            if (isset($grade['situacao']) && $grade['situacao'] != 'cursando') {
-                if ($grade['situacao'] == 'aprovado') {
+
+            if (isset($grade['situacao']) && $grade['situacao'] != 'Cursando') {
+                if ($grade['situacao'] == 'Aprovado') {
                     $course_info .= '✅ '.ucfirst($grade['situacao'])."\n";
                 } else {
                     $course_info .= 'Situação: '.ucfirst($grade['situacao'])."\n";
                 }
             }
+
+            // Add to stats.
+            $totalCargaHoraria += $grade['carga_horaria'];
+            $totalAulas += $grade['carga_horaria_cumprida'];
+            $totalFaltas += $grade['numero_faltas'];
 
             $response_text .= $course_info."\n";
         }
@@ -70,26 +79,20 @@ class Markify
         // Total course stats.
         $course_stats = '';
 
-        // if (isset($grades['total_carga_horaria'])) {
-        //     $course_stats .= "Total: " . $grades['total_carga_horaria'] . " aulas.\n";
-        // }
-
-        if (isset($grades['total_aulas'])) {
-            $course_stats .= $grades['total_aulas'].' aulas, ';
+        // Calculate total attendance.
+        if ($totalFaltas == 0) {
+            $attendance = 100;
+        } else {
+            $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
         }
 
-        if (isset($grades['total_faltas'])) {
-            $course_stats .= $grades['total_faltas']." faltas.\n";
-        }
+        // Write stats.
+        $course_stats .= $totalAulas.' aulas, ';
+        $course_stats .= $totalFaltas." faltas.\n";
+        $course_stats .= round($attendance, 1)."% de frequência.\n";
+        $course_stats .= 'CH Total: '.$totalCargaHoraria." aulas.\n";
 
-        if (isset($grades['total_frequencia'])) {
-            $course_stats .= $grades['total_frequencia']."% de frequência.\n";
-        }
-
-        if (isset($grades['total_carga_horaria'])) {
-            $course_stats .= 'CH Total: '.$grades['total_carga_horaria']." aulas.\n";
-        }
-
+        // Append to response.
         $response_text .= '*'.$course_stats."*\n";
 
         return $response_text;

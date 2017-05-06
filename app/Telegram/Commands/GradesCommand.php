@@ -39,57 +39,24 @@ class GradesCommand extends Command
 
             // User has set credentials.
             if ($user->suap_id && $user->suap_key) {
+
                 try {
-                    // Get grades from SUAP.
-                    $client = new SUAP($user->suap_id, $user->suap_key, true);
+                    $suap = new SUAP($user->suap_token);
 
-                    // If filtering...
-                    if ($arguments) {
-                        $grades = $client->filterCoursesByName(trim($arguments));
+                    $data = $suap->autenticar($user->suap_id, $user->suap_key, true);
+                    $user->suap_token = $data['token'];
+                    $user->save();
 
-                        // No filter results.
-                        if (empty($grades)) {
-                            $this->replyWithMessage([
-                                'text'       => 'ℹ️ Não foram encontradas disciplinas contendo o(s) termo(s) "'.$arguments.'" no seu boletim.',
-                                'parse_mode' => 'markdown',
-                            ]);
-                        }
-                    } else {
-                        // No filter. Get all and save to DB.
-                        $grades = $client->getGrades();
+                    $reportCard = $suap->getMeuBoletim(2016, 2);
 
-                        // Store JSON grades data in the DB.
-                        $course_data_json = json_encode($grades);
-                        $user->course_data = $course_data_json;
-                        $user->save();
+                    $user->course_data = json_encode($reportCard);
+                    $user->save();
 
-                        // No grades.
-                        if (empty($grades)) {
-                            if ($user->notify) {
-                                $notify_message = 'Mas fique de olho, te avisarei quando novas disciplinas forem adicionadas lá. 🙂';
-                            } else {
-                                $notify_message = 'Caso queira receber notificações quando novas disciplinas forem adicionadas, use o comando /notificar.';
-                            }
+                    $this->replyWithMessage([
+                        'text'       => Markify::parseBoletim($reportCard),
+                        'parse_mode' => 'markdown',
+                    ]);
 
-                            $this->replyWithMessage([
-                                'text'       => 'Não há disciplinas no seu boletim. '.$notify_message,
-                                'parse_mode' => 'markdown',
-                            ]);
-                        }
-                    }
-
-                    // If results, parse grades and display them.
-                    if (!empty($grades)) {
-                        $grades_response = "*📚 Suas notas e frequência:*\n\n";
-
-                        $grades_response .= Markify::parseBoletim($grades);
-
-                        // Send grades to the user.
-                        $this->replyWithMessage([
-                            'text'       => $grades_response,
-                            'parse_mode' => 'markdown',
-                        ]);
-                    }
                 } catch (\Exception $e) {
                     // Error fetching data from suap.
                     $this->replyWithMessage(['text' => Speaker::suapError()]);
