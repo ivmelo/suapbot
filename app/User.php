@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Telegram\Tools\Markify;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
 use App\Telegram\Tools\Speaker;
@@ -86,5 +87,102 @@ class User extends Authenticatable
             'text'         => Speaker::authorized($name, $program, $situation),
             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);
+    }
+
+    public function updateReportCard($notify = true)
+    {
+        $suap = new SUAP($this->suap_token);
+
+        $currentDataJson = $this->course_data;
+        $currentData = json_decode($currentDataJson, true);
+        $newData = $suap->getMeuBoletim(2017, 1);
+        $newDataJson = json_encode($newData);
+
+        if ($newDataJson != $currentDataJson) {
+            // Data has changed. Save new data.
+            $this->course_data = $newDataJson;
+
+            echo "changes...\n";
+
+            if (count($newData) != count($currentData)) {
+                // TODO: Courses added/removed.
+                echo "courses added/removed\n";
+
+            } else {
+                $updates = [];
+
+                echo "comparing\n";
+
+
+                // Compare course data.
+                for ($i = 0; $i < count($currentData); $i++) {
+                    // Grab data for current course.
+                    $currentCourseData = $currentData[$i];
+                    $newCourseData = $newData[$i];
+
+                    // Compare the old course data with the new course data.
+                    if ($updatedData = $this->array_diff_assoc_recursive($newCourseData, $currentCourseData)) {
+
+                        echo "changes\n";
+
+                        // Add the course name to the list of updated info, so it can be displayed.
+                        $updatedData['disciplina'] = $currentCourseData['disciplina'];
+                        array_push($updates, $updatedData);
+                    }
+                }
+
+                echo "counting\n";
+
+
+                if (count($updates) > 0) {
+                    echo "replying\n";
+
+                    $gradesResponse = Markify::parseBoletim($updates);
+
+                    Telegram::sendMessage([
+                        'chat_id'      => $this->telegram_id,
+                        'parse_mode'   => 'markdown',
+                        'text'         => $gradesResponse,
+                    ]);
+                } else {
+                    echo "updates < 0\n";
+
+                }
+
+                print_r($updates);
+            }
+
+            // SAVE EVERYTHING...
+            $this->save();
+
+
+        } else {
+            // TODO: No changes.
+            echo "no changes\n";
+        }
+
+
+
+    }
+
+
+
+
+    private function array_diff_assoc_recursive($array1, $array2) {
+        $difference=array();
+        foreach($array1 as $key => $value) {
+            if( is_array($value) ) {
+                if( !isset($array2[$key]) || !is_array($array2[$key]) ) {
+                    $difference[$key] = $value;
+                } else {
+                    $new_diff = $this->array_diff_assoc_recursive($value, $array2[$key]);
+                    if( !empty($new_diff) )
+                        $difference[$key] = $new_diff;
+                }
+            } else if( !array_key_exists($key,$array2) || $array2[$key] !== $value ) {
+                $difference[$key] = $value;
+            }
+        }
+        return $difference;
     }
 }

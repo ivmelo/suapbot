@@ -69,31 +69,37 @@ class Markify
             }
 
             // Add to stats.
-            $totalCargaHoraria += $grade['carga_horaria'];
-            $totalAulas += $grade['carga_horaria_cumprida'];
-            $totalFaltas += $grade['numero_faltas'];
+            if (isset($grade['carga_horaria'])) {
+                # code...
+                $totalCargaHoraria += $grade['carga_horaria'];
+                $totalAulas += $grade['carga_horaria_cumprida'];
+                $totalFaltas += $grade['numero_faltas'];
+            }
+
 
             $response_text .= $course_info."\n";
         }
 
-        // Total course stats.
-        $course_stats = '';
+        if ($totalCargaHoraria != 0) {
+            // Total course stats.
+            $course_stats = '';
 
-        // Calculate total attendance.
-        if ($totalFaltas == 0) {
-            $attendance = 100;
-        } else {
-            $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
+            // Calculate total attendance.
+            if ($totalFaltas == 0) {
+                $attendance = 100;
+            } else {
+                $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
+            }
+
+            // Write stats.
+            $course_stats .= $totalAulas.' aulas, ';
+            $course_stats .= $totalFaltas." faltas.\n";
+            $course_stats .= round($attendance, 1)."% de frequência.\n";
+            $course_stats .= 'CH Total: '.$totalCargaHoraria." aulas.\n";
+
+            // Append to response.
+            $response_text .= '*'.$course_stats."*\n";
         }
-
-        // Write stats.
-        $course_stats .= $totalAulas.' aulas, ';
-        $course_stats .= $totalFaltas." faltas.\n";
-        $course_stats .= round($attendance, 1)."% de frequência.\n";
-        $course_stats .= 'CH Total: '.$totalCargaHoraria." aulas.\n";
-
-        // Append to response.
-        $response_text .= '*'.$course_stats."*\n";
 
         return $response_text;
     }
