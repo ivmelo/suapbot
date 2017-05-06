@@ -43,11 +43,11 @@ class GradesCommand extends Command
                 try {
                     $suap = new SUAP($user->suap_token);
 
-                    $data = $suap->autenticar($user->suap_id, $user->suap_key, true);
-                    $user->suap_token = $data['token'];
-                    $user->save();
+                    // $data = $suap->autenticar($user->suap_id, $user->suap_key, true);
+                    // $user->suap_token = $data['token'];
+                    // $user->save();
 
-                    $reportCard = $suap->getMeuBoletim(2016, 2);
+                    $reportCard = $suap->getMeuBoletim(2017, 1);
 
                     $user->course_data = json_encode($reportCard);
                     $user->save();

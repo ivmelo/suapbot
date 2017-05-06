@@ -27,16 +27,22 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * Refresh or create a new SUAP access token.
+     *
+     * @return String $token
+     */
     public function refreshToken()
     {
-        $suap = new SUAP($user->suap_token);
-        $data = $suap->autenticar($user->suap_id, $user->suap_key, true);
+        $suap = new SUAP();
+        $data = $suap->autenticar($this->suap_id, $this->suap_key, true);
         $this->suap_token = $data['token'];
         $this->save();
+        return $data['token'];
     }
 
     /**
-     * The attributes that should be hidden for arrays.
+     * Authorize access and store SUAP credentials.
      *
      * @param Integer $suap_id
      * @param String $suap_key
@@ -45,7 +51,8 @@ class User extends Authenticatable
     {
         // Validate SUAP credentials.
         $client = new SUAP();
-        $client->autenticar($suap_id, $suap_key, true);
+        $data = $client->autenticar($suap_id, $suap_key, true);
+        $this->suap_token = $data['token'];
 
         $suap_data = $client->getMeusDados();
 
@@ -53,10 +60,10 @@ class User extends Authenticatable
         if ($suap_data) {
             $this->suap_id = $suap_id;
             $this->suap_key = $suap_key;
-            $this->email = $suap_data['email_pessoal'];
+            $this->email = $suap_data['email'];
 
             // Get course data for the first access.
-            $course_data = $client->getGrades();
+            $course_data = $client->getMeuBoletim(2017, 1);
             $course_data_json = json_encode($course_data);
             $this->course_data = $course_data_json;
 
@@ -67,9 +74,9 @@ class User extends Authenticatable
         }
 
         // Grab user info for display.
-        $name = $suap_data['nome'];
-        $program = $suap_data['curso'];
-        $situation = $suap_data['situacao'];
+        $name = $suap_data['nome_usual'];
+        $program = $suap_data['vinculo']['curso'];
+        $situation = $suap_data['vinculo']['situacao'];
 
         // All set, message user.
         // And set up keyboard.

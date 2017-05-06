@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\DispatchMonitorJob::class,
         Commands\UpdateUserReportCard::class,
+        Commands\RefreshTokens::class,
     ];
 
     /**

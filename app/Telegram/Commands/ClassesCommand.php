@@ -38,41 +38,36 @@ class ClassesCommand extends Command
 
             // User has set credentials.
             if ($user->suap_id && $user->suap_key) {
-                try {
-                    // Get schedule from SUAP.
-                    $client = new SUAP($user->suap_id, $user->suap_key, true);
+                if ($user->suap_token) {
+
+                    $client = new SUAP($user->suap_token);
 
                     // Get schedule for the requested day of the week.
                     $day = $this->getDayNumber($arguments);
-                    $schedule = $client->getSchedule($day, env('CURRENT_TERM_SUPERIOR'));
 
-                    // Schedule empty, might be a technical student...
-                    if (empty($schedule)) {
-                        $this->replyWithChatAction(['action' => Actions::TYPING]);
-                        $schedule = $client->getSchedule($day, env('CURRENT_TERM_TECNICO'));
-                    }
+                    $schedule = $client->getHorarios(2017, 1);
 
-                    // Choose the appropriate message.
                     if ($this->isToday($day)) {
                         $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
                     } else {
                         $schedule_response = '*📚 Aulas d'.Speaker::getDayOfTheWeek($day, true).":*\n\n";
                     }
 
-                    $has_classes = false;
+                    $daySchedule = $schedule[$day];
 
-                    // Format response message.
-                    foreach ($schedule as $shift => $hours) {
-                        foreach ($hours as $time => $class) {
-                            if ($class) {
-                                $has_classes = true;
-                                $schedule_response .= '*⏰ '.$time.":* \n";
-                                $schedule_response .= '📓 *'.$class['disciplina']."*\n_🏫 ".$class['local']."_\n\n";
+                    $hasClasses = false;
+
+                    foreach ($daySchedule as $shift) {
+                        foreach ($shift as $data) {
+                            if (isset($data['aula'])) {
+                                $hasClasses = true;
+                                $schedule_response .= '*⏰ '.$data['hora'].":* \n";
+                                $schedule_response .= '📓 *'.$data['aula']['descricao']."*\n_🏫 ".$data['aula']['locais_de_aula'][0]."_\n\n";
                             }
                         }
                     }
 
-                    if (!$has_classes) {
+                    if (!$hasClasses) {
                         if ($this->isToday($day)) {
                             // No classes today.
                             $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
@@ -91,14 +86,13 @@ class ClassesCommand extends Command
                     ]);
 
                     $user->save();
-                } catch (\Exception $e) {
-                    // $this->replyWithMessage([
-                    //     'text' => $e->getMessage(),
-                    //     'parse_mode' => 'markdown'
-                    // ]);
 
-                    // Error fetching data from suap.
-                    $this->replyWithMessage(['text' => Speaker::suapError()]);
+                    try {
+
+                    } catch (\Exception $e) {
+                        // Error fetching data from suap.
+                        $this->replyWithMessage(['text' => Speaker::suapError()]);
+                    }
                 }
             } else {
                 // User has not set SUAP credentials.
@@ -149,13 +143,6 @@ class ClassesCommand extends Command
             case 'segunda feira':
             case 'monday':
             case 'mon':
-            case 'dia da preguiça':
-            case 'garfield':
-            case 'queria estar morta':
-            case 'pior dia':
-            case 'pior dia da semana':
-            case 'prefiro morrer':
-            case 'hello darkness my old friend':
                 return 2;
                 break;
 
@@ -221,7 +208,7 @@ class ClassesCommand extends Command
             case 'tomorrow':
             case 'tmr':
                 $day = date('w') + 2;
-                if ($day > 8) {
+                if ($day > 7) {
                     $day = 1;
                 }
 
