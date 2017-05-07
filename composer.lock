@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0b58273d7521d433c3ca3b564298b5c",
+    "content-hash": "fc3192e078e344f02cc171c329716dea",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -402,16 +402,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "205544f66c66d198854f05b80fe9e1894e58dac4"
+                "reference": "328452127ae1b72da6002d2e79907f77c455a904"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/205544f66c66d198854f05b80fe9e1894e58dac4",
-                "reference": "205544f66c66d198854f05b80fe9e1894e58dac4",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/328452127ae1b72da6002d2e79907f77c455a904",
+                "reference": "328452127ae1b72da6002d2e79907f77c455a904",
                 "shasum": ""
             },
             "require": {
@@ -434,7 +434,7 @@
                 }
             ],
             "description": "Wrapper PHP para a API do SUAP.",
-            "time": "2017-05-07T20:02:17+00:00"
+            "time": "2017-05-07T22:36:50+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

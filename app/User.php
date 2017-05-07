@@ -5,6 +5,7 @@ namespace App;
 use App\Telegram\Tools\Markify;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
+use Carbon\Carbon;
 use App\Telegram\Tools\Speaker;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -55,6 +56,47 @@ class User extends Authenticatable
         return $data['token'];
     }
 
+
+    /**
+     * Update school year or term for a student.
+     *
+     * @return String $token
+     */
+    public function updateSchoolYear()
+    {
+        $suap = new SUAP($this->suap_token);
+
+        try {
+            // Try to update the user's current school term.
+            $data = $suap->getMeusPeriodosLetivos();
+            $currentTerm = end($data);
+            $this->school_year_term = $currentTerm['ano_letivo'].'.'.$currentTerm['periodo_letivo'];
+            $this->save();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function getSchoolYearAttribute()
+    {
+        return explode('.', $this->school_year_term)[0];
+    }
+
+    public function getSchoolTermAttribute()
+    {
+        return explode('.', $this->school_year_term)[1];
+    }
+
+    public function updateLastRequest($save = false)
+    {
+        $this->request_count++;
+        $this->last_request = Carbon::now();
+        if ($save) {
+            $this->save();
+        }
+    }
+
     /**
      * Authorize access and store SUAP credentials.
      *
@@ -102,13 +144,13 @@ class User extends Authenticatable
         ]);
     }
 
-    public function updateReportCard($notify = true)
+    public function updateReportCard($notify = false)
     {
         $suap = new SUAP($this->suap_token);
 
         $currentDataJson = $this->course_data;
         $currentData = json_decode($currentDataJson, true);
-        $newData = $suap->getMeuBoletim(2017, 1);
+        $newData = $suap->getMeuBoletim($this->school_year, $this->school_term);
         $newDataJson = json_encode($newData);
 
         if ($newDataJson != $currentDataJson) {

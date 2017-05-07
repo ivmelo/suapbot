@@ -47,9 +47,12 @@ class GradesCommand extends Command
                     // $user->suap_token = $data['token'];
                     // $user->save();
 
-                    $reportCard = $suap->getMeuBoletim(2017, 1);
+                    $reportCard = $suap->getMeuBoletim($user->school_year, $user->school_term);
+                    // $reportCard = $suap->getMeuBoletim(2016, 1);
+
 
                     $user->course_data = json_encode($reportCard);
+                    $user->updateLastRequest();
                     $user->save();
 
                     $this->replyWithMessage([

@@ -103,4 +103,50 @@ class Markify
 
         return $response_text;
     }
+
+    public static function parseSchedule($schedule, $day)
+    {
+        if ($day == date('w') + 1) {
+            $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
+        } else {
+            $schedule_response = '*📚 Aulas d'.Speaker::getDayOfTheWeek($day, true).":*\n\n";
+        }
+
+        $daySchedule = $schedule[$day];
+
+        $hasClasses = false;
+
+        foreach ($daySchedule as $shift) {
+            foreach ($shift as $data) {
+                if (isset($data['aula'])) {
+                    $hasClasses = true;
+                    $schedule_response .= '*⏰ '.$data['hora'].":* \n";
+                    $schedule_response .= '📓 *'.$data['aula']['descricao']."*\n";
+                    if (isset($data['aula']['locais_de_aula'][0])) {
+                        foreach ($data['aula']['locais_de_aula'] as $classLocation) {
+                            $schedule_response .= "🏫 _".$classLocation."_\n";
+                        }
+                    } else {
+                        $schedule_response .= "🏫 _Local de aula não encontrado no SUAP._\n";
+                    }
+                    $schedule_response .= "\n";
+                }
+            }
+        }
+
+        if (!$hasClasses) {
+            // Is it today?
+            if ($day == date('w') + 1) {
+                // No classes today.
+                $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
+            } else {
+                // No classes for the requested day.
+                $schedule_response = "ℹ️ Você não tem aulas no dia socitado. \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
+            }
+        } else {
+            $schedule_response .= 'Para ver aulas de outros dias, digite /aulas <dia-da-semana>.';
+        }
+
+        return $schedule_response;
+    }
 }

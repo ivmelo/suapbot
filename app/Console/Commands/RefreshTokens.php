@@ -38,8 +38,8 @@ class RefreshTokens extends Command
      */
     public function handle()
     {
-        // Refresh for all users...
         if ($this->option('all')) {
+            // Refresh for all users.
             $users = User::hasSuapCredentials()->get();
 
             $bar = $this->output->createProgressBar(count($users));

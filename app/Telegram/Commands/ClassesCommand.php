@@ -3,6 +3,7 @@
 namespace App\Telegram\Commands;
 
 use App\Telegram\Tools\Speaker;
+use App\Telegram\Tools\Markify;
 use App\User;
 use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
@@ -44,47 +45,15 @@ class ClassesCommand extends Command
 
                     // Get schedule for the requested day of the week.
                     $day = $this->getDayNumber($arguments);
-
-                    $schedule = $client->getHorarios(2017, 1);
-
-                    if ($this->isToday($day)) {
-                        $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
-                    } else {
-                        $schedule_response = '*📚 Aulas d'.Speaker::getDayOfTheWeek($day, true).":*\n\n";
-                    }
-
-                    $daySchedule = $schedule[$day];
-
-                    $hasClasses = false;
-
-                    foreach ($daySchedule as $shift) {
-                        foreach ($shift as $data) {
-                            if (isset($data['aula'])) {
-                                $hasClasses = true;
-                                $schedule_response .= '*⏰ '.$data['hora'].":* \n";
-                                $schedule_response .= '📓 *'.$data['aula']['descricao']."*\n_🏫 ".$data['aula']['locais_de_aula'][0]."_\n\n";
-                            }
-                        }
-                    }
-
-                    if (!$hasClasses) {
-                        if ($this->isToday($day)) {
-                            // No classes today.
-                            $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
-                        } else {
-                            // No classes for the requested day.
-                            $schedule_response = "ℹ️ Você não tem aulas no dia socitado. \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
-                        }
-                    } else {
-                        $schedule_response .= 'Para ver aulas de outros dias, digite /aulas <dia-da-semana>.';
-                    }
+                    $schedule = $client->getHorarios($user->school_year, $user->school_term);
 
                     // Send schedule to the user.
                     $this->replyWithMessage([
-                        'text'       => $schedule_response,
+                        'text'       => Markify::parseSchedule($schedule, $day),
                         'parse_mode' => 'markdown',
                     ]);
 
+                    $user->updateLastRequest();
                     $user->save();
 
                     try {
@@ -102,18 +71,6 @@ class ClassesCommand extends Command
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
-    }
-
-    /**
-     * Returns wether the informed day is today or not.
-     *
-     * @var int Day of the week.
-     *
-     * @return bool Wether it's today or not.
-     */
-    private function isToday($day)
-    {
-        return $day == date('w') + 1;
     }
 
     /**
