@@ -16,7 +16,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'username', 'email', 'password', 'telegram_id', 'suap_id', 'suap_key', 'course_data', 'notify',
+        'first_name', 'last_name', 'username',
+        'email', 'password', 'telegram_id', 'suap_id',
+        'suap_key', 'course_data', 'notify',
     ];
 
     /**
@@ -27,6 +29,17 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Scope a query to only include users with SUAP credentials.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeHasSuapCredentials($query)
+    {
+       return $query->where('suap_id', '!=', null)->where('suap_key', '!=', null);
+    }
 
     /**
      * Refresh or create a new SUAP access token.
@@ -139,14 +152,16 @@ class User extends Authenticatable
 
                     $gradesResponse = Markify::parseBoletim($updates);
 
-                    Telegram::sendMessage([
-                        'chat_id'      => $this->telegram_id,
-                        'parse_mode'   => 'markdown',
-                        'text'         => $gradesResponse,
-                    ]);
+                    if ($notify) {
+                        Telegram::sendMessage([
+                            'chat_id'      => $this->telegram_id,
+                            'parse_mode'   => 'markdown',
+                            'text'         => $gradesResponse,
+                        ]);
+                    }
+
                 } else {
                     echo "updates < 0\n";
-
                 }
 
                 print_r($updates);
@@ -165,21 +180,26 @@ class User extends Authenticatable
 
     }
 
-
-
-
+    /**
+     * Same as array_diff, but associative and recursive.
+     *
+     * @param array  $array1
+     * @param array  $array2
+     *
+     * @return array $difference
+     */
     private function array_diff_assoc_recursive($array1, $array2) {
-        $difference=array();
+        $difference = [];
         foreach($array1 as $key => $value) {
-            if( is_array($value) ) {
-                if( !isset($array2[$key]) || !is_array($array2[$key]) ) {
+            if(is_array($value)) {
+                if(!isset($array2[$key]) || !is_array($array2[$key])) {
                     $difference[$key] = $value;
                 } else {
                     $new_diff = $this->array_diff_assoc_recursive($value, $array2[$key]);
-                    if( !empty($new_diff) )
+                    if(!empty($new_diff))
                         $difference[$key] = $new_diff;
                 }
-            } else if( !array_key_exists($key,$array2) || $array2[$key] !== $value ) {
+            } else if(!array_key_exists($key,$array2) || $array2[$key] !== $value) {
                 $difference[$key] = $value;
             }
         }

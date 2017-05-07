@@ -15,7 +15,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // Commands\Inspire::class,
         Commands\DispatchMonitorJob::class,
         Commands\UpdateUserReportCard::class,
         Commands\RefreshTokens::class,

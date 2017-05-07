@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "825f56fa82d426ea8b96196e79010b61",
+    "content-hash": "d0b58273d7521d433c3ca3b564298b5c",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -402,16 +402,16 @@
         },
         {
             "name": "ivmelo/suap-api-php",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivmelo/suap-api-php.git",
-                "reference": "f3c45130c7495aecb4dd2c7746570b200a0427e4"
+                "reference": "205544f66c66d198854f05b80fe9e1894e58dac4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/f3c45130c7495aecb4dd2c7746570b200a0427e4",
-                "reference": "f3c45130c7495aecb4dd2c7746570b200a0427e4",
+                "url": "https://api.github.com/repos/ivmelo/suap-api-php/zipball/205544f66c66d198854f05b80fe9e1894e58dac4",
+                "reference": "205544f66c66d198854f05b80fe9e1894e58dac4",
                 "shasum": ""
             },
             "require": {
@@ -433,8 +433,8 @@
                     "email": "meloivanilson@gmail.com"
                 }
             ],
-            "description": "Uma API PHP para o SUAP.",
-            "time": "2017-05-06T00:46:52+00:00"
+            "description": "Wrapper PHP para a API do SUAP.",
+            "time": "2017-05-07T20:02:17+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
