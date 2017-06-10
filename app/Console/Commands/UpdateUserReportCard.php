@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Bugsnag;
 use App\Telegram\Tools\Markify;
 use App\User;
 use Illuminate\Console\Command;
@@ -58,6 +59,7 @@ class UpdateUserReportCard extends Command
                     try {
                         $user->updateReportCard();
                     } catch (\Exception $e) {
+                        Bugsnag::notifyException($e);
                         $this->error($e->getMessage());
                     }
 

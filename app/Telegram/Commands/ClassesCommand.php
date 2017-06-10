@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Commands;
 
+use Bugsnag;
 use App\Telegram\Tools\Speaker;
 use App\Telegram\Tools\Markify;
 use App\User;
@@ -60,6 +61,7 @@ class ClassesCommand extends Command
 
                     } catch (\Exception $e) {
                         // Error fetching data from suap.
+                        Bugsnag::notifyException($e);
                         $this->replyWithMessage(['text' => Speaker::suapError()]);
                     }
                 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Bugsnag;
 use App\Telegram\Tools\Markify;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
@@ -74,6 +75,7 @@ class User extends Authenticatable
             $this->save();
             return true;
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
             return false;
         }
     }
@@ -217,9 +219,6 @@ class User extends Authenticatable
             // TODO: No changes.
             echo "no changes\n";
         }
-
-
-
     }
 
     /**

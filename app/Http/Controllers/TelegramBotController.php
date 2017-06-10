@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Bugsnag;
 use Illuminate\Http\Request;
 use App\User;
 use Telegram;
@@ -56,7 +57,7 @@ class TelegramBotController extends Controller
                 return view('suapauth.success');
             } catch (\Exception $e) {
                 // return redirect()->back()->with('error_message', 'Erro ao autorizar o seu acesso.');
-
+                Bugsnag::notifyException($e);
                 return 'Caught error!' . $e->getMessage();
             }
 

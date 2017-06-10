@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Bugsnag;
 use App\Telegram\Tools\Speaker;
 use App\User;
 use Carbon\Carbon;
@@ -68,6 +69,7 @@ class HomeController extends Controller
 
                     array_push($sent, $user);
                 } catch (\Exception $e) {
+                    Bugsnag::notifyException($e);
                     $message = $e->getMessage();
                     array_push($not_sent, ['user' => $user, 'message' => $message]);
                 }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Bugsnag;
 use App\User;
 use Illuminate\Console\Command;
 
@@ -84,6 +85,7 @@ class RefreshTokens extends Command
                 $user->refreshToken();
                 return true;
             } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
                 $this->error('Could not get a token for user #' . $user->id . ' | Error: ' . $e->getMessage());
             }
         } else {
