@@ -29,21 +29,20 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Dispatch jobs to scan user's report card.
-        $schedule->call(function () {
-            $users = User::where('notify', true)
-            ->where('suap_id', '!=', null)
-            ->where('suap_key', '!=', 'null')->get();
+        // // Dispatch jobs to scan user's report card.
+        // $schedule->call(function () {
+        //     $users = User::where('notify', true)
+        //     ->where('suap_id', '!=', null)
+        //     ->where('suap_key', '!=', 'null')->get();
+        //
+        //     foreach ($users as $user) {
+        //         dispatch(new MonitorReportCardChanges($user));
+        //     }
+        //
+        //     echo $users->count().' Jobs dispatched.\n';
+        //
+        //
+        // })->everyThirtyMinutes();
 
-            foreach ($users as $user) {
-                dispatch(new MonitorReportCardChanges($user));
-            }
-
-            echo $users->count().' Jobs dispatched.\n';
-
-        // })->everyMinute();
-        // })->everyTenMinutes();
-        })->everyThirtyMinutes();
-        // })->hourly();
     }
 }
