@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Bugsnag;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 use App\User;
@@ -156,6 +157,7 @@ class MonitorReportCardChanges extends Job implements ShouldQueue
                 }
             }
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
             // Error fetching data from SUAP, or parsing report card data.
             echo '#UID: '.$this->user->id.' | Exception: '.$e."\n";
         }

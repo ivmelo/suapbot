@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Commands;
 
+use Bugsnag;
 use App\Telegram\Tools\Speaker;
 use App\User;
 use Ivmelo\SUAP\SUAP;
@@ -83,6 +84,7 @@ class AuthorizeCommand extends Command
                         $this->triggerCommand('notificar');
                     } catch (\Exception $e) {
                         // Authorization error.
+                        Bugsnag::notifyException($e);
                         $this->replyWithMessage(['text' => Speaker::authorizationError()]);
                     }
                 }

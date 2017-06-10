@@ -163,7 +163,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
-
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
     ],
 
     /*
@@ -211,7 +211,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
-
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
     ],
 
 ];

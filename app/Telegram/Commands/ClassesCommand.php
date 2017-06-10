@@ -2,7 +2,9 @@
 
 namespace App\Telegram\Commands;
 
+use Bugsnag;
 use App\Telegram\Tools\Speaker;
+use App\Telegram\Tools\Markify;
 use App\User;
 use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
@@ -38,67 +40,30 @@ class ClassesCommand extends Command
 
             // User has set credentials.
             if ($user->suap_id && $user->suap_key) {
-                try {
-                    // Get schedule from SUAP.
-                    $client = new SUAP($user->suap_id, $user->suap_key, true);
+                if ($user->suap_token) {
+
+                    $client = new SUAP($user->suap_token);
 
                     // Get schedule for the requested day of the week.
                     $day = $this->getDayNumber($arguments);
-                    $schedule = $client->getSchedule($day, env('CURRENT_TERM_SUPERIOR'));
-
-                    // Schedule empty, might be a technical student...
-                    if (empty($schedule)) {
-                        $this->replyWithChatAction(['action' => Actions::TYPING]);
-                        $schedule = $client->getSchedule($day, env('CURRENT_TERM_TECNICO'));
-                    }
-
-                    // Choose the appropriate message.
-                    if ($this->isToday($day)) {
-                        $schedule_response = "*📚 Suas aulas de hoje são:*\n\n";
-                    } else {
-                        $schedule_response = '*📚 Aulas d'.Speaker::getDayOfTheWeek($day, true).":*\n\n";
-                    }
-
-                    $has_classes = false;
-
-                    // Format response message.
-                    foreach ($schedule as $shift => $hours) {
-                        foreach ($hours as $time => $class) {
-                            if ($class) {
-                                $has_classes = true;
-                                $schedule_response .= '*⏰ '.$time.":* \n";
-                                $schedule_response .= '📓 *'.$class['disciplina']."*\n_🏫 ".$class['local']."_\n\n";
-                            }
-                        }
-                    }
-
-                    if (!$has_classes) {
-                        if ($this->isToday($day)) {
-                            // No classes today.
-                            $schedule_response = "ℹ️ Sem aulas hoje. 😃 \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
-                        } else {
-                            // No classes for the requested day.
-                            $schedule_response = "ℹ️ Você não tem aulas no dia socitado. \n\nPara ver aulas de outros dias, digite /aulas <dia-da-semana>.";
-                        }
-                    } else {
-                        $schedule_response .= 'Para ver aulas de outros dias, digite /aulas <dia-da-semana>.';
-                    }
+                    $schedule = $client->getHorarios($user->school_year, $user->school_term);
 
                     // Send schedule to the user.
                     $this->replyWithMessage([
-                        'text'       => $schedule_response,
+                        'text'       => Markify::parseSchedule($schedule, $day),
                         'parse_mode' => 'markdown',
                     ]);
 
+                    $user->updateLastRequest();
                     $user->save();
-                } catch (\Exception $e) {
-                    // $this->replyWithMessage([
-                    //     'text' => $e->getMessage(),
-                    //     'parse_mode' => 'markdown'
-                    // ]);
 
-                    // Error fetching data from suap.
-                    $this->replyWithMessage(['text' => Speaker::suapError()]);
+                    try {
+
+                    } catch (\Exception $e) {
+                        // Error fetching data from suap.
+                        Bugsnag::notifyException($e);
+                        $this->replyWithMessage(['text' => Speaker::suapError()]);
+                    }
                 }
             } else {
                 // User has not set SUAP credentials.
@@ -108,18 +73,6 @@ class ClassesCommand extends Command
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
-    }
-
-    /**
-     * Returns wether the informed day is today or not.
-     *
-     * @var int Day of the week.
-     *
-     * @return bool Wether it's today or not.
-     */
-    private function isToday($day)
-    {
-        return $day == date('w') + 1;
     }
 
     /**
@@ -149,13 +102,6 @@ class ClassesCommand extends Command
             case 'segunda feira':
             case 'monday':
             case 'mon':
-            case 'dia da preguiça':
-            case 'garfield':
-            case 'queria estar morta':
-            case 'pior dia':
-            case 'pior dia da semana':
-            case 'prefiro morrer':
-            case 'hello darkness my old friend':
                 return 2;
                 break;
 
@@ -221,7 +167,7 @@ class ClassesCommand extends Command
             case 'tomorrow':
             case 'tmr':
                 $day = date('w') + 2;
-                if ($day > 8) {
+                if ($day > 7) {
                     $day = 1;
                 }
 
