@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Artisan;
 use App\Jobs\MonitorReportCardChanges;
 use App\User;
 use Illuminate\Console\Scheduling\Schedule;
@@ -33,5 +34,6 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Artisan::call('suapbot:refreshtoken', ['--all' => true]);
         })->dailyAt('05:15');
+        // })->everyMinute();
     }
 }
