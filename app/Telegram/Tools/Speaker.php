@@ -113,8 +113,8 @@ class Speaker
     {
         // keyboard system...
         $keyboard = [
-            ['/aulas', '/notas'],
-            ['/aulas amanhã', '/calendario'],
+            ['/aulas', '/boletim'], // add proxaula
+            ['/aulas amanhã', '/calendario'], // add config
             // ['/help', '/sobre']
         ];
 

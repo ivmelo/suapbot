@@ -80,16 +80,31 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Acessor to get the school year of a student.
+     *
+     * @return String
+     */
     public function getSchoolYearAttribute()
     {
         return explode('.', $this->school_year_term)[0];
     }
 
+    /**
+     * Acessor to get the school term (semestre/bimestre) of a student.
+     *
+     * @return String
+     */
     public function getSchoolTermAttribute()
     {
         return explode('.', $this->school_year_term)[1];
     }
 
+    /**
+     * Increases the request count of a student.
+     *
+     * @return String
+     */
     public function updateLastRequest($save = false)
     {
         $this->request_count++;
@@ -97,6 +112,11 @@ class User extends Authenticatable
         if ($save) {
             $this->save();
         }
+    }
+
+    public function settings()
+    {
+        return $this->hasOne(App\Settings::class);
     }
 
     /**
@@ -131,6 +151,8 @@ class User extends Authenticatable
             $this->save();
         }
 
+        $this->updateSchoolYear();
+
         // Grab user info for display.
         $name = $suap_data['nome_usual'];
         $program = $suap_data['vinculo']['curso'];
@@ -146,6 +168,12 @@ class User extends Authenticatable
         ]);
     }
 
+    /**
+     * Update the report card of a student.
+     *
+     * @param boolean $notify Wether to notify the user or not.
+     * @return string
+     */
     public function updateReportCard($notify = false)
     {
         $suap = new SUAP($this->suap_token);
@@ -223,6 +251,7 @@ class User extends Authenticatable
 
     /**
      * Same as array_diff, but associative and recursive.
+     * It's used to get a diff of the student report card.
      *
      * @param array  $array1
      * @param array  $array2

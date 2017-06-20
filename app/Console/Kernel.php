@@ -34,6 +34,5 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Artisan::call('suapbot:refreshtoken', ['--all' => true]);
         })->dailyAt('05:15');
-        // })->everyMinute();
     }
 }

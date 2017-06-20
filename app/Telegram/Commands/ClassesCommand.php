@@ -52,6 +52,7 @@ class ClassesCommand extends Command
                     $this->replyWithMessage([
                         'text'       => Markify::parseSchedule($schedule, $day),
                         'parse_mode' => 'markdown',
+                        'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                     ]);
 
                     $user->updateLastRequest();

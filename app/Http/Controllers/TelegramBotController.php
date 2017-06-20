@@ -18,16 +18,13 @@ class TelegramBotController extends Controller
         Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
         Telegram::addCommand(\App\Telegram\Commands\SobreCommand::class);
         Telegram::addCommand(\App\Telegram\Commands\NotifyCommand::class);
+        Telegram::addCommand(\App\Telegram\Commands\GradesAliasCommand::class);
 
         Telegram::commandsHandler(true);
 
         return response()->json([
             'SUAPBot',
         ], 200);
-
-        // Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
-        //
-        // Telegram::commandsHandler(true);
     }
 
     public function getAuth($telegram_id) {
