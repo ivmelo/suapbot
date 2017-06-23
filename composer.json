@@ -8,7 +8,7 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "ivmelo/suap-api-php": "1.0.2",
-        "irazasyed/telegram-bot-sdk": "^2.0",
+        "irazasyed/telegram-bot-sdk": "dev-master",
         "pda/pheanstalk": "~3.0",
         "bugsnag/bugsnag-laravel": "^2.0"
     },

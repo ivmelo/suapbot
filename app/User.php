@@ -57,7 +57,6 @@ class User extends Authenticatable
         return $data['token'];
     }
 
-
     /**
      * Update school year or term for a student.
      *
