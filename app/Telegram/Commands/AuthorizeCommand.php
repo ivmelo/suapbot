@@ -50,38 +50,7 @@ class AuthorizeCommand extends Command
 
                     // Validate SUAP credentials.
                     try {
-                        $client = new SUAP($id, $key, true);
-                        $suap_data = $client->getStudentData();
-
-                        // Save user credentials and Email.
-                        if ($suap_data) {
-                            $user->suap_id = $id;
-                            $user->suap_key = $key;
-                            $user->email = $suap_data['email_pessoal'];
-
-                            // Get course data for the first access.
-                            $course_data = $client->getGrades();
-                            $course_data_json = json_encode($course_data);
-                            $user->course_data = $course_data_json;
-
-                            $user->save();
-                        }
-
-                        // Grab user info for display.
-                        $name = $suap_data['nome'];
-                        $program = $suap_data['curso'];
-                        $situation = $suap_data['situacao'];
-
-                        // All set, message user.
-                        // And set up keyboard.
-                        $this->replyWithMessage([
-                            'parse_mode'   => 'markdown',
-                            'text'         => Speaker::authorized($name, $program, $situation),
-                            'reply_markup' => Speaker::getReplyKeyboardMarkup(),
-                        ]);
-
-                        // Activate notifications.
-                        $this->triggerCommand('notificar');
+                        $user->authorize($id, $key);
                     } catch (\Exception $e) {
                         // Authorization error.
                         Bugsnag::notifyException($e);

@@ -67,7 +67,7 @@ class User extends Authenticatable
         $suap = new SUAP($this->suap_token);
 
         try {
-            // Try to update the user's current school term.
+            // Try to update the user's current school year.
             $data = $suap->getMeusPeriodosLetivos();
             $currentTerm = end($data);
             $this->school_year_term = $currentTerm['ano_letivo'].'.'.$currentTerm['periodo_letivo'];
@@ -113,9 +113,24 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * The settings object of this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function settings()
     {
         return $this->hasOne(Settings::class);
+    }
+
+    /**
+     * The report card object of this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function report_card()
+    {
+        return $this->hasOne(ReportCard::class);
     }
 
     /**
@@ -124,153 +139,57 @@ class User extends Authenticatable
      * @param Integer $suap_id
      * @param String $suap_key
      */
-    public function authorize($suap_id, $suap_key)
+    public function authorize($suap_id, $suap_key, $notify = true)
     {
-        // Validate SUAP credentials.
-        $client = new SUAP();
-        $data = $client->autenticar($suap_id, $suap_key, true);
-        $this->suap_token = $data['token'];
+        try {
+            // Validate SUAP credentials.
+            $client = new SUAP();
+            $data = $client->autenticar($suap_id, $suap_key, true);
+            $this->suap_token = $data['token'];
 
-        $suap_data = $client->getMeusDados();
+            $suap_data = $client->getMeusDados();
 
-        // Save user credentials and Email.
-        if ($suap_data) {
-            $this->suap_id = $suap_id;
-            $this->suap_key = $suap_key;
-            $this->email = $suap_data['email'];
+            // Save user credentials and Email.
+            if ($suap_data) {
+                $this->suap_id = $suap_id;
+                $this->suap_key = $suap_key;
+                $this->email = $suap_data['email'];
 
-            // Get course data for the first access.
-            $course_data = $client->getMeuBoletim(2017, 1);
-            $course_data_json = json_encode($course_data);
-            $this->course_data = $course_data_json;
+                // Get course data for the first access.
+                $course_data = $client->getMeuBoletim(2017, 1);
+                $course_data_json = json_encode($course_data);
 
-            // Turn the notifications on.
-            $this->notify = true;
+                // Turn the notifications on.
+                $this->notify = true;
 
-            $this->save();
-        }
+                $this->save();
 
-        $this->updateSchoolYear();
-
-        // Grab user info for display.
-        $name = $suap_data['nome_usual'];
-        $program = $suap_data['vinculo']['curso'];
-        $situation = $suap_data['vinculo']['situacao'];
-
-        // All set, message user.
-        // And set up keyboard.
-        Telegram::sendMessage([
-            'chat_id'      => $this->telegram_id,
-            'parse_mode'   => 'markdown',
-            'text'         => Speaker::authorized($name, $program, $situation),
-            'reply_markup' => Speaker::getReplyKeyboardMarkup(),
-        ]);
-    }
-
-    /**
-     * Update the report card of a student.
-     *
-     * @param boolean $notify Wether to notify the user or not.
-     * @return string
-     */
-    public function updateReportCard($notify = false)
-    {
-        $suap = new SUAP($this->suap_token);
-
-        $currentDataJson = $this->course_data;
-        $currentData = json_decode($currentDataJson, true);
-        $newData = $suap->getMeuBoletim($this->school_year, $this->school_term);
-        $newDataJson = json_encode($newData);
-
-        if ($newDataJson != $currentDataJson) {
-            // Data has changed. Save new data.
-            $this->course_data = $newDataJson;
-
-            echo "changes...\n";
-
-            if (count($newData) != count($currentData)) {
-                // TODO: Courses added/removed.
-                echo "courses added/removed\n";
-
-            } else {
-                $updates = [];
-
-                echo "comparing\n";
-
-                // Compare course data.
-                for ($i = 0; $i < count($currentData); $i++) {
-                    // Grab data for current course.
-                    $currentCourseData = $currentData[$i];
-                    $newCourseData = $newData[$i];
-
-                    // Compare the old course data with the new course data.
-                    if ($updatedData = $this->array_diff_assoc_recursive($newCourseData, $currentCourseData)) {
-
-                        echo "changes\n";
-
-                        // Add the course name to the list of updated info, so it can be displayed.
-                        $updatedData['disciplina'] = $currentCourseData['disciplina'];
-                        array_push($updates, $updatedData);
-                    }
-                }
-
-                echo "counting\n";
-
-
-                if (count($updates) > 0) {
-                    echo "replying\n";
-
-                    $gradesResponse = Markify::parseBoletim($updates);
-
-                    if ($notify) {
-                        Telegram::sendMessage([
-                            'chat_id'      => $this->telegram_id,
-                            'parse_mode'   => 'markdown',
-                            'text'         => $gradesResponse,
-                        ]);
-                    }
-
-                } else {
-                    echo "updates < 0\n";
-                }
-
-                print_r($updates);
+                $this->report_card()->create([
+                    'course_data' => $course_data_json,
+                ]);
             }
 
-            // SAVE EVERYTHING...
-            $this->save();
+            $this->updateSchoolYear();
 
+            // Grab user info for display.
+            $name = $suap_data['nome_usual'];
+            $program = $suap_data['vinculo']['curso'];
+            $situation = $suap_data['vinculo']['situacao'];
 
-        } else {
-            // TODO: No changes.
-            echo "no changes\n";
-        }
-    }
-
-    /**
-     * Same as array_diff, but associative and recursive.
-     * It's used to get a diff of the student report card.
-     *
-     * @param array  $array1
-     * @param array  $array2
-     *
-     * @return array $difference
-     */
-    private function array_diff_assoc_recursive($array1, $array2) {
-        $difference = [];
-        foreach($array1 as $key => $value) {
-            if(is_array($value)) {
-                if(!isset($array2[$key]) || !is_array($array2[$key])) {
-                    $difference[$key] = $value;
-                } else {
-                    $new_diff = $this->array_diff_assoc_recursive($value, $array2[$key]);
-                    if(!empty($new_diff))
-                        $difference[$key] = $new_diff;
-                }
-            } else if(!array_key_exists($key,$array2) || $array2[$key] !== $value) {
-                $difference[$key] = $value;
+            if ($notify) {
+                // All set, message user.
+                // And set up keyboard.
+                Telegram::sendMessage([
+                    'chat_id'      => $this->telegram_id,
+                    'parse_mode'   => 'markdown',
+                    'text'         => Speaker::authorized($name, $program, $situation),
+                    'reply_markup' => Speaker::getReplyKeyboardMarkup(),
+                ]);
             }
+            return true;
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+            return false;
         }
-        return $difference;
     }
 }
