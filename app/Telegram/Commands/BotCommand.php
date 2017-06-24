@@ -5,9 +5,9 @@ namespace App\Telegram\Commands;
 use Telegram\Bot\Keyboard\Keyboard;
 
 /**
- * New Settings Command.
+ * Implements an easy way to handle bot commands.
  */
-class NewSettingsCommand
+class BotCommand
 {
     const NAME = '';
 
@@ -54,35 +54,24 @@ class NewSettingsCommand
         ]);
     }
 
-    private function getKeyboard() {
-        return Keyboard::make()
-            ->inline()
-            ->row(
-                Keyboard::inlineButton([
-                    'text' => '✅ Novas Aulas',
-                    'callback_data' => 'aulas.toggle',
-                ])
-            )->row(Keyboard::inlineButton([
-                'text' => '✅ Novas Notas',
-                'callback_data' => 'aulas.toggle',
-            ]))->row(Keyboard::inlineButton([
-                'text' => '✅ Novas Faltas',
-                'callback_data' => 'skippedclasses.toggle',
-            ]));
-    }
-
     protected function replyWithMessage($params)
     {
-        if ($this->update->isType('callback_query')) {
-            $params['chat_id'] = $this->update['callback_query']['from']['id'];
-        } else {
-            $params['chat_id'] = $this->message['chat']['id'];
-        }
+        $params = $this->prepareParams($params);
         $this->telegram->sendMessage($params);
     }
 
     protected function replyWithEditedMessage($params)
     {
+        $params = $this->prepareParams($params);
+        $this->telegram->editMessageText($params);
+    }
+
+    protected function replyWithChatAction($params) {
+        $params = $this->prepareParams($params);
+        $this->telegram->sendChatAction($params);
+    }
+
+    private function prepareParams($params) {
         if ($this->update->isType('callback_query')) {
             $params['chat_id'] = $this->update['callback_query']['from']['id'];
             $params['message_id'] = $this->update['callback_query']['message']['message_id'];
@@ -90,6 +79,6 @@ class NewSettingsCommand
             $params['chat_id'] = $this->message['chat']['id'];
         }
 
-        $this->telegram->editMessageText($params);
+        return $params;
     }
 }

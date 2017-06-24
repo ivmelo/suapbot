@@ -4,38 +4,19 @@ namespace App\Telegram\Commands;
 
 use Telegram\Bot\Keyboard\Keyboard;
 
+use App\User;
+
 /**
  * New Settings Command.
  */
-class NewSettingsCommand
+class NewSettingsCommand extends BotCommand
 {
     const NAME = 'settings';
-
     const DESCRIPTION = 'This is a description for a command.';
 
-    private $update;
-
-    private $arguments;
-
-    private $telegram;
-
-    private $message;
-
-    function __construct($telegram, $update)
-    {
-        $this->update = $update;
-        $this->telegram = $telegram;
-        $this->message = $update->getMessage();
-    }
-
-    public function handle()
-    {
-        if ($this->update->isType('callback_query')) {
-            $this->handleCallback($this->update['callback_query']['data']);
-        } else {
-            $this->handleCommand();
-        }
-    }
+    const CLASS_SETTINGS = 'settings.class.toggle';
+    const ATTENDANCE_SETTINGS = 'settings.attendance.toggle';
+    const GRADES_SETTINGS = 'settings.grades.toggle';
 
     protected function handleCommand()
     {
@@ -47,48 +28,50 @@ class NewSettingsCommand
 
     protected function handleCallback($callback_data)
     {
-        $this->replyWithEditedMessage([
-            'text' => $callback_data,
-            'reply_markup' => $this->getKeyboard(),
-        ]);
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['callback_query']['from']['id']
+        )->first();
+
+        if (! $user) {
+            // This should never happen.
+        } else {
+
+            // Find out which setting the user is toggling.
+            switch ($callback_data) {
+                case self::CLASS_SETTINGS:
+                    $user->settings->classes = ! $user->settings->classes;
+                    break;
+                case self::GRADES_SETTINGS:
+                    $user->settings->grades = ! $user->settings->grades;
+                    break;
+                case self::ATTENDANCE_SETTINGS:
+                    $user->settings->attendance = ! $user->settings->attendance;
+                    break;
+            }
+
+            // Save and reply.
+            $user->settings->save();
+
+            $this->replyWithEditedMessage([
+                'text' => $callback_data,
+                'reply_markup' => $this->getKeyboard($user->settings),
+            ]);
+        }
     }
 
-    private function getKeyboard() {
-        return Keyboard::make()
-            ->inline()
-            ->row(
-                Keyboard::inlineButton([
-                    'text' => '✅ Novas Aulas',
-                    'callback_data' => 'classes.toggle',
-                ])
-            )->row(Keyboard::inlineButton([
-                'text' => '✅ Novas Notas',
-                'callback_data' => 'grades.toggle',
+
+    private function getKeyboard($settings) {
+        return Keyboard::make()->inline()
+            ->row(Keyboard::inlineButton([
+                'text' => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
+                'callback_data' => self::CLASS_SETTINGS,
             ]))->row(Keyboard::inlineButton([
-                'text' => '✅ Novas Faltas',
-                'callback_data' => 'attendance.toggle',
+                'text' => $settings->grades ? '✅ Notas' : '🚫 Notas',
+                'callback_data' => self::GRADES_SETTINGS,
+            ]))->row(Keyboard::inlineButton([
+                'text' => $settings->classes ? '✅ Faltas' : '🚫 Faltas',
+                'callback_data' => self::ATTENDANCE_SETTINGS,
             ]));
-    }
-
-    protected function replyWithMessage($params)
-    {
-        if ($this->update->isType('callback_query')) {
-            $params['chat_id'] = $this->update['callback_query']['from']['id'];
-        } else {
-            $params['chat_id'] = $this->message['chat']['id'];
-        }
-        $this->telegram->sendMessage($params);
-    }
-
-    protected function replyWithEditedMessage($params)
-    {
-        if ($this->update->isType('callback_query')) {
-            $params['chat_id'] = $this->update['callback_query']['from']['id'];
-            $params['message_id'] = $this->update['callback_query']['message']['message_id'];
-        } else {
-            $params['chat_id'] = $this->message['chat']['id'];
-        }
-
-        $this->telegram->editMessageText($params);
     }
 }
