@@ -180,7 +180,7 @@ class User extends Authenticatable
                 // All set, message user.
                 // And set up keyboard.
                 Telegram::sendMessage([
-                    'chat_id'      => $this->telegram_id,
+                    'chat_id'      => $this->user->telegram_id,
                     'parse_mode'   => 'markdown',
                     'text'         => Speaker::authorized($name, $program, $situation),
                     'reply_markup' => Speaker::getReplyKeyboardMarkup(),

@@ -3,11 +3,18 @@
 namespace App;
 
 use Bugsnag;
+use Telegram;
 use Ivmelo\SUAP\SUAP;
+use App\Telegram\Tools\Markify;
 use Illuminate\Database\Eloquent\Model;
 
 class ReportCard extends Model
 {
+    // Status for grades processing.
+    const NO_CHANGES = 0;
+    const UPDATED = 1;
+    const COURSES_CHANGED = 2;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -31,30 +38,40 @@ class ReportCard extends Model
      * @param boolean $notify Wether to notify the user or not.
      * @return string
      */
-    public function updateReportCard($notify = false)
+    public function doUpdate($notify = false)
     {
+        $status = self::NO_CHANGES;
+
         try {
             $suap = new SUAP($this->user->suap_token);
 
+            // Get old and new data.
             $currentDataJson = $this->course_data;
             $currentData = json_decode($currentDataJson, true);
-            $newData = $suap->getMeuBoletim($this->school_year, $this->school_term);
+            $newData = $suap->getMeuBoletim($this->user->school_year, $this->user->school_term);
             $newDataJson = json_encode($newData);
 
+            // Compare new data with old data. If not the same, there were changes.
             if ($newDataJson != $currentDataJson) {
-                // Data has changed. Save new data.
-                $this->course_data = $newDataJson;
 
-                echo "changes...\n";
+                // Data has changed. Save it.
+                $this->course_data = $newDataJson;
+                $this->save();
 
                 if (count($newData) != count($currentData)) {
-                    // TODO: Courses added/removed.
-                    echo "courses added/removed\n";
+                    // Courses were added or removed. Notify user.
+                    $status = self::COURSES_CHANGED;
 
+                    // Notify user if set to do so.
+                    if ($notify) {
+                        Telegram::sendMessage([
+                            'chat_id'      => $this->user->telegram_id,
+                            'parse_mode'   => 'markdown',
+                            'text'         => "ℹ️ Novas disciplinas foram adicionadas ou removidas do seu boletim. \n\nDigite /boletim para ver detalhes.",
+                        ]);
+                    }
                 } else {
                     $updates = [];
-
-                    echo "comparing\n";
 
                     // Compare course data.
                     for ($i = 0; $i < count($currentData); $i++) {
@@ -64,48 +81,39 @@ class ReportCard extends Model
 
                         // Compare the old course data with the new course data.
                         if ($updatedData = $this->array_diff_assoc_recursive($newCourseData, $currentCourseData)) {
-
-                            echo "changes\n";
-
                             // Add the course name to the list of updated info, so it can be displayed.
                             $updatedData['disciplina'] = $currentCourseData['disciplina'];
                             array_push($updates, $updatedData);
                         }
                     }
 
-                    echo "counting\n";
-
-
+                    // Check if there is updates (just to make sure...).
                     if (count($updates) > 0) {
-                        echo "replying\n";
+                        $status = self::UPDATED;
 
-                        $gradesResponse = Markify::parseBoletim($updates);
-
+                        // Notify user if set to do so.
                         if ($notify) {
                             Telegram::sendMessage([
-                                'chat_id'      => $this->telegram_id,
+                                'chat_id'      => $this->user->telegram_id,
                                 'parse_mode'   => 'markdown',
-                                'text'         => $gradesResponse,
+                                'text'         => Markify::parseBoletim($updates),
                             ]);
                         }
-
-                    } else {
-                        echo "updates < 0\n";
                     }
 
                     print_r($updates);
                 }
 
-                // SAVE EVERYTHING...
-                $this->save();
             } else {
-                // TODO: No changes.
-                echo "no changes\n";
+                // No changes.
+                $status = self::NO_CHANGES;
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
             return false;
         }
+
+        return $status;
     }
 
     /**
