@@ -129,6 +129,10 @@ class Speaker
         return $reply_markup;
     }
 
+    public static function getSettingsMessage() {
+        return "🔧 *Configurações:* \n\nVocê pode usar os botões abaixo para selecionar quando deseja receber notificações. \n\nVocê pode ser notificado quando houver novas aulas, faltas ou notas no seu boletim.";
+    }
+
     /**
      * Get the writen form of the day of the week.
      *

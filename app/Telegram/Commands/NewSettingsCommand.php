@@ -5,6 +5,7 @@ namespace App\Telegram\Commands;
 use Telegram\Bot\Keyboard\Keyboard;
 
 use App\User;
+use App\Telegram\Tools\Speaker;
 
 /**
  * New Settings Command.
@@ -14,16 +15,23 @@ class NewSettingsCommand extends BotCommand
     const NAME = 'settings';
     const DESCRIPTION = 'This is a description for a command.';
 
-    const CLASS_SETTINGS = 'settings.class.toggle';
+    const CLASSES_SETTINGS = 'settings.classes.toggle';
     const ATTENDANCE_SETTINGS = 'settings.attendance.toggle';
     const GRADES_SETTINGS = 'settings.grades.toggle';
 
     protected function handleCommand()
     {
-        $this->replyWithMessage([
-            'text' => json_encode($this->message),
-            'reply_markup' => $this->getKeyboard(),
-        ]);
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['message']['from']['id']
+        )->first();
+
+        if ($user) {
+            $this->replyWithMessage([
+                'text' => Speaker::getSettingsMessage(),
+                'reply_markup' => $this->getKeyboard($user->settings),
+            ]);
+        }
     }
 
     protected function handleCallback($callback_data)
@@ -33,13 +41,10 @@ class NewSettingsCommand extends BotCommand
             $this->update['callback_query']['from']['id']
         )->first();
 
-        if (! $user) {
-            // This should never happen.
-        } else {
-
+        if ($user) {
             // Find out which setting the user is toggling.
             switch ($callback_data) {
-                case self::CLASS_SETTINGS:
+                case self::CLASSES_SETTINGS:
                     $user->settings->classes = ! $user->settings->classes;
                     break;
                 case self::GRADES_SETTINGS:
@@ -54,7 +59,7 @@ class NewSettingsCommand extends BotCommand
             $user->settings->save();
 
             $this->replyWithEditedMessage([
-                'text' => $callback_data,
+                'text' => Speaker::getSettingsMessage(),
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
         }
@@ -65,12 +70,12 @@ class NewSettingsCommand extends BotCommand
         return Keyboard::make()->inline()
             ->row(Keyboard::inlineButton([
                 'text' => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
-                'callback_data' => self::CLASS_SETTINGS,
+                'callback_data' => self::CLASSES_SETTINGS,
             ]))->row(Keyboard::inlineButton([
                 'text' => $settings->grades ? '✅ Notas' : '🚫 Notas',
                 'callback_data' => self::GRADES_SETTINGS,
             ]))->row(Keyboard::inlineButton([
-                'text' => $settings->classes ? '✅ Faltas' : '🚫 Faltas',
+                'text' => $settings->attendance ? '✅ Faltas' : '🚫 Faltas',
                 'callback_data' => self::ATTENDANCE_SETTINGS,
             ]));
     }

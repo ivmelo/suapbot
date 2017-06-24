@@ -79,6 +79,8 @@ class BotCommand
             $params['chat_id'] = $this->message['chat']['id'];
         }
 
+        $params['parse_mode'] = 'markdown';
+
         return $params;
     }
 }
