@@ -10,6 +10,7 @@ use Illuminate\Foundation\Inspiring;
 use Telegram\Bot\Keyboard\Keyboard;
 
 use App\Telegram\Commands\NewSettingsCommand;
+use App\Telegram\Commands\ClassMaterialCommand;
 
 class TelegramBotController extends Controller
 {
@@ -58,15 +59,21 @@ class TelegramBotController extends Controller
 
 
         if ($update->isType('callback_query')) {
-            $ns = new NewSettingsCommand($this->telegram, $update);
-            $ns->handle();
+            if (strrpos($update['callback_query']['data'], 'settings') === 0) {
+                $ns = new NewSettingsCommand($this->telegram, $update);
+                $ns->handle();
+            } elseif (strrpos($update['callback_query']['data'], 'turmas') === 0) {
+                $ns = new ClassMaterialCommand($this->telegram, $update);
+                $ns->handle();
+            }
         }
 
         if (str_contains($message['text'], [NewSettingsCommand::NAME])) {
-            // $query = $update->getCallbackQuery();
             $ns = new NewSettingsCommand($this->telegram, $update);
             $ns->handle();
-
+        } elseif (str_contains($message['text'], [ClassMaterialCommand::NAME])) {
+            $ns = new ClassMaterialCommand($this->telegram, $update);
+            $ns->handle();
         } elseif (str_contains($message['text'], ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
             $this->telegram->sendMessage([
                 'chat_id' => $message['chat']['id'],
@@ -81,14 +88,9 @@ class TelegramBotController extends Controller
             $this->telegram->triggerCommand('boletim', $update);
         } elseif (str_contains($message['text'], ['aulas', 'horário', 'sala', 'aula'])) {
             $this->telegram->triggerCommand('aulas', $update);
+        } elseif (str_contains($message['text'], ['calendário', 'calendario'])) {
+            $this->telegram->triggerCommand('calendario', $update);
         }
-
-        // else {
-        //     $this->telegram->sendMessage([
-        //         'chat_id' => $message['chat']['id'],
-        //         'text' => 'Desculpa, não entendi. Me pergunte sobre suas notas, faltas ou aulas. (Ex. quais as minhas aulas de amanhã?, Mostre meu boletim.) ou tente enviar um dos comandos a seguir: /boletim, /aulas, /config.',
-        //     ]);
-        // }
 
         return response()->json([
             'SUAPBot',

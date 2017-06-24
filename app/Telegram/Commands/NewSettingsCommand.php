@@ -12,8 +12,8 @@ use App\Telegram\Tools\Speaker;
  */
 class NewSettingsCommand extends BotCommand
 {
-    const NAME = 'settings';
-    const DESCRIPTION = 'This is a description for a command.';
+    const NAME = 'ajustes';
+    const DESCRIPTION = 'Ajusta as configurações de notificação.';
 
     const CLASSES_SETTINGS = 'settings.classes.toggle';
     const ATTENDANCE_SETTINGS = 'settings.attendance.toggle';
@@ -21,6 +21,10 @@ class NewSettingsCommand extends BotCommand
 
     protected function handleCommand()
     {
+        $this->replyWithChatAction([
+            'action' => 'typing',
+        ]);
+
         $user = User::with('settings')->where(
             'telegram_id',
             $this->update['message']['from']['id']
@@ -35,7 +39,7 @@ class NewSettingsCommand extends BotCommand
     }
 
     protected function handleCallback($callback_data)
-    {
+    {    
         $user = User::with('settings')->where(
             'telegram_id',
             $this->update['callback_query']['from']['id']

@@ -55,6 +55,13 @@ class StartCommand extends Command
             }
 
             $user->save();
+
+            // Store a new settings object for this user.
+            $user->settings()->create([
+                'grades' => true,
+                'classes' => true,
+                'attendance' => true,
+            ]);
         }
 
         // This will prepare a list of available commands and send the user.

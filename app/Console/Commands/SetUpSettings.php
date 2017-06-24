@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\User;
-// use App\Settings;
 
 class SetUpSettings extends Command
 {
@@ -43,9 +42,6 @@ class SetUpSettings extends Command
 
         foreach ($users as $user) {
             if (! $user->settings) {
-                // $settings = new Settings();
-                //
-                // $settings->fill();
 
                 $user->settings()->create([
                     'grades' => true,
