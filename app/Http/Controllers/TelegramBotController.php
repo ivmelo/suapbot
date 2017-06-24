@@ -51,12 +51,10 @@ class TelegramBotController extends Controller
         $this->telegram->addCommand(\App\Telegram\Commands\SobreCommand::class);
         $this->telegram->addCommand(\App\Telegram\Commands\NotifyCommand::class);
         $this->telegram->addCommand(\App\Telegram\Commands\GradesAliasCommand::class);
-        // $this->telegram->addCommand(\App\Telegram\Commands\SettingsCommand::class);
 
         $update = $this->telegram->commandsHandler(true);
 
         $message = $update->getMessage();
-
 
         if ($update->isType('callback_query')) {
             if (strrpos($update['callback_query']['data'], 'settings') === 0) {
@@ -68,28 +66,30 @@ class TelegramBotController extends Controller
             }
         }
 
-        if (str_contains($message['text'], [NewSettingsCommand::NAME])) {
-            $ns = new NewSettingsCommand($this->telegram, $update);
-            $ns->handle();
-        } elseif (str_contains($message['text'], [ClassMaterialCommand::NAME])) {
-            $ns = new ClassMaterialCommand($this->telegram, $update);
-            $ns->handle();
-        } elseif (str_contains($message['text'], ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
-            $this->telegram->sendMessage([
-                'chat_id' => $message['chat']['id'],
-                'text' => Inspiring::quote(),
-            ]);
-        } elseif (str_contains($message['text'], ['obrigado', 'valeu', 'thanks', 'thx'])) {
-            $this->telegram->sendMessage([
-                'chat_id' => $message['chat']['id'],
-                'text' => ':)',
-            ]);
-        } elseif (str_contains($message['text'], ['notas', 'boletim', 'faltas'])) {
-            $this->telegram->triggerCommand('boletim', $update);
-        } elseif (str_contains($message['text'], ['aulas', 'horário', 'sala', 'aula'])) {
-            $this->telegram->triggerCommand('aulas', $update);
-        } elseif (str_contains($message['text'], ['calendário', 'calendario'])) {
-            $this->telegram->triggerCommand('calendario', $update);
+        if (isset($message['text'])) {
+            if (str_contains($message['text'], [NewSettingsCommand::NAME])) {
+                $ns = new NewSettingsCommand($this->telegram, $update);
+                $ns->handle();
+            } elseif (str_contains($message['text'], [ClassMaterialCommand::NAME])) {
+                $ns = new ClassMaterialCommand($this->telegram, $update);
+                $ns->handle();
+            } elseif (str_contains($message['text'], ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
+                $this->telegram->sendMessage([
+                    'chat_id' => $message['chat']['id'],
+                    'text' => Inspiring::quote(),
+                ]);
+            } elseif (str_contains($message['text'], ['obrigado', 'valeu', 'thanks', 'thx'])) {
+                $this->telegram->sendMessage([
+                    'chat_id' => $message['chat']['id'],
+                    'text' => ':)',
+                ]);
+            } elseif (str_contains($message['text'], ['notas', 'boletim', 'faltas'])) {
+                $this->telegram->triggerCommand('boletim', $update);
+            } elseif (str_contains($message['text'], ['aulas', 'horário', 'sala', 'aula'])) {
+                $this->telegram->triggerCommand('aulas', $update);
+            } elseif (str_contains($message['text'], ['calendário', 'calendario'])) {
+                $this->telegram->triggerCommand('calendario', $update);
+            }
         }
 
         return response()->json([

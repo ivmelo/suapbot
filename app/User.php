@@ -197,7 +197,6 @@ class User extends Authenticatable
 
                 echo "comparing\n";
 
-
                 // Compare course data.
                 for ($i = 0; $i < count($currentData); $i++) {
                     // Grab data for current course.

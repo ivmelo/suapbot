@@ -32,12 +32,26 @@ class ClassMaterialCommand extends BotCommand
         if ($user) {
             if ($user) {
                 $suap = new SUAP($user->suap_token);
-                $turmas = $suap->getTurmasVirtuais($user->school_year, $user->school_term);
 
-                $this->replyWithMessage([
-                    'text' => "📚 *Turmas Virtuais:* \n\nSelecione uma turma para ver detalhes da turma, materiais de aula, participantes e mais.",
-                    'reply_markup' => $this->getKeyboard($turmas),
-                ]);
+                try {
+                    $turmas = $suap->getTurmasVirtuais($user->school_year, $user->school_term);
+
+                    if (count($turmas) > 0) {
+                        $this->replyWithMessage([
+                            'text' => "📚 *Turmas Virtuais:* \n\nSelecione uma turma para ver detalhes da turma, materiais de aula, participantes e mais.",
+                            'reply_markup' => $this->getKeyboard($turmas),
+                        ]);
+                    } else {
+                        $this->replyWithMessage([
+                            'text' => "ℹ️ Sem turmas!",
+                        ]);
+                    }
+
+                } catch (Exception $e) {
+                    $this->replyWithMessage([
+                        'text' => "⚠️ Houve um erro ao recuperar as suas turmas.",
+                    ]);
+                }
             }
         }
     }
@@ -135,7 +149,7 @@ class ClassMaterialCommand extends BotCommand
 
         foreach ($turma['participantes'] as $participante) {
             $response .= "👨‍🎓 " . $participante['nome'] . "\n";
-            $response .= "🆔 " . $participante['matricula'] . "\n";
+            $response .= "" . $participante['matricula'] . "\n";
             $response .= "" . $participante['email'] . "\n\n";
         }
 
@@ -159,7 +173,7 @@ class ClassMaterialCommand extends BotCommand
         $response .= "\n";
 
         foreach ($turma['locais_de_aula'] as $localdeaula) {
-            $response .= "‍📧 *" . $localdeaula . "*\n";
+            $response .= "‍🏫 *" . $localdeaula . "*\n";
         }
 
         $this->replywithMessage([
