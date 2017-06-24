@@ -35,7 +35,7 @@ class ClassesCommand extends Command
         // Get user from DB.
         $user = User::where('telegram_id', $telegram_id)->first();
 
-        // If the user is found.
+        // If the user was found.
         if ($user) {
 
             // User has set credentials.
@@ -87,113 +87,30 @@ class ClassesCommand extends Command
     {
         $day = trim(mb_strtolower($day));
 
-        switch ($day) {
-            case 1:
-            case 'domingo':
-            case 'sunday':
-            case 'sun':
-            case 'dom':
-                return 1;
-                break;
+        $day_num = date('w') + 1;
 
-            case 2:
-            case 'segunda':
-            case 'seg':
-            case 'segunda-feira':
-            case 'segunda feira':
-            case 'monday':
-            case 'mon':
-                return 2;
-                break;
-
-            case 3:
-            case 'terça':
-            case 'terca':
-            case 'ter':
-            case 'terça-feira':
-            case 'terca-feira':
-            case 'terça feira':
-            case 'terca feira':
-            case 'tuesday':
-            case 'tue':
-                return 3;
-                break;
-
-            case 4:
-            case 'quarta':
-            case 'qua':
-            case 'quarta-feira':
-            case 'quarta feira':
-            case 'wednesday':
-            case 'wed':
-            case 'weed':
-                return 4;
-                break;
-
-            case 5:
-            case 'quinta':
-            case 'qui':
-            case 'quinta-feira':
-            case 'quinta feira':
-            case 'thrusday':
-            case 'thr':
-            case 'thu':
-                return 5;
-                break;
-
-            case 6:
-            case 'sexta':
-            case 'sex':
-            case 'sexta-feira':
-            case 'sexta feira':
-            case 'friday':
-            case 'fri':
-                return 6;
-                break;
-
-            case 7:
-            case 'sábado':
-            case 'sabado':
-            case 'sáb':
-            case 'sab':
-            case 'saturday':
-            case 'sat':
-            case 'caturday':
-                return 7;
-                break;
-
-            case 'amanhã':
-            case 'amanha':
-            case 'amn':
-            case 'tomorrow':
-            case 'tmr':
-                $day = date('w') + 2;
-                if ($day > 7) {
-                    $day = 1;
-                }
-
-                return $day;
-                break;
-
-            case 'depois de amanhã':
-            case 'depois de amanhã':
-            case 'depois damanhã':
-            case 'depois damanha':
-                $day = date('w') + 3;
-                if ($day == 9) {
-                    $day = 1;
-                } elseif ($day == 10) {
-                    $day = 2;
-                } elseif ($day == 11) {
-                    $day = 3;
-                }
-
-                return $day;
-                break;
-
-            default:
-                return date('w') + 1;
-                break;
+        if (str_contains($day, ['1', 'dom', 'sun'])) {
+            $day_num =  1;
+        } elseif (str_contains($day, ['2', 'seg', 'mon'])) {
+            $day_num =  2;
+        } elseif (str_contains($day, ['3', 'ter', 'tue'])) {
+            $day_num =  3;
+        } elseif (str_contains($day, ['4', 'qua', 'wed'])) {
+            $day_num =  4;
+        } elseif (str_contains($day, ['5', 'qui', 'thr', 'thu'])) {
+            $day_num =  5;
+        } elseif (str_contains($day, ['6', 'sex', 'fri'])) {
+            $day_num =  6;
+        } elseif (str_contains($day, ['7', 'sab', 'sat'])) {
+            $day_num =  7;
+        } elseif (str_contains($day, ['amanhã', 'amanha', 'tomorrow', 'tmr'])) {
+            $day_num++;
         }
+
+        if ($day_num > 7) {
+            $day_num = 1;
+        }
+
+        return $day_num;
     }
 }

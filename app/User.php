@@ -57,7 +57,6 @@ class User extends Authenticatable
         return $data['token'];
     }
 
-
     /**
      * Update school year or term for a student.
      *
@@ -116,7 +115,7 @@ class User extends Authenticatable
 
     public function settings()
     {
-        return $this->hasOne(App\Settings::class);
+        return $this->hasOne(Settings::class);
     }
 
     /**

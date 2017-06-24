@@ -5,22 +5,92 @@ namespace App\Http\Controllers;
 use Bugsnag;
 use Illuminate\Http\Request;
 use App\User;
-use Telegram;
+use Telegram\Bot\Api;
+use Illuminate\Foundation\Inspiring;
+use Telegram\Bot\Keyboard\Keyboard;
+
+use App\Telegram\Commands\NewSettingsCommand;
+use App\Telegram\Commands\ClassMaterialCommand;
 
 class TelegramBotController extends Controller
 {
-    public function handleCommands()
-    {
-        Telegram::addCommand(\App\Telegram\Commands\StartCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\GradesCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\ClassesCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\CalendarioCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\SobreCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\NotifyCommand::class);
-        Telegram::addCommand(\App\Telegram\Commands\GradesAliasCommand::class);
 
-        Telegram::commandsHandler(true);
+    /**
+     * The telegram API client.
+     *
+     * @var \Telegram\Bot\Api
+     */
+    protected $telegram;
+
+    /**
+     * The public constructor of this class.
+     *
+     * @param \Telegram\Bot\Api $telegram
+     */
+    public function __construct(Api $telegram)
+    {
+        $this->telegram = $telegram;
+    }
+
+    protected $commands = [
+        \App\Telegram\Commands\SettingsCommand::class,
+    ];
+
+    /**
+     * The public constructor of this class.
+     *
+     * @param \Telegram\Bot\Api $telegram
+     */
+    public function handleWebhook()
+    {
+        $this->telegram->addCommand(\App\Telegram\Commands\StartCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\GradesCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\ClassesCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\CalendarioCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\SobreCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\NotifyCommand::class);
+        $this->telegram->addCommand(\App\Telegram\Commands\GradesAliasCommand::class);
+        // $this->telegram->addCommand(\App\Telegram\Commands\SettingsCommand::class);
+
+        $update = $this->telegram->commandsHandler(true);
+
+        $message = $update->getMessage();
+
+
+        if ($update->isType('callback_query')) {
+            if (strrpos($update['callback_query']['data'], 'settings') === 0) {
+                $ns = new NewSettingsCommand($this->telegram, $update);
+                $ns->handle();
+            } elseif (strrpos($update['callback_query']['data'], 'turmas') === 0) {
+                $ns = new ClassMaterialCommand($this->telegram, $update);
+                $ns->handle();
+            }
+        }
+
+        if (str_contains($message['text'], [NewSettingsCommand::NAME])) {
+            $ns = new NewSettingsCommand($this->telegram, $update);
+            $ns->handle();
+        } elseif (str_contains($message['text'], [ClassMaterialCommand::NAME])) {
+            $ns = new ClassMaterialCommand($this->telegram, $update);
+            $ns->handle();
+        } elseif (str_contains($message['text'], ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
+            $this->telegram->sendMessage([
+                'chat_id' => $message['chat']['id'],
+                'text' => Inspiring::quote(),
+            ]);
+        } elseif (str_contains($message['text'], ['obrigado', 'valeu', 'thanks', 'thx'])) {
+            $this->telegram->sendMessage([
+                'chat_id' => $message['chat']['id'],
+                'text' => ':)',
+            ]);
+        } elseif (str_contains($message['text'], ['notas', 'boletim', 'faltas'])) {
+            $this->telegram->triggerCommand('boletim', $update);
+        } elseif (str_contains($message['text'], ['aulas', 'horário', 'sala', 'aula'])) {
+            $this->telegram->triggerCommand('aulas', $update);
+        } elseif (str_contains($message['text'], ['calendário', 'calendario'])) {
+            $this->telegram->triggerCommand('calendario', $update);
+        }
 
         return response()->json([
             'SUAPBot',
@@ -50,7 +120,6 @@ class TelegramBotController extends Controller
         if (! $user->suap_id && ! $user->suap_key) {
             try {
                 $user->authorize($request->get('suapid'), $request->get('suapkey'));
-
                 return view('suapauth.success');
             } catch (\Exception $e) {
                 // return redirect()->back()->with('error_message', 'Erro ao autorizar o seu acesso.');

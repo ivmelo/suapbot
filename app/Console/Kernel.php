@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateUserReportCard::class,
         Commands\RefreshTokens::class,
         Commands\UpdateSchoolYear::class,
+        Commands\SetUpSettings::class,
     ];
 
     /**

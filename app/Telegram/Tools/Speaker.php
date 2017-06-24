@@ -113,8 +113,8 @@ class Speaker
     {
         // keyboard system...
         $keyboard = [
-            ['/aulas', '/boletim'], // add proxaula
-            ['/aulas amanhã', '/calendario'], // add config
+            ['aulas', 'boletim', 'turmas'], // add proxaula
+            ['aulas de amanhã', 'calendario', 'ajustes'], // add config
             // ['/help', '/sobre']
         ];
 
@@ -127,6 +127,10 @@ class Speaker
         // $reply_markup = Telegram::replyKeyboardHide();
 
         return $reply_markup;
+    }
+
+    public static function getSettingsMessage() {
+        return "🔧 *Configurações:* \n\nVocê pode usar os botões abaixo para selecionar quando deseja receber notificações. \n\nVocê pode ser notificado quando houver novas aulas, faltas ou notas no seu boletim.";
     }
 
     /**
