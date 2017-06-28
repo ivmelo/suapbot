@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('day_name', function () {
-    return App\Telegram\Tools\Speaker::getDayOfTheWeek(1, true);
-});
-
 Route::post('webhooks/telegram', 'TelegramBotController@handleWebhook');
 
 Route::auth();
