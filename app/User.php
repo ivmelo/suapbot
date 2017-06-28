@@ -158,9 +158,6 @@ class User extends Authenticatable
                 $course_data = $client->getMeuBoletim(2017, 1);
                 $course_data_json = json_encode($course_data);
 
-                // Turn the notifications on.
-                $this->notify = true;
-
                 $this->save();
 
                 $this->report_card()->create([
@@ -179,7 +176,7 @@ class User extends Authenticatable
                 // All set, message user.
                 // And set up keyboard.
                 Telegram::sendMessage([
-                    'chat_id'      => $this->user->telegram_id,
+                    'chat_id'      => $this->telegram_id,
                     'parse_mode'   => 'markdown',
                     'text'         => Speaker::authorized($name, $program, $situation),
                     'reply_markup' => Speaker::getReplyKeyboardMarkup(),

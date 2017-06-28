@@ -128,11 +128,11 @@ class ClassMaterialCommand extends BotCommand
 
     private function showAlunos($turma)
     {
-        $response = "🎓 *Alunos:*\n\n";
+        $response = "👩‍🎓👨‍🎓 *Alunos*:\n\n";
 
         foreach ($turma['participantes'] as $participante) {
             $response .= "👨‍🎓 " . $participante['nome'] . "\n";
-            $response .= "" . $participante['matricula'] . "\n";
+            $response .= "🎓" . $participante['matricula'] . "\n";
             $response .= "" . $participante['email'] . "\n\n";
         }
 
@@ -172,22 +172,22 @@ class ClassMaterialCommand extends BotCommand
 
         // Create buttons.
         $aulas_btn = Keyboard::inlineButton([
-            'text' => 'Aulas',
+            'text' => '🎒 Aulas',
             'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.aulas',
         ]);
 
         $material_btn = Keyboard::inlineButton([
-            'text' => 'Material',
+            'text' => '📚 Material',
             'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.material',
         ]);
 
         $alunos_btn = Keyboard::inlineButton([
-            'text' => 'Alunos',
+            'text' => '👩‍🎓 Alunos',
             'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.alunos',
         ]);
 
         $turmas_btn = Keyboard::inlineButton([
-            'text' => 'Turma',
+            'text' => '📖 Turma',
             'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.show',
         ]);
 
