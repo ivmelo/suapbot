@@ -47,7 +47,8 @@ class GradesCommand extends Command
 
                     $reportCard = $suap->getMeuBoletim($user->school_year, $user->school_term);
 
-                    $user->course_data = json_encode($reportCard);
+                    $user->report_card->course_data = json_encode($reportCard);
+                    $user->report_card->save();
                     $user->updateLastRequest();
                     $user->save();
 
