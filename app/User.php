@@ -144,9 +144,6 @@ class User extends Authenticatable
             $course_data_json = json_encode($course_data);
             $this->course_data = $course_data_json;
 
-            // Turn the notifications on.
-            $this->notify = true;
-
             $this->save();
         }
 
