@@ -3,13 +3,12 @@
 namespace App\Telegram\Commands;
 
 use Telegram\Bot\Keyboard\Keyboard;
-
+use App\Telegram\Tools\Speaker;
 use Ivmelo\SUAP\SUAP;
 use App\User;
-use App\Telegram\Tools\Speaker;
 
 /**
- * New Settings Command.
+ * TODO: Rename this class.
  */
 class ClassMaterialCommand extends BotCommand
 {
@@ -47,7 +46,7 @@ class ClassMaterialCommand extends BotCommand
                         ]);
                     }
 
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->replyWithMessage([
                         'text' => "⚠️ Houve um erro ao recuperar as suas turmas.",
                     ]);
@@ -58,10 +57,6 @@ class ClassMaterialCommand extends BotCommand
 
     protected function handleCallback($callback_data)
     {
-        $this->replyWithChatAction([
-            'action' => 'typing',
-        ]);
-
         $user = User::with('settings')->where(
             'telegram_id',
             $this->update['callback_query']['from']['id']
@@ -87,17 +82,12 @@ class ClassMaterialCommand extends BotCommand
                 case 'aulas':
                     $this->showAulas($turma);
                     break;
-
-                default:
-                    # code...
-                    break;
             }
-
-
-        } catch (Exception $e) {
-
+        } catch (\Exception $e) {
+            $this->replyWithMessage([
+                'text' => "⚠️ Um erro ocorreu. Tente novamente mais tarde..",
+            ]);
         }
-
     }
 
     private function showAulas($turma)
@@ -110,19 +100,12 @@ class ClassMaterialCommand extends BotCommand
             $response .= "📅 " . $this->parseDate($aula['data']) . "\n\n";
         }
 
-        $this->replywithMessage([
+        $this->replywithEditedMessage([
             'text'       => $response, //Markify::parseBoletim($reportCard),
             'parse_mode' => 'markdown',
             'disable_web_page_preview' => 'true',
-            'reply_markup' => $this->getNavigationKeyboard($turma)
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'aulas')
         ]);
-    }
-
-    private function parseDate($date)
-    {
-        $arr_date = explode('-', $date);
-        $arr_date = array_reverse($arr_date);
-        return implode('/', $arr_date);
     }
 
     private function showMateriais($turma)
@@ -130,16 +113,16 @@ class ClassMaterialCommand extends BotCommand
         $response = "📚 *Materiais de Aula:*\n\n";
 
         foreach ($turma['materiais_de_aula'] as $material) {
-            $response .= "👨‍🎓 " . $material['descricao'] . "\n";
+            $response .= "📓 " . $material['descricao'] . "\n";
             $response .= "📅 " . $this->parseDate($material['data_vinculacao']) . "\n";
             $response .= "🗂 " . "[https://suap.ifrn.edu.br" . $material['url'] . "]\n\n";
         }
 
-        $this->replywithMessage([
+        $this->replywithEditedMessage([
             'text'       => $response, //Markify::parseBoletim($reportCard),
             'parse_mode' => 'markdown',
             'disable_web_page_preview' => 'true',
-            'reply_markup' => $this->getNavigationKeyboard($turma)
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'material')
         ]);
     }
 
@@ -153,10 +136,10 @@ class ClassMaterialCommand extends BotCommand
             $response .= "" . $participante['email'] . "\n\n";
         }
 
-        $this->replywithMessage([
+        $this->replywithEditedMessage([
             'text'       => $response, //Markify::parseBoletim($reportCard),
             'parse_mode' => 'markdown',
-            'reply_markup' => $this->getNavigationKeyboard($turma)
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'alunos')
         ]);
     }
 
@@ -176,42 +159,59 @@ class ClassMaterialCommand extends BotCommand
             $response .= "‍🏫 *" . $localdeaula . "*\n";
         }
 
-        $this->replywithMessage([
+        $this->replywithEditedMessage([
             'text'       => $response, //Markify::parseBoletim($reportCard),
             'parse_mode' => 'markdown',
-            'reply_markup' => $this->getNavigationKeyboard($turma)
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'show')
         ]);
     }
 
-    private function getNavigationKeyboard($turma)
+    private function getNavigationKeyboard($turma, $action = false)
     {
         $keyboard = Keyboard::make()->inline();
 
-        $keyboard->row(
-            Keyboard::inlineButton([
-                'text' => 'Aulas',
-                'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.aulas',
-            ]),
-            Keyboard::inlineButton([
-                'text' => 'Material',
-                'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.material',
-            ])
-        );
+        // Create buttons.
+        $aulas_btn = Keyboard::inlineButton([
+            'text' => 'Aulas',
+            'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.aulas',
+        ]);
 
-        $keyboard->row(
-            Keyboard::inlineButton([
-                'text' => 'Alunos',
-                'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.alunos',
-            ]),
-            Keyboard::inlineButton([
-                'text' => 'Detalhes',
-                'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.show',
-            ])
-        );
+        $material_btn = Keyboard::inlineButton([
+            'text' => 'Material',
+            'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.material',
+        ]);
+
+        $alunos_btn = Keyboard::inlineButton([
+            'text' => 'Alunos',
+            'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.alunos',
+        ]);
+
+        $turmas_btn = Keyboard::inlineButton([
+            'text' => 'Turma',
+            'callback_data' => self::TURMAS_PREFIX . '.' . $turma['id'] . '.show',
+        ]);
+
+        // Create a keyboard without the current displayed option.
+        switch ($action) {
+            case 'show':
+                $keyboard->row($aulas_btn, $material_btn, $alunos_btn);
+                break;
+            case 'aulas':
+                $keyboard->row($material_btn, $alunos_btn, $turmas_btn);
+                break;
+            case 'material':
+                $keyboard->row($aulas_btn, $alunos_btn, $turmas_btn);
+                break;
+            case 'alunos':
+                $keyboard->row($aulas_btn, $material_btn, $turmas_btn);
+                break;
+            default:
+                $keyboard->row($aulas_btn, $material_btn, $alunos_btn, $turmas_btn);
+                break;
+        }
 
         return $keyboard;
     }
-
 
     private function getKeyboard($turmas) {
 
@@ -225,5 +225,12 @@ class ClassMaterialCommand extends BotCommand
         }
 
         return $keyboard;
+    }
+
+    private function parseDate($date)
+    {
+        $arr_date = explode('-', $date);
+        $arr_date = array_reverse($arr_date);
+        return implode('/', $arr_date);
     }
 }

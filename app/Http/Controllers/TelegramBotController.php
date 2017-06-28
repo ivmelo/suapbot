@@ -33,7 +33,14 @@ class TelegramBotController extends Controller
     }
 
     protected $commands = [
-        \App\Telegram\Commands\SettingsCommand::class,
+        \App\Telegram\Commands\StartCommand::class,
+        \App\Telegram\Commands\GradesCommand::class,
+        \App\Telegram\Commands\ClassesCommand::class,
+        \App\Telegram\Commands\CalendarioCommand::class,
+        \App\Telegram\Commands\AuthorizeCommand::class,
+        \App\Telegram\Commands\SobreCommand::class,
+        \App\Telegram\Commands\NotifyCommand::class,
+        \App\Telegram\Commands\GradesAliasCommand::class,
     ];
 
     /**
@@ -43,15 +50,7 @@ class TelegramBotController extends Controller
      */
     public function handleWebhook()
     {
-        $this->telegram->addCommand(\App\Telegram\Commands\StartCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\GradesCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\ClassesCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\CalendarioCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\AuthorizeCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\SobreCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\NotifyCommand::class);
-        $this->telegram->addCommand(\App\Telegram\Commands\GradesAliasCommand::class);
-
+        $this->telegram->addCommands($this->commands);
         $update = $this->telegram->commandsHandler(true);
 
         $message = $update->getMessage();
@@ -97,6 +96,12 @@ class TelegramBotController extends Controller
         ], 200);
     }
 
+    /**
+     * Handles the get request from the auth form.
+     *
+     * @param integer $telegram_id
+     * @param Response
+     */
     public function getAuth($telegram_id) {
         $user = User::where('telegram_id', '=', $telegram_id)->firstOrFail();
 
@@ -109,6 +114,13 @@ class TelegramBotController extends Controller
         abort(404);
     }
 
+    /**
+     * Handles the post request from the auth form.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param integer $telegram_id
+     * @param Response
+     */
     public function postAuth(Request $request, $telegram_id) {
         $this->validate($request, [
             'suapid' => 'required|integer',
