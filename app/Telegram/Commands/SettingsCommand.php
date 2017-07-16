@@ -61,6 +61,8 @@ class SettingsCommand extends Command
                 'parse_mode' => 'markdown',
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
+        } else {
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 
