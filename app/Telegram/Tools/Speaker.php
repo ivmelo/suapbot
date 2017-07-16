@@ -99,7 +99,7 @@ class Speaker
     public static function tutorial($user)
     {
         return "Primeiramente, preciso de autorização para acessar o seu boletim no SUAP.\n".
-            "Para isso, preciso que você acesse e siga as instruções no link a seguir: \n\n".
+            "Para isto, preciso que você acesse e siga as instruções no link a seguir: \n\n".
             action('TelegramBotController@getAuth', $user->telegram_id);
 
     }
@@ -129,7 +129,7 @@ class Speaker
     }
 
     public static function getSettingsMessage() {
-        return "🔧 *Configurações:* \n\nVocê pode usar os botões abaixo para selecionar quando deseja receber notificações. \n\nVocê pode ser notificado quando houver novas aulas, faltas ou notas no seu boletim.";
+        return "🔧 *Ajustes:* \n\nVocê pode usar os botões abaixo para selecionar quando deseja receber notificações. \n\nVocê pode ser notificado quando houver novas aulas, faltas ou notas no seu boletim.";
     }
 
     /**

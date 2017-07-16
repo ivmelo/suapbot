@@ -5,32 +5,32 @@ namespace App\Telegram\Commands;
 use App\Telegram\Tools\Speaker;
 
 /**
- * Settings Command.
+ * Help Command.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
-class SettingsCommand extends Command
+class AboutCommand extends Command
 {
     /**
      * The name of the command.
      *
      * @var string
      */
-    const NAME = 'ajustes';
+    const NAME = 'sobre';
 
     /**
      * The prefix for callback queries.
      *
      * @var string
      */
-    const PREFIX = 'settings';
+    const PREFIX = 'about';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    const DESCRIPTION = 'Mostra painel de ajustes.';
+    const DESCRIPTION = 'Mostra info sobre o bot.';
 
     /**
      * Handles a command call.

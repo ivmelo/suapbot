@@ -2,35 +2,33 @@
 
 namespace App\Telegram\Commands;
 
-use App\Telegram\Tools\Speaker;
-
 /**
- * Settings Command.
+ * Help Command.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
-class SettingsCommand extends Command
+class CalendarCommand extends Command
 {
     /**
      * The name of the command.
      *
      * @var string
      */
-    const NAME = 'ajustes';
+    const NAME = 'calendario';
 
     /**
      * The prefix for callback queries.
      *
      * @var string
      */
-    const PREFIX = 'settings';
+    const PREFIX = 'calendar';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    const DESCRIPTION = 'Mostra painel de ajustes.';
+    const DESCRIPTION = 'Envia o calendário acadêmico atual.';
 
     /**
      * Handles a command call.
@@ -44,9 +42,11 @@ class SettingsCommand extends Command
             ['action' => 'typing']
         );
 
+        $msg = "🗓 Calendário Acadêmico 2017: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017";
+
         // And send message.
         $this->replyWithMessage([
-            'text'       => Speaker::about(),
+            'text'       => $msg,
             'parse_mode' => 'markdown',
         ]);
     }
