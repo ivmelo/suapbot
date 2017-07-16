@@ -19,6 +19,34 @@
 
     <p>Em seguida, basta preencher o formulário abaixo:</p>
 
+    @if(Session::has('success_message'))
+    <div class="alert alert-dismissible alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('success_message') }}
+    </div>
+    @endif
+
+    @if(Session::has('info_message'))
+    <div class="alert alert-dismissible alert-info">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('info_message') }}
+    </div>
+    @endif
+
+    @if(Session::has('warning_message'))
+    <div class="alert alert-dismissible alert-warning">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('warning_message') }}
+    </div>
+    @endif
+
+    @if(Session::has('danger_message'))
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('danger_message') }}
+    </div>
+    @endif
+
     @if (count($errors) > 0)
         <div class="alert alert-warning pb-0">
             <ul>
@@ -29,7 +57,7 @@
         </div>
     @endif
 
-    <form action="{{ action('TelegramBotController@postAuth', $user->telegram_id) }}" method="post">
+    <form action="{{ action('SUAPBotController@postAuth', $user->telegram_id) }}" method="post">
         {{ csrf_field() }}
         <div class="form-group">
             <input type="text" name="suapid" value="{{ old('suapid') }}" placeholder="Matrícula no SUAP" class="form-control col-md-3">

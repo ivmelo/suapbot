@@ -46,6 +46,7 @@ class AboutCommand extends Command
         $this->replyWithMessage([
             'text'       => Speaker::about(),
             'parse_mode' => 'markdown',
+            'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);
     }
 

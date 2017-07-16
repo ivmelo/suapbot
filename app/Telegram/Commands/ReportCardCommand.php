@@ -56,7 +56,7 @@ class ReportCardCommand extends Command
         if ($user) {
 
             // User has set credentials.
-            if ($user->suap_id && $user->suap_key) {
+            if ($user->suap_token) {
 
                 try {
                     $suap = new SUAP($user->suap_token);

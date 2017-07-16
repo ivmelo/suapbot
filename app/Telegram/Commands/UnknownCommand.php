@@ -5,32 +5,32 @@ namespace App\Telegram\Commands;
 use App\Telegram\Tools\Speaker;
 
 /**
- * Help Command.
+ * Unknown Command.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
-class CalendarCommand extends Command
+class UnknownCommand extends Command
 {
     /**
      * The name of the command.
      *
      * @var string
      */
-    const NAME = 'calendario';
+    const NAME = 'unknown';
 
     /**
      * The prefix for callback queries.
      *
      * @var string
      */
-    const PREFIX = 'calendar';
+    const PREFIX = 'unknown';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    const DESCRIPTION = 'Envia o calendário acadêmico atual.';
+    const DESCRIPTION = 'Comando não reconhecido.';
 
     /**
      * Handles a command call.
@@ -40,15 +40,11 @@ class CalendarCommand extends Command
     protected function handleCommand($message)
     {
         // Type.
-        $this->replyWithChatAction(
-            ['action' => 'typing']
-        );
-
-        $msg = "🗓 Calendário Acadêmico 2017: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017";
+        $this->replyWithChatAction(['action' => 'typing']);
 
         // And send message.
         $this->replyWithMessage([
-            'text'       => $msg,
+            'text'       => Speaker::unknown(),
             'parse_mode' => 'markdown',
             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);

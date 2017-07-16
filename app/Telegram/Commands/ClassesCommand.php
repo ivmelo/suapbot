@@ -52,7 +52,7 @@ class ClassesCommand extends Command
         )->first();
 
         if ($user) {
-            if ($user) {
+            if ($user->suap_token) {
                 $suap = new SUAP($user->suap_token);
 
                 try {
@@ -76,6 +76,8 @@ class ClassesCommand extends Command
                         'text' => "⚠️ Houve um erro ao recuperar as suas turmas.",
                     ]);
                 }
+            } else {
+                $this->replyWithMessage(['text' => Speaker::noCredentials($user)]);
             }
         }
     }

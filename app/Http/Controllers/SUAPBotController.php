@@ -16,6 +16,7 @@ use App\Telegram\Commands\StartCommand;
 use App\Telegram\Commands\SettingsCommand;
 use App\Telegram\Commands\ReportCardCommand;
 use App\Telegram\Commands\ClassScheduleCommand;
+use App\Telegram\Commands\UnknownCommand;
 
 class SUAPBotController extends Controller
 {
@@ -103,6 +104,9 @@ class SUAPBotController extends Controller
                 $command = new AboutCommand($this->telegram, $this->update);
                 $command->handle();
                 // $this->telegram->triggerCommand('sobre', $this->update);
+            } else {
+                $command = new UnknownCommand($this->telegram, $this->update);
+                $command->handle();
             }
         }
 
@@ -145,17 +149,16 @@ class SUAPBotController extends Controller
         $user = User::where('telegram_id', '=', $telegram_id)->firstOrFail();
 
         if (! $user->suap_id && ! $user->suap_key) {
-            try {
-                $user->authorize($request->get('suapid'), $request->get('suapkey'));
+
+            $result = $user->authorize($request->get('suapid'), $request->get('suapkey'));
+
+            if ($result) {
                 return view('suapauth.success');
-            } catch (\Exception $e) {
-                // return redirect()->back()->with('error_message', 'Erro ao autorizar o seu acesso.');
-                Bugsnag::notifyException($e);
-                return 'Caught error!' . $e->getMessage();
+            } else {
+                return redirect()->back()->with('danger_message', 'Erro ao autenticar! Por favor, verifique a sua matrícula e chave de acesso, e tente novamente.');
             }
 
             return 'Success!';
-
         } else {
             return view('suapauth.success');
         }
