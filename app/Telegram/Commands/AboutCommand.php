@@ -5,7 +5,7 @@ namespace App\Telegram\Commands;
 use App\Telegram\Tools\Speaker;
 
 /**
- * Help Command.
+ * About Command.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
@@ -30,7 +30,7 @@ class AboutCommand extends Command
      *
      * @var string
      */
-    const DESCRIPTION = 'Mostra info sobre o bot.';
+    const DESCRIPTION = 'Mostra info do bot.';
 
     /**
      * Handles a command call.
@@ -40,9 +40,7 @@ class AboutCommand extends Command
     protected function handleCommand($message)
     {
         // Type.
-        $this->replyWithChatAction(
-            ['action' => 'typing']
-        );
+        $this->replyWithChatAction(['action' => 'typing']);
 
         // And send message.
         $this->replyWithMessage([
@@ -57,7 +55,7 @@ class AboutCommand extends Command
      *
      * @param  string $callback_data
      */
-    public function handleCallback($callback_data)
+    protected function handleCallback($callback_data)
     {
         # This method must be implemented...
         return;

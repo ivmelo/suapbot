@@ -11,7 +11,7 @@
 |
 */
 
-Route::post('webhooks/telegram', 'TelegramBotController@handleWebhook');
+Route::post('webhooks/telegram', 'SUAPBotController@handleWebhook');
 
 Route::auth();
 
@@ -19,8 +19,8 @@ Route::get('home', 'HomeController@index');
 Route::post('home', 'HomeController@sendMessage');
 Route::get('users', 'UserController@index');
 
-Route::get('auth/{telegram_id}', 'TelegramBotController@getAuth');
-Route::post('auth/{telegram_id}', 'TelegramBotController@postAuth');
+Route::get('auth/{telegram_id}', 'SUAPBotController@getAuth');
+Route::post('auth/{telegram_id}', 'SUAPBotController@postAuth');
 
 Route::get('/', function () {
     return redirect('home');

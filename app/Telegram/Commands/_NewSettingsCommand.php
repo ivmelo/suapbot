@@ -39,7 +39,7 @@ class NewSettingsCommand extends BotCommand
     }
 
     protected function handleCallback($callback_data)
-    {    
+    {
         $user = User::with('settings')->where(
             'telegram_id',
             $this->update['callback_query']['from']['id']

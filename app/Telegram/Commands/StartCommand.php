@@ -99,7 +99,7 @@ class StartCommand extends Command
      *
      * @param  string $callback_data
      */
-    public function handleCallback($callback_data)
+    protected function handleCallback($callback_data)
     {
         # This method must be implemented...
         return;

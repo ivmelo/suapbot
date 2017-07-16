@@ -2,115 +2,267 @@
 
 namespace App\Telegram\Commands;
 
-use Bugsnag;
+use Telegram\Bot\Keyboard\Keyboard;
 use App\Telegram\Tools\Speaker;
-use App\Telegram\Tools\Markify;
-use App\User;
 use Ivmelo\SUAP\SUAP;
-use Telegram\Bot\Actions;
-use Telegram\Bot\Commands\Command;
+use App\User;
 
+/**
+ * Classes Command.
+ *
+ * @author Ivanilson Melo <meloivanilson@gmail.com>
+ */
 class ClassesCommand extends Command
 {
     /**
-     * @var string Command Name
+     * The name of the command.
+     *
+     * @var string
      */
-    protected $name = 'aulas';
+    const NAME = 'turmas';
 
     /**
-     * @var string Command Description
+     * The prefix for callback queries.
+     *
+     * @var string
      */
-    protected $description = 'Mostra locais e horários de aula.';
+    const PREFIX = 'classes';
 
     /**
-     * {@inheritdoc}
+     * The description of the command.
+     *
+     * @var string
      */
-    public function handle($arguments)
+    const DESCRIPTION = 'Mostra as turmas virtuais incluindo material e alunos.';
+
+    /**
+     * Handles a command call.
+     *
+     * @param string $message
+     */
+    protected function handleCommand($message)
     {
-        // Connect to telegram and send typing action.
-        $updates = $this->getTelegram()->getWebhookUpdates();
-        $telegram_id = $updates['message']['from']['id'];
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
+        $this->replyWithChatAction([
+            'action' => 'typing',
+        ]);
 
-        // Get user from DB.
-        $user = User::where('telegram_id', $telegram_id)->first();
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['message']['from']['id']
+        )->first();
 
-        // If the user was found.
         if ($user) {
+            if ($user) {
+                $suap = new SUAP($user->suap_token);
 
-            // User has set credentials.
-            if ($user->suap_id && $user->suap_key) {
-                if ($user->suap_token) {
+                try {
+                    $turmas = $suap->getTurmasVirtuais($user->school_year, $user->school_term);
 
-                    $client = new SUAP($user->suap_token);
-
-                    // Get schedule for the requested day of the week.
-                    $day = $this->getDayNumber($arguments);
-                    $schedule = $client->getHorarios($user->school_year, $user->school_term);
-
-                    // Send schedule to the user.
-                    $this->replyWithMessage([
-                        'text'       => Markify::parseSchedule($schedule, $day),
-                        'parse_mode' => 'markdown',
-                        'reply_markup' => Speaker::getReplyKeyboardMarkup(),
-                    ]);
-
-                    $user->updateLastRequest();
-                    $user->save();
-
-                    try {
-
-                    } catch (\Exception $e) {
-                        // Error fetching data from suap.
-                        Bugsnag::notifyException($e);
-                        $this->replyWithMessage(['text' => Speaker::suapError()]);
+                    if (count($turmas) > 0) {
+                        $this->replyWithMessage([
+                            'text' => "📚 *Turmas Virtuais:* \n\nSelecione uma turma para ver detalhes da turma, materiais de aula, participantes e mais.",
+                            'parse_mode' => 'markdown',
+                            'reply_markup' => $this->getKeyboard($turmas),
+                        ]);
+                    } else {
+                        $this->replyWithMessage([
+                            'text' => "ℹ️ Sem turmas!",
+                        ]);
                     }
+
+                } catch (\Exception $e) {
+                    $this->replyWithMessage([
+                        'parse_mode' => 'markdown',
+                        'text' => "⚠️ Houve um erro ao recuperar as suas turmas.",
+                    ]);
                 }
-            } else {
-                // User has not set SUAP credentials.
-                $this->replyWithMessage(['text' => Speaker::noCredentials($user)]);
             }
-        } else {
-            // User was not found.
-            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 
     /**
-     * Converts a possible day of the week (in full or numeric) to a number.
+     * Handles a callback query.
+     * This method MUST be implemented, even if it's not used.
      *
-     * @var string Possible day of the week.
-     *
-     * @return int Int representation of the day of the week.
+     * @param  string $callback_data
      */
-    private function getDayNumber($day)
+    protected function handleCallback($callback_data)
     {
-        $day = trim(mb_strtolower($day));
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['callback_query']['from']['id']
+        )->first();
 
-        $day_num = date('w') + 1;
+        $settings = explode('.', $callback_data);
 
-        if (str_contains($day, ['1', 'dom', 'sun'])) {
-            $day_num =  1;
-        } elseif (str_contains($day, ['2', 'seg', 'mon'])) {
-            $day_num =  2;
-        } elseif (str_contains($day, ['3', 'ter', 'tue'])) {
-            $day_num =  3;
-        } elseif (str_contains($day, ['4', 'qua', 'wed'])) {
-            $day_num =  4;
-        } elseif (str_contains($day, ['5', 'qui', 'thr', 'thu'])) {
-            $day_num =  5;
-        } elseif (str_contains($day, ['6', 'sex', 'fri'])) {
-            $day_num =  6;
-        } elseif (str_contains($day, ['7', 'sab', 'sat'])) {
-            $day_num =  7;
-        } elseif (str_contains($day, ['amanhã', 'amanha', 'tomorrow', 'tmr'])) {
-            $day_num++;
+        $suap = new SUAP($user->suap_token);
+
+        try {
+            $turma = $suap->getTurmaVirtual($settings[1]);
+
+            switch ($settings[2]) {
+                case 'show':
+                    $this->showTurma($turma);
+                    break;
+                case 'alunos':
+                    $this->showAlunos($turma);
+                    break;
+                case 'material':
+                    $this->showMateriais($turma);
+                    break;
+                case 'aulas':
+                    $this->showAulas($turma);
+                    break;
+            }
+        } catch (\Exception $e) {
+            $this->replyWithMessage([
+                'text' => "⚠️ Um erro ocorreu. Tente novamente mais tarde..",
+            ]);
+        }
+    }
+
+
+    private function showAulas($turma)
+    {
+        $response = "🎒 *Aulas da Disciplina:*\n\n";
+
+        foreach ($turma['aulas'] as $aula) {
+            $response .= "📝 " . $aula['conteudo'] . "\n";
+            $response .= "📊 " . $aula['quantidade'] . " aulas, " . $aula['faltas'] . " faltas.\n";
+            $response .= "📅 " . $this->parseDate($aula['data']) . "\n\n";
         }
 
-        if ($day_num > 7) {
-            $day_num = 1;
+        $this->replywithEditedMessage([
+            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'parse_mode' => 'markdown',
+            'disable_web_page_preview' => 'true',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'aulas')
+        ]);
+    }
+
+    private function showMateriais($turma)
+    {
+        $response = "📚 *Materiais de Aula:*\n\n";
+
+        foreach ($turma['materiais_de_aula'] as $material) {
+            $response .= "📓 " . $material['descricao'] . "\n";
+            $response .= "📅 " . $this->parseDate($material['data_vinculacao']) . "\n";
+            $response .= "🗂 " . "[https://suap.ifrn.edu.br" . $material['url'] . "]\n\n";
         }
 
-        return $day_num;
+        $this->replywithEditedMessage([
+            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'parse_mode' => 'markdown',
+            'disable_web_page_preview' => 'true',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'material')
+        ]);
+    }
+
+    private function showAlunos($turma)
+    {
+        $response = "👩‍🎓👨‍🎓 *Alunos*:\n\n";
+
+        foreach ($turma['participantes'] as $participante) {
+            $response .= "👨‍🎓 " . $participante['nome'] . "\n";
+            $response .= "🎓 " . $participante['matricula'] . "\n";
+            $response .= "" . $participante['email'] . "\n\n";
+        }
+
+        $this->replywithEditedMessage([
+            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'parse_mode' => 'markdown',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'alunos')
+        ]);
+    }
+
+    private function showTurma($turma)
+    {
+        $response = '';
+        $response .= "📖 *" . $turma['componente_curricular'] . "*\n\n";
+
+        foreach ($turma['professores'] as $professor) {
+            $response .= "👨‍🏫 *" . $professor['nome'] . "\n";
+            $response .= "‍📧 *" . $professor['email'] . "\n";
+        }
+
+        $response .= "\n";
+
+        foreach ($turma['locais_de_aula'] as $localdeaula) {
+            $response .= "‍🏫 *" . $localdeaula . "*\n";
+        }
+
+        $this->replywithEditedMessage([
+            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'parse_mode' => 'markdown',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'show')
+        ]);
+    }
+
+    private function getNavigationKeyboard($turma, $action = false)
+    {
+        $keyboard = Keyboard::make()->inline();
+
+        // Create buttons.
+        $aulas_btn = Keyboard::inlineButton([
+            'text' => '🎒 Aulas',
+            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.aulas',
+        ]);
+
+        $material_btn = Keyboard::inlineButton([
+            'text' => '📚 Material',
+            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.material',
+        ]);
+
+        $alunos_btn = Keyboard::inlineButton([
+            'text' => '👩‍🎓 Alunos',
+            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.alunos',
+        ]);
+
+        $turmas_btn = Keyboard::inlineButton([
+            'text' => '📖 Turma',
+            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.show',
+        ]);
+
+        // Create a keyboard without the current displayed option.
+        switch ($action) {
+            case 'show':
+                $keyboard->row($aulas_btn, $material_btn, $alunos_btn);
+                break;
+            case 'aulas':
+                $keyboard->row($material_btn, $alunos_btn, $turmas_btn);
+                break;
+            case 'material':
+                $keyboard->row($aulas_btn, $alunos_btn, $turmas_btn);
+                break;
+            case 'alunos':
+                $keyboard->row($aulas_btn, $material_btn, $turmas_btn);
+                break;
+            default:
+                $keyboard->row($aulas_btn, $material_btn, $alunos_btn, $turmas_btn);
+                break;
+        }
+
+        return $keyboard;
+    }
+
+    private function getKeyboard($turmas) {
+
+        $keyboard = Keyboard::make()->inline();
+
+        foreach ($turmas as $turma) {
+            $keyboard->row(Keyboard::inlineButton([
+                'text' => '📖 ' . $turma['descricao'],
+                'callback_data' => self::PREFIX . '.' . $turma['id'] . '.show.',
+            ]));
+        }
+
+        return $keyboard;
+    }
+
+    private function parseDate($date)
+    {
+        $arr_date = explode('-', $date);
+        $arr_date = array_reverse($arr_date);
+        return implode('/', $arr_date);
     }
 }

@@ -9,14 +9,15 @@ use Illuminate\Http\Request;
 use Telegram\Bot\Keyboard\Keyboard;
 use Illuminate\Foundation\Inspiring;
 
-use App\Telegram\Commands\NewSettingsCommand;
-use App\Telegram\Commands\ClassMaterialCommand;
-
+use App\Telegram\Commands\ClassesCommand;
 use App\Telegram\Commands\CalendarCommand;
 use App\Telegram\Commands\AboutCommand;
 use App\Telegram\Commands\StartCommand;
+use App\Telegram\Commands\SettingsCommand;
+use App\Telegram\Commands\ReportCardCommand;
+use App\Telegram\Commands\ClassScheduleCommand;
 
-class TelegramBotController extends Controller
+class SUAPBotController extends Controller
 {
 
     /**
@@ -27,6 +28,13 @@ class TelegramBotController extends Controller
     protected $telegram;
 
     /**
+     * The Telegram update object.
+     *
+     * @var Telegram\Bot\Objects\Update
+     */
+    private $update;
+
+    /**
      * The public constructor of this class.
      *
      * @param \Telegram\Bot\Api $telegram
@@ -34,17 +42,8 @@ class TelegramBotController extends Controller
     public function __construct(Api $telegram)
     {
         $this->telegram = $telegram;
+        $this->update = $telegram->getWebhookUpdates();
     }
-
-    protected $commands = [
-        // \App\Telegram\Commands\StartCommand::class,
-        \App\Telegram\Commands\GradesCommand::class,
-        \App\Telegram\Commands\ClassesCommand::class,
-        // \App\Telegram\Commands\CalendarioCommand::class,
-        \App\Telegram\Commands\AuthorizeCommand::class,
-        // \App\Telegram\Commands\SobreCommand::class,
-        \App\Telegram\Commands\GradesAliasCommand::class,
-    ];
 
     /**
      * The public constructor of this class.
@@ -53,30 +52,25 @@ class TelegramBotController extends Controller
      */
     public function handleWebhook()
     {
-        $this->telegram->addCommands($this->commands);
-        $update = $this->telegram->commandsHandler(true);
+        $message = $this->update->getMessage();
 
-        // $update = $this->telegram->getUpdates();
-
-        $message = $update->getMessage();
-
-        if ($update->isType('callback_query')) {
-            if (strrpos($update['callback_query']['data'], 'settings') === 0) {
-                $ns = new NewSettingsCommand($this->telegram, $update);
-                $ns->handle();
-            } elseif (strrpos($update['callback_query']['data'], 'turmas') === 0) {
-                $ns = new ClassMaterialCommand($this->telegram, $update);
-                $ns->handle();
+        if ($this->update->isType('callback_query')) {
+            if (strrpos($this->update['callback_query']['data'], 'settings') === 0) {
+                $command = new SettingsCommand($this->telegram, $this->update);
+                $command->handle();
+            } elseif (strrpos($this->update['callback_query']['data'], 'classes') === 0) {
+                $command = new ClassesCommand($this->telegram, $this->update);
+                $command->handle();
             }
         } elseif (isset($message['text'])) {
             $message_text = strtolower($message['text']);
 
-            if (str_contains($message_text, [NewSettingsCommand::NAME])) {
-                $ns = new NewSettingsCommand($this->telegram, $update);
-                $ns->handle();
-            } elseif (str_contains($message_text, [ClassMaterialCommand::NAME])) {
-                $ns = new ClassMaterialCommand($this->telegram, $update);
-                $ns->handle();
+            if (str_contains($message_text, [SettingsCommand::NAME])) {
+                $command = new SettingsCommand($this->telegram, $this->update);
+                $command->handle();
+            } elseif (str_contains($message_text, [ClassesCommand::NAME])) {
+                $command = new ClassesCommand($this->telegram, $this->update);
+                $command->handle();
             } elseif (str_contains($message_text, ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
                 $this->telegram->sendMessage([
                     'chat_id' => $message['chat']['id'],
@@ -88,23 +82,27 @@ class TelegramBotController extends Controller
                     'text' => ':)',
                 ]);
             } elseif (str_contains($message_text, ['notas', 'boletim', 'faltas'])) {
-                $this->telegram->triggerCommand('boletim', $update);
+                // $this->telegram->triggerCommand('boletim', $this->update);
+                $command = new ReportCardCommand($this->telegram, $this->update);
+                $command->handle();
             } elseif (str_contains($message_text, ['aulas', 'horário', 'sala', 'aula'])) {
-                $this->telegram->triggerCommand('aulas', $update);
+                // $this->telegram->triggerCommand('aulas', $this->update);
+                $command = new ClassScheduleCommand($this->telegram, $this->update);
+                $command->handle();
             } elseif (str_contains($message_text, ['calendário', 'calendario'])) {
-                // $this->telegram->triggerCommand('calendario', $update);
-                $command = new CalendarCommand($this->telegram, $update);
+                // $this->telegram->triggerCommand('calendario', $this->update);
+                $command = new CalendarCommand($this->telegram, $this->update);
                 $command->handle();
             } elseif (str_contains($message_text, ['start'])) {
-                $command = new StartCommand($this->telegram, $update);
+                $command = new StartCommand($this->telegram, $this->update);
                 $command->handle();
             } elseif (str_contains($message_text, [
                     'sobre', 'quem', 'ajuda', 'apagar', 'help',
                     'remover', 'deletar', 'feedback', 'sair'
                 ])) {
-                $command = new AboutCommand($this->telegram, $update);
+                $command = new AboutCommand($this->telegram, $this->update);
                 $command->handle();
-                // $this->telegram->triggerCommand('sobre', $update);
+                // $this->telegram->triggerCommand('sobre', $this->update);
             }
         }
 
