@@ -79,6 +79,8 @@ class ClassesCommand extends Command
             } else {
                 $this->replyWithMessage(['text' => Speaker::noCredentials($user)]);
             }
+        } else {
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 

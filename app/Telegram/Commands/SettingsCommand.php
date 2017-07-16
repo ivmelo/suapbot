@@ -98,6 +98,8 @@ class SettingsCommand extends Command
                 'text' => Speaker::getSettingsMessage(),
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
+        } else {
+            $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
     }
 
