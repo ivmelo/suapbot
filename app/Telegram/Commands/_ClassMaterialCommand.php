@@ -132,7 +132,7 @@ class ClassMaterialCommand extends BotCommand
 
         foreach ($turma['participantes'] as $participante) {
             $response .= "👨‍🎓 " . $participante['nome'] . "\n";
-            $response .= "🎓" . $participante['matricula'] . "\n";
+            $response .= "🎓 " . $participante['matricula'] . "\n";
             $response .= "" . $participante['email'] . "\n\n";
         }
 

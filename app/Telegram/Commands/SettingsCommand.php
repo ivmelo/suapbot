@@ -2,82 +2,116 @@
 
 namespace App\Telegram\Commands;
 
-use Bugsnag;
-use App\Telegram\Tools\Speaker;
-use App\Telegram\Tools\Markify;
 use App\User;
-use Ivmelo\SUAP\SUAP;
-use Telegram\Bot\Actions;
-use Telegram\Bot\Commands\Command;
+use App\Telegram\Tools\Speaker;
 use Telegram\Bot\Keyboard\Keyboard;
-use Illuminate\Foundation\Inspiring;
 
+
+/**
+ * Settings Command.
+ *
+ * @author Ivanilson Melo <meloivanilson@gmail.com>
+ */
 class SettingsCommand extends Command
 {
     /**
-     * @var string Command Name
+     * The name of the command.
+     *
+     * @var string
      */
-    protected $name = 'config';
+    const NAME = 'ajustes';
 
     /**
-     * @var string Command Description
+     * The prefix for callback queries.
+     *
+     * @var string
      */
-    protected $description = 'Mostra configurações de notificação.';
+    const PREFIX = 'settings';
 
     /**
-     * {@inheritdoc}
+     * The description of the command.
+     *
+     * @var string
      */
-    public function handle($arguments)
+    const DESCRIPTION = 'Mostra painel de ajustes.';
+
+    const CLASSES_SETTINGS = 'settings.classes.toggle';
+    const ATTENDANCE_SETTINGS = 'settings.attendance.toggle';
+    const GRADES_SETTINGS = 'settings.grades.toggle';
+
+    /**
+     * Handles a command call.
+     *
+     * @param string $message
+     */
+    protected function handleCommand($message)
     {
-        // Connect to telegram and send typing action.
-        $update = $this->getUpdate();
+        $this->replyWithChatAction([
+            'action' => 'typing',
+        ]);
 
-        // if ($update->isType('callback_query')) {
-            // $query = $update->getCallbackQuery();
-            // $data = $query->getData();
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['message']['from']['id']
+        )->first();
 
-            // $this->editMessageText([
-            //     'text' => 'Hello World!',
-            //     'parse_mode' => 'markdown',
-            //     // 'reply_markup' => $keyboard,
-            // ]);
-
-            // $this->replyWithMessage([
-            //     'text' => 'It works',
-            //     'parse_mode' => 'markdown',
-            //     // 'reply_markup' => $keyboard,
-            // ]);
-
-        // } else {
-            // $update = $this->getTelegram()->getWebhookUpdates();
-
-            $telegram_id = $update['message']['from']['id'];
-            $this->replyWithChatAction(['action' => Actions::TYPING]);
-
-            // Get user from DB.
-            $user = User::where('telegram_id', $telegram_id)->first();
-
-            $keyboard = Keyboard::make()
-                ->inline()
-                ->row(
-                    Keyboard::inlineButton([
-                        'text' => '✅ Novas Aulas',
-                        'callback_data' => 'aulas.toggle',
-                    ])
-                )->row(Keyboard::inlineButton([
-                    'text' => '✅ Novas Notas',
-                    'callback_data' => 'aulas.toggle',
-                ]))->row(Keyboard::inlineButton([
-                    'text' => '✅ Novas Faltas',
-                    'callback_data' => 'skippedclasses.toggle',
-                ]));
-
+        if ($user) {
             $this->replyWithMessage([
-                'text' => "🔧 *Configuração de Notificação:* \n\nUse os botões abaixo para definir sobre quais eventos você deseja ser notificado.",
+                'text' => Speaker::getSettingsMessage(),
                 'parse_mode' => 'markdown',
-                'reply_markup' => $keyboard,
+                'reply_markup' => $this->getKeyboard($user->settings),
             ]);
-        // }
+        }
+    }
 
+    /**
+     * Handles a callback query.
+     * This method MUST be implemented, even if it's not used.
+     *
+     * @param  string $callback_data
+     */
+    protected function handleCallback($callback_data)
+    {
+        $user = User::with('settings')->where(
+            'telegram_id',
+            $this->update['callback_query']['from']['id']
+        )->first();
+
+        if ($user) {
+            // Find out which setting the user is toggling.
+            switch ($callback_data) {
+                case self::CLASSES_SETTINGS:
+                    $user->settings->classes = ! $user->settings->classes;
+                    break;
+                case self::GRADES_SETTINGS:
+                    $user->settings->grades = ! $user->settings->grades;
+                    break;
+                case self::ATTENDANCE_SETTINGS:
+                    $user->settings->attendance = ! $user->settings->attendance;
+                    break;
+            }
+
+            // Save and reply.
+            $user->settings->save();
+
+            $this->replyWithEditedMessage([
+                'text' => Speaker::getSettingsMessage(),
+                'reply_markup' => $this->getKeyboard($user->settings),
+            ]);
+        }
+    }
+
+    private function getKeyboard($settings) {
+        return Keyboard::make()->inline()
+            ->row(Keyboard::inlineButton([
+                'text' => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
+                'callback_data' => self::CLASSES_SETTINGS,
+            ]))->row(Keyboard::inlineButton([
+                'text' => $settings->grades ? '✅ Notas' : '🚫 Notas',
+                'callback_data' => self::GRADES_SETTINGS,
+            ]))->row(Keyboard::inlineButton([
+                'text' => $settings->attendance ? '✅ Faltas' : '🚫 Faltas',
+                'callback_data' => self::ATTENDANCE_SETTINGS,
+            ]));
     }
 }

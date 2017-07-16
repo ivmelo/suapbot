@@ -4,73 +4,79 @@ namespace App\Telegram\Commands;
 
 use App\Telegram\Tools\Speaker;
 use App\User;
-use Telegram\Bot\Actions;
-use Telegram\Bot\Commands\Command;
 
+/**
+ * Help Command.
+ *
+ * @author Ivanilson Melo <meloivanilson@gmail.com>
+ */
 class StartCommand extends Command
 {
     /**
-     * @var string Command Name
+     * The name of the command.
+     *
+     * @var string
      */
-    protected $name = 'start';
+    const NAME = 'start';
 
     /**
-     * @var string Command Description
+     * The prefix for callback queries.
+     *
+     * @var string
      */
-    protected $description = 'Inicia a interação com o bot e mostra tutorial.';
+    const PREFIX = 'start';
 
     /**
-     * {@inheritdoc}
+     * The description of the command.
+     *
+     * @var string
      */
-    public function handle($arguments)
+    const DESCRIPTION = 'Inicia a interação com o bot e mostra o tutorial.';
+
+    /**
+     * Handles a command call.
+     *
+     * @param string $message
+     */
+    protected function handleCommand($message)
     {
-        $updates = $this->getTelegram()->getWebhookUpdates();
-        $telegram_id = $updates['message']['from']['id'];
-        $first_name = $updates['message']['from']['first_name'];
+        // Type.
+        $this->replyWithChatAction(['action' => 'typing']);
 
-        $message = 'Olá '.$first_name.'. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais e horários de aula.'; //Se você quiser, também posso te enviar notificações quando novas notas ou faltas forem lançadas (em breve).
+        $msg = 'Olá '. $this->update['message']['from']['first_name'] .'. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais, materiais e horários de aula, turmas virtuais, e colegas de classe.';
+        $this->replyWithMessage(['text' => $msg]);
 
-        $this->replyWithMessage(['text' => $message]);
+        $this->replyWithChatAction(['action' => 'typing']);
 
-        // This will update the chat status to typing...
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
+        $message = $this->update['message'];
 
-        // Get user
-        $user = User::where('telegram_id', $telegram_id)->first();
+        $user_id = $message['from']['id'];
+        $user_first_name = $message['from']['first_name'];
+        $user_last_name = $user_username = null;
 
-        // User not found. It's their first access.
-        if (!$user) {
-            // Grab data from telegram and save.
-            $user = new User();
+        if (isset($message['from']['last_name'])) {
+           $user_last_name = $message['from']['last_name'];
+        }
 
-            $user->first_name = $first_name;
-            $user->telegram_id = $telegram_id;
+        if (isset($message['from']['username'])) {
+           $user_username = $message['from']['username'];
+        }
 
-            if (isset($updates['message']['from']['last_name'])) {
-                $user->last_name = $updates['message']['from']['last_name'];
-            }
+        $user = User::where('telegram_id', $user_id)->updateOrCreate([
+           'telegram_id' => $user_id
+        ], [
+           'first_name' => $user_first_name,
+           'last_name' => $user_last_name,
+           'username' => $user_username,
+        ]);
 
-            if (isset($updates['message']['from']['username'])) {
-                $user->username = $updates['message']['from']['username'];
-            }
-
-            $user->save();
-
+        if (! $user->settings) {
             // Store a new settings object for this user.
             $user->settings()->create([
                 'grades' => true,
                 'classes' => true,
                 'attendance' => true,
             ]);
-        }
-
-        // This will prepare a list of available commands and send the user.
-        $commands = $this->getTelegram()->getCommands();
-
-        // Build the list
-        $response = '';
-        foreach ($commands as $name => $command) {
-            $response .= sprintf('/%s - %s'.PHP_EOL, $name, $command->getDescription());
         }
 
         if (!$user->suap_id) {
@@ -81,9 +87,21 @@ class StartCommand extends Command
         } else {
             // Reply with the commands list
             $this->replyWithMessage([
-                'text'         => $response,
+                'text'         => "✅ Você já autorizou o acesso ao SUAP. \n\nEnvie um comando como /boletim, /aulas ou /turmas, ou use os botões abaixo.",
                 'reply_markup' => Speaker::getReplyKeyboardMarkup(),
             ]);
         }
+    }
+
+    /**
+     * Handles a callback query.
+     * This method MUST be implemented, even if it's not used.
+     *
+     * @param  string $callback_data
+     */
+    protected function handleCallback($callback_data)
+    {
+        # This method must be implemented...
+        return;
     }
 }
