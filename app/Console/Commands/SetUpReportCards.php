@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\User;
+use Illuminate\Console\Command;
 use Ivmelo\SUAP\SUAP;
 
 class SetUpReportCards extends Command
@@ -44,8 +44,7 @@ class SetUpReportCards extends Command
         $bar = $this->output->createProgressBar(count($users));
 
         foreach ($users as $user) {
-            if (! $user->course_data) {
-
+            if (!$user->course_data) {
                 if ($user->suap_token) {
                     $class_data = [];
 

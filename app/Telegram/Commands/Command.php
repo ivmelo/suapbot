@@ -11,54 +11,63 @@ abstract class Command
 {
     /**
      * The name of the command.
+     *
      * @var string
      */
     const NAME = '';
 
     /**
      * The aliases of this command.
+     *
      * @var array
      */
     const ALIASES = [];
 
     /**
      * Stores the description of the command.
+     *
      * @var string
      */
     const DESCRIPTION = '';
 
     /**
      * The prefix for callback queries.
+     *
      * @var string
      */
     const PREFIX = '';
 
     /**
      * The Telegram update object.
-     * @var \Telegram\Bot\Objects\Update $update
+     *
+     * @var \Telegram\Bot\Objects\Update
      */
     protected $update;
 
     /**
      * The arguments of the command.
+     *
      * @var array
      */
     protected $arguments;
 
     /**
      * The Telegram Bot API client.
-     * @var \Telegram\Bot\Api $telegram
+     *
+     * @var \Telegram\Bot\Api
      */
     protected $telegram;
 
     /**
      * The message sent by the user.
+     *
      * @var string
      */
     protected $message;
 
     /**
      * The user that received the command.
+     *
      * @var string
      */
     protected $user;
@@ -66,7 +75,7 @@ abstract class Command
     /**
      * The constructor for this class.
      *
-     * @param \Telegram\Bot\API $telegram
+     * @param \Telegram\Bot\API            $telegram
      * @param \Telegram\Bot\Objects\update $update
      */
     public function __construct($telegram, $update, $user = null)
@@ -109,7 +118,7 @@ abstract class Command
     /**
      * Replies with a message.
      *
-     * @param  array $params The params for the message.
+     * @param array $params The params for the message.
      */
     protected function replyWithMessage($params)
     {
@@ -120,7 +129,7 @@ abstract class Command
     /**
      * Replies with an edited message.
      *
-     * @param  array $params The params for the message.
+     * @param array $params The params for the message.
      */
     protected function replyWithEditedMessage($params)
     {
@@ -131,9 +140,10 @@ abstract class Command
     /**
      * Replies with a chat action.
      *
-     * @param  array $params The params for the message.
+     * @param array $params The params for the message.
      */
-    protected function replyWithChatAction($params) {
+    protected function replyWithChatAction($params)
+    {
         $params = $this->prepareParams($params);
         $this->telegram->sendChatAction($params);
     }
@@ -141,16 +151,19 @@ abstract class Command
     /**
      * Prepare the params, and add required fields such as chat_id and user_id.
      *
-     * @param  array $params The params to be used to call the Telegram API.
+     * @param array $params The params to be used to call the Telegram API.
+     *
      * @return array
      */
-    private function prepareParams($params) {
+    private function prepareParams($params)
+    {
         if ($this->update->isType('callback_query')) {
             $params['chat_id'] = $this->update['callback_query']['from']['id'];
             $params['message_id'] = $this->update['callback_query']['message']['message_id'];
         } else {
             $params['chat_id'] = $this->message['chat']['id'];
         }
+
         return $params;
     }
 
@@ -161,10 +174,12 @@ abstract class Command
      * It will also be execued if there's a callback query
      * using the defined prefix at the beginning.
      *
-     * @param  Telegram\Bot\Objects\Update $update The Telegram update object.
-     * @return boolean  Whether the command should be executed.
+     * @param Telegram\Bot\Objects\Update $update The Telegram update object.
+     *
+     * @return bool Whether the command should be executed.
      */
-    public static function shouldExecute($update) {
+    public static function shouldExecute($update)
+    {
         if ($update->isType('callback_query')) {
             $data = $update['callback_query']['data'];
             $action = explode('.', $data)[0];
@@ -179,6 +194,7 @@ abstract class Command
                 return true;
             }
         }
+
         return false;
     }
 }

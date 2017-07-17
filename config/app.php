@@ -223,7 +223,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
-        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
+        'Bugsnag'   => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
     ],
 
 ];

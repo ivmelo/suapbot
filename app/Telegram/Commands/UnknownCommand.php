@@ -13,22 +13,22 @@ use App\Telegram\Tools\Speaker;
 class UnknownCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'unknown';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'unknown';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Comando não reconhecido.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
@@ -36,18 +36,17 @@ class UnknownCommand extends Command
 
         // Shows the user a brief "how to".
         $this->replyWithMessage([
-            'text'       => Speaker::unknown(),
-            'parse_mode' => 'markdown',
+            'text'         => Speaker::unknown(),
+            'parse_mode'   => 'markdown',
             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }

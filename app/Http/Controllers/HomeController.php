@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Bugsnag;
 use App\Telegram\Tools\Speaker;
 use App\User;
+use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Telegram;

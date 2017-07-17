@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Bugsnag;
 use App\User;
+use Bugsnag;
 use Illuminate\Console\Command;
 
 class RefreshTokens extends Command
@@ -57,7 +57,7 @@ class RefreshTokens extends Command
             // Refresh for the specified user only.
             $user = User::find($this->argument('userId'));
 
-            if (! $user) {
+            if (!$user) {
                 $this->error('User not found!');
             } else {
                 $refreshed = $this->refreshTokenFor($user);
@@ -68,13 +68,13 @@ class RefreshTokens extends Command
                 }
             }
         }
-
     }
 
     /**
      * Refresh token for a specified user.
      *
      * @param App\User $user The user to have the token refreshed.
+     *
      * @return bool Whether the token was refreshed or not.
      */
     private function refreshTokenFor($user)
@@ -82,14 +82,16 @@ class RefreshTokens extends Command
         if ($user->suap_id && $user->suap_key) {
             try {
                 $user->refreshToken();
+
                 return true;
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
-                $this->error('Could not get a token for user #' . $user->id . ' | Error: ' . $e->getMessage());
+                $this->error('Could not get a token for user #'.$user->id.' | Error: '.$e->getMessage());
             }
         } else {
             $this->error('User #'.$user->id.' does not have SUAP credentials.');
         }
+
         return false;
     }
 }

@@ -2,11 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Bugsnag;
-use App\Telegram\Tools\Markify;
 use App\User;
 use Illuminate\Console\Command;
-use Ivmelo\SUAP\SUAP;
 
 class UpdateUserReportCard extends Command
 {
@@ -59,7 +56,7 @@ class UpdateUserReportCard extends Command
                 // Iterate and update.
                 foreach ($users as $user) {
                     $status = $user->report_card->doUpdate($notify);
-                    $this->info('#' . $user->id . ' | STATUS: ' . $status);
+                    $this->info('#'.$user->id.' | STATUS: '.$status);
                     // Update progress bar.
                     $bar->advance();
                 }
@@ -73,7 +70,7 @@ class UpdateUserReportCard extends Command
             // Update user data if found.
             if ($user) {
                 $status = $user->report_card->doUpdate($notify);
-                $this->info('#' . $user->id . ' | STATUS: ' . $status);
+                $this->info('#'.$user->id.' | STATUS: '.$status);
             } else {
                 $this->error('User not found!');
             }

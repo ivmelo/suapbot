@@ -2,10 +2,10 @@
 
 namespace App\Telegram\Commands;
 
-use Bugsnag;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 use App\User;
+use Bugsnag;
 use Ivmelo\SUAP\SUAP;
 use View;
 
@@ -17,30 +17,30 @@ use View;
 class ReportCardCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'boletim';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'notas', 'faltas',
-        'presença', 'frequência'
+        'presença', 'frequência',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'reportcard';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Mostra o boletim com notas, aulas e frequência.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
@@ -57,7 +57,6 @@ class ReportCardCommand extends Command
 
             // User has set credentials.
             if ($user->suap_token) {
-
                 try {
                     $suap = new SUAP($user->suap_token);
 
@@ -70,17 +69,16 @@ class ReportCardCommand extends Command
 
                     $view = View::make('telegram.reportcard', [
                         'grades' => $reportCard,
-                        'stats' => $this->calculateStats($reportCard)
+                        'stats'  => $this->calculateStats($reportCard),
                     ]);
 
                     $parsed = $view->render();
 
                     $this->replyWithMessage([
-                        'text'       => $parsed, //Markify::parseBoletim($reportCard),
-                        'parse_mode' => 'markdown',
+                        'text'         => $parsed, //Markify::parseBoletim($reportCard),
+                        'parse_mode'   => 'markdown',
                         'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                     ]);
-
                 } catch (\Exception $e) {
                     // Error fetching data from suap.
                     Bugsnag::notifyException($e);
@@ -100,8 +98,9 @@ class ReportCardCommand extends Command
      * Calculates the total course hours, attendance, classes given
      * and skipped classes of a studen, given their report card.
      *
-     * @param  array $reportCard The student's report card.
-     * @return array    The calculated stats.
+     * @param array $reportCard The student's report card.
+     *
+     * @return array The calculated stats.
      */
     private function calculateStats($reportCard)
     {
@@ -113,7 +112,7 @@ class ReportCardCommand extends Command
         foreach ($reportCard as $grade) {
             // Add to stats.
             if (isset($grade['carga_horaria'])) {
-                # code...
+                // code...
                 $totalCargaHoraria += $grade['carga_horaria'];
                 $totalAulas += $grade['carga_horaria_cumprida'];
                 $totalFaltas += $grade['numero_faltas'];
@@ -131,20 +130,19 @@ class ReportCardCommand extends Command
 
         $stats = [
             'total_carga_horaria' => $totalCargaHoraria,
-            'total_aulas' => $totalAulas,
-            'total_faltas' => $totalFaltas,
-            'frequencia' => $attendance,
+            'total_aulas'         => $totalAulas,
+            'total_faltas'        => $totalFaltas,
+            'frequencia'          => $attendance,
         ];
 
         return $stats;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }

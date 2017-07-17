@@ -12,22 +12,22 @@ use App\Telegram\Tools\Speaker;
 class AboutCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'sobre';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'about';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Mostra info do bot.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
@@ -36,18 +36,17 @@ class AboutCommand extends Command
 
         // And send message.
         $this->replyWithMessage([
-            'text'       => Speaker::about(),
-            'parse_mode' => 'markdown',
+            'text'         => Speaker::about(),
+            'parse_mode'   => 'markdown',
             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }

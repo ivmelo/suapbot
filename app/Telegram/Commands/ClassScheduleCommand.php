@@ -2,10 +2,10 @@
 
 namespace App\Telegram\Commands;
 
-use Bugsnag;
-use App\Telegram\Tools\Speaker;
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
 use App\User;
+use Bugsnag;
 use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
 
@@ -17,30 +17,30 @@ use Telegram\Bot\Actions;
 class ClassScheduleCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'aulas';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'aula', 'horário', 'sala',
-        'onde', 'prox', 'proxima'
+        'onde', 'prox', 'proxima',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'schedules';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Mostra horários e locais de aula.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
@@ -57,7 +57,6 @@ class ClassScheduleCommand extends Command
             // User has set credentials.
             if ($user->suap_id && $user->suap_key) {
                 if ($user->suap_token) {
-
                     $client = new SUAP($user->suap_token);
 
                     try {
@@ -67,14 +66,13 @@ class ClassScheduleCommand extends Command
 
                         // Send schedule to the user.
                         $this->replyWithMessage([
-                            'text'       => Markify::parseSchedule($schedule, $day),
-                            'parse_mode' => 'markdown',
+                            'text'         => Markify::parseSchedule($schedule, $day),
+                            'parse_mode'   => 'markdown',
                             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                         ]);
 
                         $user->updateLastRequest();
                         $user->save();
-
                     } catch (\Exception $e) {
                         // Error fetching data from suap.
                         Bugsnag::notifyException($e);
@@ -96,6 +94,7 @@ class ClassScheduleCommand extends Command
      * (in full or numeric) into a numeric format.
      *
      * @var string Possible day of the week.
+     *
      * @return int Int representation of the day of the week.
      */
     private function getDayNumber($day)
@@ -105,19 +104,19 @@ class ClassScheduleCommand extends Command
         $day_num = date('w') + 1;
 
         if (str_contains($day, ['1', 'dom', 'sun'])) {
-            $day_num =  1;
+            $day_num = 1;
         } elseif (str_contains($day, ['2', 'seg', 'mon'])) {
-            $day_num =  2;
+            $day_num = 2;
         } elseif (str_contains($day, ['3', 'ter', 'tue'])) {
-            $day_num =  3;
+            $day_num = 3;
         } elseif (str_contains($day, ['4', 'qua', 'wed'])) {
-            $day_num =  4;
+            $day_num = 4;
         } elseif (str_contains($day, ['5', 'qui', 'thr', 'thu'])) {
-            $day_num =  5;
+            $day_num = 5;
         } elseif (str_contains($day, ['6', 'sex', 'fri'])) {
-            $day_num =  6;
+            $day_num = 6;
         } elseif (str_contains($day, ['7', 'sab', 'sat'])) {
-            $day_num =  7;
+            $day_num = 7;
         } elseif (str_contains($day, ['amanhã', 'amanha', 'tomorrow', 'tmr'])) {
             $day_num++;
         }
@@ -133,11 +132,10 @@ class ClassScheduleCommand extends Command
      * Handles a callback query.
      * This method MUST be implemented, even if it's not used.
      *
-     * @param  string $callback_data
+     * @param string $callback_data
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }
