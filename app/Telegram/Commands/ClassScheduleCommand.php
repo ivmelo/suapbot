@@ -10,22 +10,19 @@ use Ivmelo\SUAP\SUAP;
 use Telegram\Bot\Actions;
 
 /**
- * Schedule Command.
+ * Shows class schedule and class locations.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class ClassScheduleCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'aulas';
 
     /**
-     * The aliases of this command.
-     * @var array
+     * {@inheritDoc}
      */
     const ALIASES = [
         'aula', 'horário', 'sala',
@@ -33,23 +30,17 @@ class ClassScheduleCommand extends Command
     ];
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const PREFIX = 'schedules';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Mostra horários e locais de aula.';
 
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
@@ -101,10 +92,10 @@ class ClassScheduleCommand extends Command
     }
 
     /**
-     * Converts a possible day of the week (in full or numeric) to a number.
+     * Transforms a possible day of the week
+     * (in full or numeric) into a numeric format.
      *
      * @var string Possible day of the week.
-     *
      * @return int Int representation of the day of the week.
      */
     private function getDayNumber($day)

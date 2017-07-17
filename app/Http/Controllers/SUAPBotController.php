@@ -71,6 +71,7 @@ class SUAPBotController extends Controller
         } elseif (AboutCommand::shouldExecute($this->update)) {
             $command = new AboutCommand($this->telegram, $this->update);
         } else {
+            // This one will run by default.
             $command = new UnknownCommand($this->telegram, $this->update);
         }
 
