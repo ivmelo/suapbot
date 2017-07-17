@@ -2,9 +2,8 @@
 
 namespace App\Console;
 
-use Artisan;
-use App\Jobs\MonitorReportCardChanges;
 use App\User;
+use Artisan;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

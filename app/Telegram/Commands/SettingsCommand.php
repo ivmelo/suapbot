@@ -2,10 +2,9 @@
 
 namespace App\Telegram\Commands;
 
-use App\User;
 use App\Telegram\Tools\Speaker;
+use App\User;
 use Telegram\Bot\Keyboard\Keyboard;
-
 
 /**
  * Shows the settings panel, and handles settings updates.
@@ -15,30 +14,30 @@ use Telegram\Bot\Keyboard\Keyboard;
 class SettingsCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'ajustes';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'configurações', 'configuracoes', 'notificações',
-        'notificacoes', 'notificar', 'config', 'ajustar'
+        'notificacoes', 'notificar', 'config', 'ajustar',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'settings';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Mostra painel de ajustes.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
@@ -53,8 +52,8 @@ class SettingsCommand extends Command
 
         if ($user) {
             $this->replyWithMessage([
-                'text' => Speaker::getSettingsMessage(),
-                'parse_mode' => 'markdown',
+                'text'         => Speaker::getSettingsMessage(),
+                'parse_mode'   => 'markdown',
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
         } else {
@@ -63,7 +62,7 @@ class SettingsCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
@@ -75,14 +74,14 @@ class SettingsCommand extends Command
         if ($user) {
             // Find out which setting the user is toggling.
             switch ($callback_data) {
-                case self::PREFIX . '.classes':
-                    $user->settings->classes = ! $user->settings->classes;
+                case self::PREFIX.'.classes':
+                    $user->settings->classes = !$user->settings->classes;
                     break;
-                case self::PREFIX . '.grades':
-                    $user->settings->grades = ! $user->settings->grades;
+                case self::PREFIX.'.grades':
+                    $user->settings->grades = !$user->settings->grades;
                     break;
-                case self::PREFIX . '.attendance':
-                    $user->settings->attendance = ! $user->settings->attendance;
+                case self::PREFIX.'.attendance':
+                    $user->settings->attendance = !$user->settings->attendance;
                     break;
             }
 
@@ -90,8 +89,8 @@ class SettingsCommand extends Command
             $user->settings->save();
 
             $this->replyWithEditedMessage([
-                'text' => Speaker::getSettingsMessage(),
-                'parse_mode' => 'markdown',
+                'text'         => Speaker::getSettingsMessage(),
+                'parse_mode'   => 'markdown',
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
         } else {
@@ -103,20 +102,22 @@ class SettingsCommand extends Command
      * Return an updated version of the keyboard
      * according to the settings object passed.
      *
-     * @param  App\settings $settings The settings object.
+     * @param App\settings $settings The settings object.
+     *
      * @return \Telegram\Bot\Keyboard\Keyboard The keyboard object.
      */
-    private function getKeyboard($settings) {
+    private function getKeyboard($settings)
+    {
         return Keyboard::make()->inline()
             ->row(Keyboard::inlineButton([
-                'text' => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
-                'callback_data' => self::PREFIX . '.classes',
+                'text'          => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
+                'callback_data' => self::PREFIX.'.classes',
             ]))->row(Keyboard::inlineButton([
-                'text' => $settings->grades ? '✅ Notas' : '🚫 Notas',
-                'callback_data' => self::PREFIX . '.grades',
+                'text'          => $settings->grades ? '✅ Notas' : '🚫 Notas',
+                'callback_data' => self::PREFIX.'.grades',
             ]))->row(Keyboard::inlineButton([
-                'text' => $settings->attendance ? '✅ Faltas' : '🚫 Faltas',
-                'callback_data' => self::PREFIX . '.attendance',
+                'text'          => $settings->attendance ? '✅ Faltas' : '🚫 Faltas',
+                'callback_data' => self::PREFIX.'.attendance',
             ]));
     }
 }

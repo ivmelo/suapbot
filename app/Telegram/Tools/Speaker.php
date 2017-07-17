@@ -100,7 +100,6 @@ class Speaker
         return "Primeiramente, preciso de autorização para acessar o seu boletim no SUAP.\n".
             "Para isto, preciso que você acesse e siga as instruções no link a seguir: \n\n".
             action('SUAPBotController@getAuth', $user->telegram_id);
-
     }
 
     /**
@@ -127,7 +126,8 @@ class Speaker
         return $reply_markup;
     }
 
-    public static function getSettingsMessage() {
+    public static function getSettingsMessage()
+    {
         return "🔧 *Ajustes:* \n\nVocê pode usar os botões abaixo para selecionar quando deseja receber notificações. \n\nVocê pode ser notificado quando houver novas aulas, faltas ou notas no seu boletim.";
     }
 
@@ -146,10 +146,10 @@ class Speaker
             '🤖 Não entendi a sua mensagem.',
         ];
 
-        return $responses[random_int(0, count($responses) - 1)] . "\n\n".
+        return $responses[random_int(0, count($responses) - 1)]."\n\n".
         "Tente usar um dos seguintes comandos: /aulas, /boletim, /turmas, /ajustes, /calendario, /sobre. As barras são opcionais.\n\n".
         "Você também pode usar frases simples como por exemplo: \"quais as minhas aulas da quarta?\" ou \"minhas turmas virtuais\"\n\n".
-        "Se preferir, você também pode utilizar os botões de acesso rápido abaixo.";
+        'Se preferir, você também pode utilizar os botões de acesso rápido abaixo.';
     }
 
     /**

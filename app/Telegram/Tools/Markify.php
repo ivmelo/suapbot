@@ -18,7 +18,7 @@ class Markify
         $totalFaltas = 0;
 
         foreach ($grades as $grade) {
-            $course_info = '*📓 '.explode( ' - ', $grade['disciplina'])[1]."*\n";
+            $course_info = '*📓 '.explode(' - ', $grade['disciplina'])[1]."*\n";
 
             if (isset($grade['carga_horaria'])) {
                 $course_info .= 'Aulas: '.$grade['carga_horaria']."\n";
@@ -60,7 +60,6 @@ class Markify
                 $course_info .= 'MFD/Conceito: '.$grade['media_final_disciplina']."\n";
             }
 
-
             if (isset($grade['situacao']) && $grade['situacao'] != 'Cursando') {
                 if ($grade['situacao'] == 'Aprovado') {
                     $course_info .= '✅ '.ucfirst($grade['situacao'])."\n";
@@ -71,12 +70,11 @@ class Markify
 
             // Add to stats.
             if (isset($grade['carga_horaria'])) {
-                # code...
+                // code...
                 $totalCargaHoraria += $grade['carga_horaria'];
                 $totalAulas += $grade['carga_horaria_cumprida'];
                 $totalFaltas += $grade['numero_faltas'];
             }
-
 
             $response_text .= $course_info."\n";
         }
@@ -125,7 +123,7 @@ class Markify
                     $schedule_response .= '📓 *'.$data['aula']['descricao']."*\n";
                     if (isset($data['aula']['locais_de_aula'][0])) {
                         foreach ($data['aula']['locais_de_aula'] as $classLocation) {
-                            $schedule_response .= "🏫 _".$classLocation."_\n";
+                            $schedule_response .= '🏫 _'.$classLocation."_\n";
                         }
                     } else {
                         $schedule_response .= "🏫 _Local de aula não encontrado no SUAP._\n";

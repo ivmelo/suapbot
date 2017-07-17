@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\User;
+use Illuminate\Console\Command;
 
 class SetUpSettings extends Command
 {
@@ -41,11 +41,10 @@ class SetUpSettings extends Command
         $users = User::all();
 
         foreach ($users as $user) {
-            if (! $user->settings) {
-
+            if (!$user->settings) {
                 $user->settings()->create([
-                    'grades' => true,
-                    'classes' => true,
+                    'grades'     => true,
+                    'classes'    => true,
                     'attendance' => true,
                 ]);
             }

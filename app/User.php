@@ -2,13 +2,12 @@
 
 namespace App;
 
+use App\Telegram\Tools\Speaker;
 use Bugsnag;
-use App\Telegram\Tools\Markify;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
-use Carbon\Carbon;
-use App\Telegram\Tools\Speaker;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -35,17 +34,18 @@ class User extends Authenticatable
      * Scope a query to only include users with SUAP credentials.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeHasSuapCredentials($query)
     {
-       return $query->where('suap_id', '!=', null)->where('suap_key', '!=', null);
+        return $query->where('suap_id', '!=', null)->where('suap_key', '!=', null);
     }
 
     /**
      * Refresh or create a new SUAP access token.
      *
-     * @return String $token
+     * @return string $token
      */
     public function refreshToken()
     {
@@ -53,13 +53,14 @@ class User extends Authenticatable
         $data = $suap->autenticar($this->suap_id, $this->suap_key, true);
         $this->suap_token = $data['token'];
         $this->save();
+
         return $data['token'];
     }
 
     /**
      * Update school year or term for a student.
      *
-     * @return String $token
+     * @return string $token
      */
     public function updateSchoolYear()
     {
@@ -71,9 +72,11 @@ class User extends Authenticatable
             $currentTerm = end($data);
             $this->school_year_term = $currentTerm['ano_letivo'].'.'.$currentTerm['periodo_letivo'];
             $this->save();
+
             return true;
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return false;
         }
     }
@@ -81,7 +84,7 @@ class User extends Authenticatable
     /**
      * Acessor to get the school year of a student.
      *
-     * @return String
+     * @return string
      */
     public function getSchoolYearAttribute()
     {
@@ -91,7 +94,7 @@ class User extends Authenticatable
     /**
      * Acessor to get the school term (semestre/bimestre) of a student.
      *
-     * @return String
+     * @return string
      */
     public function getSchoolTermAttribute()
     {
@@ -101,7 +104,7 @@ class User extends Authenticatable
     /**
      * Increases the request count of a student.
      *
-     * @return String
+     * @return string
      */
     public function updateLastRequest($save = false)
     {
@@ -135,8 +138,8 @@ class User extends Authenticatable
     /**
      * Authorize access and store SUAP credentials.
      *
-     * @param Integer $suap_id
-     * @param String $suap_key
+     * @param int    $suap_id
+     * @param string $suap_key
      */
     public function authorize($suap_id, $suap_key, $notify = true)
     {
@@ -182,9 +185,11 @@ class User extends Authenticatable
                     'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                 ]);
             }
+
             return true;
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return false;
         }
     }

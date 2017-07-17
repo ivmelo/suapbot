@@ -12,51 +12,50 @@ use App\Telegram\Tools\Speaker;
 class CalendarCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'calendario';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'calendário', 'calend',
-        'datas', 'férias', 'ferias'
+        'datas', 'férias', 'ferias',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'calendar';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Envia o calendário acadêmico atual.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
         $this->replyWithChatAction(['action' => 'typing']);
 
         $msg = "🗓 Calendário Acadêmico 2017 (Campus Natal Central): \n\n".
-        "http://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017";
+        'http://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017';
 
         $this->replyWithMessage([
-            'text'       => $msg,
-            'parse_mode' => 'markdown',
+            'text'         => $msg,
+            'parse_mode'   => 'markdown',
             'reply_markup' => Speaker::getReplyKeyboardMarkup(),
         ]);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }

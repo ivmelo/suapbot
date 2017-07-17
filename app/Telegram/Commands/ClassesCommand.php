@@ -2,10 +2,10 @@
 
 namespace App\Telegram\Commands;
 
-use Telegram\Bot\Keyboard\Keyboard;
 use App\Telegram\Tools\Speaker;
-use Ivmelo\SUAP\SUAP;
 use App\User;
+use Ivmelo\SUAP\SUAP;
+use Telegram\Bot\Keyboard\Keyboard;
 
 /**
  * Show classes, class materials, the registered students,
@@ -17,34 +17,34 @@ use App\User;
 class ClassesCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'turmas';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'materiais', 'material', 'alunos',
-        'colega', 'colegas', 'turma'
+        'colega', 'colegas', 'turma',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'classes';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Mostra as turmas virtuais incluindo material e alunos.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
-        $this->replyWithChatAction(['action' => 'typing',]);
+        $this->replyWithChatAction(['action' => 'typing']);
 
         $user = User::with('settings')->where(
             'telegram_id',
@@ -60,20 +60,19 @@ class ClassesCommand extends Command
 
                     if (count($turmas) > 0) {
                         $this->replyWithMessage([
-                            'text' => "📚 *Turmas Virtuais:* \n\nSelecione uma turma para ver detalhes da turma, materiais de aula, participantes e mais.",
-                            'parse_mode' => 'markdown',
+                            'text'         => "📚 *Turmas Virtuais:* \n\nSelecione uma turma para ver detalhes da turma, materiais de aula, participantes e mais.",
+                            'parse_mode'   => 'markdown',
                             'reply_markup' => $this->getKeyboard($turmas),
                         ]);
                     } else {
                         $this->replyWithMessage([
-                            'text' => "ℹ️ Sem turmas!",
+                            'text' => 'ℹ️ Sem turmas!',
                         ]);
                     }
-
                 } catch (\Exception $e) {
                     $this->replyWithMessage([
                         'parse_mode' => 'markdown',
-                        'text' => "⚠️ Houve um erro ao recuperar as suas turmas.",
+                        'text'       => '⚠️ Houve um erro ao recuperar as suas turmas.',
                     ]);
                 }
             } else {
@@ -85,7 +84,7 @@ class ClassesCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
@@ -117,7 +116,7 @@ class ClassesCommand extends Command
             }
         } catch (\Exception $e) {
             $this->replyWithMessage([
-                'text' => "⚠️ Um erro ocorreu. Tente novamente mais tarde..",
+                'text' => '⚠️ Um erro ocorreu. Tente novamente mais tarde..',
             ]);
         }
     }
@@ -125,104 +124,105 @@ class ClassesCommand extends Command
     /**
      * Shows all the given glasses, with date and info.
      *
-     * @param  array $turma The "turma" object.
+     * @param array $turma The "turma" object.
      */
     private function showAulas($turma)
     {
         $response = "🎒 *Aulas da Disciplina:*\n\n";
 
         foreach ($turma['aulas'] as $aula) {
-            $response .= "📝 " . $aula['conteudo'] . "\n";
-            $response .= "📊 " . $aula['quantidade'] . " aulas, " . $aula['faltas'] . " faltas.\n";
-            $response .= "📅 " . $this->parseDate($aula['data']) . "\n\n";
+            $response .= '📝 '.$aula['conteudo']."\n";
+            $response .= '📊 '.$aula['quantidade'].' aulas, '.$aula['faltas']." faltas.\n";
+            $response .= '📅 '.$this->parseDate($aula['data'])."\n\n";
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response,
-            'parse_mode' => 'markdown',
+            'text'                     => $response,
+            'parse_mode'               => 'markdown',
             'disable_web_page_preview' => 'true', // Removes preview for web links.
-            'reply_markup' => $this->getNavigationKeyboard($turma, 'aulas')
+            'reply_markup'             => $this->getNavigationKeyboard($turma, 'aulas'),
         ]);
     }
 
     /**
      * Shows a listing of class materials and URLs to download them.
      *
-     * @param  array $turma The "turma" object.
+     * @param array $turma The "turma" object.
      */
     private function showMateriais($turma)
     {
         $response = "📚 *Materiais de Aula:*\n\n";
 
         foreach ($turma['materiais_de_aula'] as $material) {
-            $response .= "📓 " . $material['descricao'] . "\n";
-            $response .= "📅 " . $this->parseDate($material['data_vinculacao']) . "\n";
-            $response .= "🗂 " . "[https://suap.ifrn.edu.br" . $material['url'] . "]\n\n";
+            $response .= '📓 '.$material['descricao']."\n";
+            $response .= '📅 '.$this->parseDate($material['data_vinculacao'])."\n";
+            $response .= '🗂 '.'[https://suap.ifrn.edu.br'.$material['url']."]\n\n";
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response,
-            'parse_mode' => 'markdown',
+            'text'                     => $response,
+            'parse_mode'               => 'markdown',
             'disable_web_page_preview' => 'true',
-            'reply_markup' => $this->getNavigationKeyboard($turma, 'material')
+            'reply_markup'             => $this->getNavigationKeyboard($turma, 'material'),
         ]);
     }
 
     /**
      * Shows the names all students registered in the class, and their contact info.
      *
-     * @param  array $turma The "turma" object.
+     * @param array $turma The "turma" object.
      */
     private function showAlunos($turma)
     {
         $response = "👩‍🎓👨‍🎓 *Alunos*:\n\n";
 
         foreach ($turma['participantes'] as $participante) {
-            $response .= "👨‍🎓 " . $participante['nome'] . "\n";
-            $response .= "🎓 " . $participante['matricula'] . "\n";
-            $response .= "" . $participante['email'] . "\n\n";
+            $response .= '👨‍🎓 '.$participante['nome']."\n";
+            $response .= '🎓 '.$participante['matricula']."\n";
+            $response .= ''.$participante['email']."\n\n";
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response,
-            'parse_mode' => 'markdown',
-            'reply_markup' => $this->getNavigationKeyboard($turma, 'alunos')
+            'text'         => $response,
+            'parse_mode'   => 'markdown',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'alunos'),
         ]);
     }
 
     /**
      * Shows class details.
      *
-     * @param  array $turma The "turma" object.
+     * @param array $turma The "turma" object.
      */
     private function showTurma($turma)
     {
         $response = '';
-        $response .= "📖 *" . $turma['componente_curricular'] . "*\n\n";
+        $response .= '📖 *'.$turma['componente_curricular']."*\n\n";
 
         foreach ($turma['professores'] as $professor) {
-            $response .= "👨‍🏫 *" . $professor['nome'] . "\n";
-            $response .= "‍📧 *" . $professor['email'] . "\n";
+            $response .= '👨‍🏫 *'.$professor['nome']."\n";
+            $response .= '‍📧 *'.$professor['email']."\n";
         }
 
         $response .= "\n";
 
         foreach ($turma['locais_de_aula'] as $localdeaula) {
-            $response .= "‍🏫 *" . $localdeaula . "*\n";
+            $response .= '‍🏫 *'.$localdeaula."*\n";
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response, //Markify::parseBoletim($reportCard),
-            'parse_mode' => 'markdown',
-            'reply_markup' => $this->getNavigationKeyboard($turma, 'show')
+            'text'         => $response, //Markify::parseBoletim($reportCard),
+            'parse_mode'   => 'markdown',
+            'reply_markup' => $this->getNavigationKeyboard($turma, 'show'),
         ]);
     }
 
     /**
      * Returns a navigation keyboard for class info.
      *
-     * @param array $turma The "turma" object.
+     * @param array  $turma  The "turma" object.
      * @param string $action The current displayed option to hide.
+     *
      * @return \Telegram\Bot\Keyboard\Keyboard $keyboard
      */
     private function getNavigationKeyboard($turma, $action = false)
@@ -231,23 +231,23 @@ class ClassesCommand extends Command
 
         // Create buttons.
         $aulas_btn = Keyboard::inlineButton([
-            'text' => '🎒 Aulas',
-            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.aulas',
+            'text'          => '🎒 Aulas',
+            'callback_data' => self::PREFIX.'.'.$turma['id'].'.aulas',
         ]);
 
         $material_btn = Keyboard::inlineButton([
-            'text' => '📚 Material',
-            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.material',
+            'text'          => '📚 Material',
+            'callback_data' => self::PREFIX.'.'.$turma['id'].'.material',
         ]);
 
         $alunos_btn = Keyboard::inlineButton([
-            'text' => '👩‍🎓 Alunos',
-            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.alunos',
+            'text'          => '👩‍🎓 Alunos',
+            'callback_data' => self::PREFIX.'.'.$turma['id'].'.alunos',
         ]);
 
         $turmas_btn = Keyboard::inlineButton([
-            'text' => '📖 Turma',
-            'callback_data' => self::PREFIX . '.' . $turma['id'] . '.show',
+            'text'          => '📖 Turma',
+            'callback_data' => self::PREFIX.'.'.$turma['id'].'.show',
         ]);
 
         // Create a keyboard without the current displayed option.
@@ -276,16 +276,17 @@ class ClassesCommand extends Command
      * Returns an inline keyboard with one class per row.
      *
      * @param array $turma The "turma" object.
+     *
      * @return \Telegram\Bot\Keyboard\Keyboard $keyboard
      */
-    private function getKeyboard($turmas) {
-
+    private function getKeyboard($turmas)
+    {
         $keyboard = Keyboard::make()->inline();
 
         foreach ($turmas as $turma) {
             $keyboard->row(Keyboard::inlineButton([
-                'text' => '📖 ' . $turma['descricao'],
-                'callback_data' => self::PREFIX . '.' . $turma['id'] . '.show.',
+                'text'          => '📖 '.$turma['descricao'],
+                'callback_data' => self::PREFIX.'.'.$turma['id'].'.show.',
             ]));
         }
 
@@ -295,13 +296,15 @@ class ClassesCommand extends Command
     /**
      * Parse a date to DD/MM/YYYY.
      *
-     * @param  string $date The date to be parsed.
+     * @param string $date The date to be parsed.
+     *
      * @return string The parsed date.
      */
     private function parseDate($date)
     {
         $arr_date = explode('-', $date);
         $arr_date = array_reverse($arr_date);
+
         return implode('/', $arr_date);
     }
 }

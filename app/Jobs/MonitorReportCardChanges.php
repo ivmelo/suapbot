@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use Bugsnag;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 use App\User;
+use Bugsnag;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;

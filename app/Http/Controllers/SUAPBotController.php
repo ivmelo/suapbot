@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Bugsnag;
-use App\User;
-use Telegram\Bot\Api;
-use Illuminate\Http\Request;
-use Telegram\Bot\Keyboard\Keyboard;
-use Illuminate\Foundation\Inspiring;
-
-use App\Telegram\Commands\Command;
-use App\Telegram\Commands\ClassesCommand;
-use App\Telegram\Commands\CalendarCommand;
 use App\Telegram\Commands\AboutCommand;
-use App\Telegram\Commands\StartCommand;
-use App\Telegram\Commands\SettingsCommand;
-use App\Telegram\Commands\ReportCardCommand;
+use App\Telegram\Commands\CalendarCommand;
+use App\Telegram\Commands\ClassesCommand;
 use App\Telegram\Commands\ClassScheduleCommand;
+use App\Telegram\Commands\Command;
+use App\Telegram\Commands\ReportCardCommand;
+use App\Telegram\Commands\SettingsCommand;
+use App\Telegram\Commands\StartCommand;
 use App\Telegram\Commands\UnknownCommand;
+use App\User;
+use Illuminate\Http\Request;
+use Telegram\Bot\Api;
 
 class SUAPBotController extends Controller
 {
-
     /**
      * The telegram API client.
      *
@@ -87,13 +82,14 @@ class SUAPBotController extends Controller
     /**
      * Handles the get request from the auth form.
      *
-     * @param integer $telegram_id
+     * @param int $telegram_id
      * @param Response
      */
-    public function getAuth($telegram_id) {
+    public function getAuth($telegram_id)
+    {
         $user = User::where('telegram_id', '=', $telegram_id)->firstOrFail();
 
-        if (! $user->suap_id && ! $user->suap_key) {
+        if (!$user->suap_id && !$user->suap_key) {
             return view('suapauth.auth', compact('user'));
         } else {
             return view('suapauth.success');
@@ -106,19 +102,19 @@ class SUAPBotController extends Controller
      * Handles the post request from the auth form.
      *
      * @param \Illuminate\Http\Request $request
-     * @param integer $telegram_id
+     * @param int                      $telegram_id
      * @param Response
      */
-    public function postAuth(Request $request, $telegram_id) {
+    public function postAuth(Request $request, $telegram_id)
+    {
         $this->validate($request, [
-            'suapid' => 'required|integer',
-            'suapkey' => 'required'
+            'suapid'  => 'required|integer',
+            'suapkey' => 'required',
         ]);
 
         $user = User::where('telegram_id', '=', $telegram_id)->firstOrFail();
 
-        if (! $user->suap_id && ! $user->suap_key) {
-
+        if (!$user->suap_id && !$user->suap_key) {
             $result = $user->authorize($request->get('suapid'), $request->get('suapkey'));
 
             if ($result) {
@@ -131,6 +127,5 @@ class SUAPBotController extends Controller
         } else {
             return view('suapauth.success');
         }
-
     }
 }

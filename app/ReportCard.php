@@ -2,11 +2,11 @@
 
 namespace App;
 
-use Bugsnag;
-use Telegram;
-use Ivmelo\SUAP\SUAP;
 use App\Telegram\Tools\Markify;
+use Bugsnag;
 use Illuminate\Database\Eloquent\Model;
+use Ivmelo\SUAP\SUAP;
+use Telegram;
 
 class ReportCard extends Model
 {
@@ -35,7 +35,8 @@ class ReportCard extends Model
     /**
      * Update the report card of a student.
      *
-     * @param boolean $notify Wether to notify the user or not.
+     * @param bool $notify Wether to notify the user or not.
+     *
      * @return string
      */
     public function doUpdate($notify = false)
@@ -103,13 +104,13 @@ class ReportCard extends Model
 
                     print_r($updates);
                 }
-
             } else {
                 // No changes.
                 $status = self::NO_CHANGES;
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return false;
         }
 
@@ -120,26 +121,29 @@ class ReportCard extends Model
      * Same as array_diff, but associative and recursive.
      * It's used to get a diff of the student report card.
      *
-     * @param array  $array1
-     * @param array  $array2
+     * @param array $array1
+     * @param array $array2
      *
      * @return array $difference
      */
-    private function array_diff_assoc_recursive($array1, $array2) {
+    private function array_diff_assoc_recursive($array1, $array2)
+    {
         $difference = [];
-        foreach($array1 as $key => $value) {
-            if(is_array($value)) {
-                if(!isset($array2[$key]) || !is_array($array2[$key])) {
+        foreach ($array1 as $key => $value) {
+            if (is_array($value)) {
+                if (!isset($array2[$key]) || !is_array($array2[$key])) {
                     $difference[$key] = $value;
                 } else {
                     $new_diff = $this->array_diff_assoc_recursive($value, $array2[$key]);
-                    if(!empty($new_diff))
+                    if (!empty($new_diff)) {
                         $difference[$key] = $new_diff;
+                    }
                 }
-            } else if(!array_key_exists($key,$array2) || $array2[$key] !== $value) {
+            } elseif (!array_key_exists($key, $array2) || $array2[$key] !== $value) {
                 $difference[$key] = $value;
             }
         }
+
         return $difference;
     }
 }

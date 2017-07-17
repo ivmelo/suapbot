@@ -8,43 +8,43 @@ use App\User;
 /**
  * Defines the /start command.
  * Telegram requires all users to send this command before using a bot.
- * Should be used to create a new user, set up stuff and things and etc. :P
+ * Should be used to create a new user, set up stuff and things and etc. :P.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class StartCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const NAME = 'start';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const PREFIX = 'start';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const ALIASES = [
         'sobre', 'quem', 'ajuda', 'apagar', 'help',
-        'remover', 'deletar', 'feedback', 'sair'
+        'remover', 'deletar', 'feedback', 'sair',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     const DESCRIPTION = 'Inicia a interação com o bot e mostra o tutorial.';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCommand($message)
     {
         $this->replyWithChatAction(['action' => 'typing']);
 
-        $msg = 'Olá '. $this->update['message']['from']['first_name'] .'. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais, materiais e horários de aula, turmas virtuais, e colegas de classe.';
+        $msg = 'Olá '.$this->update['message']['from']['first_name'].'. Eu sou o SUAP Bot, eu posso te mostrar informações sobre suas notas, faltas, locais, materiais e horários de aula, turmas virtuais, e colegas de classe.';
         $this->replyWithMessage(['text' => $msg]);
 
         $this->replyWithChatAction(['action' => 'typing']);
@@ -57,27 +57,27 @@ class StartCommand extends Command
         $user_last_name = $user_username = null;
 
         if (isset($message['from']['last_name'])) {
-           $user_last_name = $message['from']['last_name'];
+            $user_last_name = $message['from']['last_name'];
         }
 
         if (isset($message['from']['username'])) {
-           $user_username = $message['from']['username'];
+            $user_username = $message['from']['username'];
         }
 
         // Create a new user object, or updated it if it already exists.
         $user = User::where('telegram_id', $user_id)->updateOrCreate([
-           'telegram_id' => $user_id
+           'telegram_id' => $user_id,
         ], [
            'first_name' => $user_first_name,
-           'last_name' => $user_last_name,
-           'username' => $user_username,
+           'last_name'  => $user_last_name,
+           'username'   => $user_username,
         ]);
 
-        if (! $user->settings) {
+        if (!$user->settings) {
             // Create a new settings object for this user.
             $user->settings()->create([
-                'grades' => true,
-                'classes' => true,
+                'grades'     => true,
+                'classes'    => true,
                 'attendance' => true,
             ]);
         }
@@ -98,11 +98,10 @@ class StartCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function handleCallback($callback_data)
     {
         // This method must be implemented...
-        return;
     }
 }

@@ -47,8 +47,8 @@ class UpdateSchoolYear extends Command
             $this->info('Updating school year for all users...');
 
             foreach ($users as $user) {
-                if (! $user->updateSchoolYear()) {
-                    $this->error('Error updating school year for user #' . $user->id);
+                if (!$user->updateSchoolYear()) {
+                    $this->error('Error updating school year for user #'.$user->id);
                 }
                 $bar->advance();
             }
@@ -58,13 +58,13 @@ class UpdateSchoolYear extends Command
             // Refresh for the specified user only.
             $user = User::find($this->argument('userId'));
 
-            if (! $user) {
+            if (!$user) {
                 $this->error('User not found!');
             } else {
                 if ($user->updateSchoolYear()) {
                     $this->info('School year updated!');
                 } else {
-                    $this->error('Error updating school year for user #' . $user->id);
+                    $this->error('Error updating school year for user #'.$user->id);
                 }
             }
         }
