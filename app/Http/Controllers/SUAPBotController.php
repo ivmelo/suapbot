@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Telegram\Bot\Keyboard\Keyboard;
 use Illuminate\Foundation\Inspiring;
 
+use App\Telegram\Commands\Command;
 use App\Telegram\Commands\ClassesCommand;
 use App\Telegram\Commands\CalendarCommand;
 use App\Telegram\Commands\AboutCommand;
@@ -53,61 +54,29 @@ class SUAPBotController extends Controller
      */
     public function handleWebhook()
     {
-        $message = $this->update->getMessage();
 
-        if ($this->update->isType('callback_query')) {
-            if (strrpos($this->update['callback_query']['data'], 'settings') === 0) {
-                $command = new SettingsCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (strrpos($this->update['callback_query']['data'], 'classes') === 0) {
-                $command = new ClassesCommand($this->telegram, $this->update);
-                $command->handle();
-            }
-        } elseif (isset($message['text'])) {
-            $message_text = strtolower($message['text']);
+        // Register commands...
+        if (SettingsCommand::shouldExecute($this->update)) {
+            $command = new SettingsCommand($this->telegram, $this->update);
+        } elseif (ClassesCommand::shouldExecute($this->update)) {
+            $command = new ClassesCommand($this->telegram, $this->update);
+        } elseif (ReportCardCommand::shouldExecute($this->update)) {
+            $command = new ReportCardCommand($this->telegram, $this->update);
+        } elseif (ClassScheduleCommand::shouldExecute($this->update)) {
+            $command = new ClassScheduleCommand($this->telegram, $this->update);
+        } elseif (CalendarCommand::shouldExecute($this->update)) {
+            $command = new CalendarCommand($this->telegram, $this->update);
+        } elseif (StartCommand::shouldExecute($this->update)) {
+            $command = new StartCommand($this->telegram, $this->update);
+        } elseif (AboutCommand::shouldExecute($this->update)) {
+            $command = new AboutCommand($this->telegram, $this->update);
+        } else {
+            $command = new UnknownCommand($this->telegram, $this->update);
+        }
 
-            if (str_contains($message_text, [SettingsCommand::NAME])) {
-                $command = new SettingsCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, [ClassesCommand::NAME])) {
-                $command = new ClassesCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, ['inspire', 'inspirational', 'inspiring', 'inspirar'])) {
-                $this->telegram->sendMessage([
-                    'chat_id' => $message['chat']['id'],
-                    'text' => Inspiring::quote(),
-                ]);
-            } elseif (str_contains($message_text, ['obrigado', 'valeu', 'thanks', 'thx'])) {
-                $this->telegram->sendMessage([
-                    'chat_id' => $message['chat']['id'],
-                    'text' => ':)',
-                ]);
-            } elseif (str_contains($message_text, ['notas', 'boletim', 'faltas'])) {
-                // $this->telegram->triggerCommand('boletim', $this->update);
-                $command = new ReportCardCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, ['aulas', 'horário', 'sala', 'aula'])) {
-                // $this->telegram->triggerCommand('aulas', $this->update);
-                $command = new ClassScheduleCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, ['calendário', 'calendario'])) {
-                // $this->telegram->triggerCommand('calendario', $this->update);
-                $command = new CalendarCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, ['start'])) {
-                $command = new StartCommand($this->telegram, $this->update);
-                $command->handle();
-            } elseif (str_contains($message_text, [
-                    'sobre', 'quem', 'ajuda', 'apagar', 'help',
-                    'remover', 'deletar', 'feedback', 'sair'
-                ])) {
-                $command = new AboutCommand($this->telegram, $this->update);
-                $command->handle();
-                // $this->telegram->triggerCommand('sobre', $this->update);
-            } else {
-                $command = new UnknownCommand($this->telegram, $this->update);
-                $command->handle();
-            }
+        // Run the command:
+        if (isset($command) && $command instanceof Command) {
+            $command->handle();
         }
 
         return response()->json([

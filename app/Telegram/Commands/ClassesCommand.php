@@ -22,6 +22,15 @@ class ClassesCommand extends Command
     const NAME = 'turmas';
 
     /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [
+        'materiais', 'material', 'alunos',
+        'colega', 'colegas', 'turma'
+    ];
+
+    /**
      * The prefix for callback queries.
      *
      * @var string

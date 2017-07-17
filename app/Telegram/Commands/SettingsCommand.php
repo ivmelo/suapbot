@@ -22,6 +22,16 @@ class SettingsCommand extends Command
     const NAME = 'ajustes';
 
     /**
+     * The aliases of this command.
+     *
+     * @var array
+     */
+    const ALIASES = [
+        'configurações', 'configuracoes', 'notificações',
+        'notificacoes', 'notificar', 'config', 'ajustar'
+    ];
+
+    /**
      * The prefix for callback queries.
      *
      * @var string
@@ -98,6 +108,7 @@ class SettingsCommand extends Command
 
             $this->replyWithEditedMessage([
                 'text' => Speaker::getSettingsMessage(),
+                'parse_mode' => 'markdown',
                 'reply_markup' => $this->getKeyboard($user->settings),
             ]);
         } else {

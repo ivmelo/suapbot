@@ -1,5 +1,5 @@
 # SUAP Bot
-Bot do SUAP para telegram. Mostra notas, presença, horários, locais de aula e calendário acadêmico.
+Bot do SUAP para telegram. Mostra notas, presença, horários, locais de aula, turmas virtuais, materiais de aula, colegas de classe e calendário acadêmico.
 
 Utiliza a [SUAP API PHP](https://github.com/ivmelo/suap-api-php) para acessar os dados do SUAP.
 

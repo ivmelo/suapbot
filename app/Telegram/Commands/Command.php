@@ -2,8 +2,6 @@
 
 namespace App\Telegram\Commands;
 
-use Telegram\Bot\Keyboard\Keyboard;
-
 /**
  * Implements an easy way to handle bot commands.
  */
@@ -14,6 +12,12 @@ abstract class Command
      * @var string
      */
     const NAME = '';
+
+    /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [];
 
     /**
      * Stores the description of the command.
@@ -100,7 +104,7 @@ abstract class Command
     }
 
     /**
-     * Replies to the user with a message.
+     * Replies with a message.
      *
      * @param  Array $params The params for the message.
      */
@@ -149,10 +153,12 @@ abstract class Command
 
     /**
      * Defines the rules for when this command should be executed.
-     * The default is: The name of the command is sent,
-     * or there's a callback query using the defined prefix.
+     * By default it will return true if the name of the command
+     * or one of the aliases are found in the user message.
+     * It will also be execued if there's a callback query
+     * using the defined prefix at the beginning.
      *
-     * @param  Update $update The Telegram update object.
+     * @param  Telegram\Bot\Objects\Update $update The Telegram update object.
      * @return boolean         Whether the command should be executed.
      */
     public static function shouldExecute($update) {
@@ -163,11 +169,12 @@ abstract class Command
             if ($action == static::PREFIX) {
                 return true;
             }
-        } elseif (
-            isset($update['message']['text']) &&
-            explode(' ', $update['message']['text'])[0] == '/' . static::NAME
-        ) {
-            return true;
+        } elseif (isset($update['message']['text'])) {
+            if (str_contains($update['message']['text'], static::NAME)) {
+                return true;
+            } elseif (str_contains($update['message']['text'], static::ALIASES)) {
+                return true;
+            }
         }
         return false;
     }

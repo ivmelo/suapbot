@@ -19,6 +19,15 @@ class CalendarCommand extends Command
     const NAME = 'calendario';
 
     /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [
+        'calendário', 'calend',
+        'datas', 'férias', 'ferias'
+    ];
+
+    /**
      * The prefix for callback queries.
      *
      * @var string
@@ -44,7 +53,7 @@ class CalendarCommand extends Command
             ['action' => 'typing']
         );
 
-        $msg = "🗓 Calendário Acadêmico 2017: \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017";
+        $msg = "🗓 Calendário Acadêmico 2017 (Campus Natal Central): \n\nhttp://portal.ifrn.edu.br/campus/natalcentral/arquivos/calendario-academico-de-referencia-2017";
 
         // And send message.
         $this->replyWithMessage([

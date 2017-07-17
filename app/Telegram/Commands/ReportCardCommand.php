@@ -24,6 +24,15 @@ class ReportCardCommand extends Command
     const NAME = 'boletim';
 
     /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [
+        'notas', 'faltas',
+        'presença', 'frequência'
+    ];
+
+    /**
      * The prefix for callback queries.
      *
      * @var string

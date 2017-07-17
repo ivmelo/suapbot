@@ -27,6 +27,15 @@ class StartCommand extends Command
     const PREFIX = 'start';
 
     /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [
+        'sobre', 'quem', 'ajuda', 'apagar', 'help',
+        'remover', 'deletar', 'feedback', 'sair'
+    ];
+
+    /**
      * The description of the command.
      *
      * @var string

@@ -24,6 +24,15 @@ class ClassScheduleCommand extends Command
     const NAME = 'aulas';
 
     /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [
+        'aula', 'horário', 'sala',
+        'onde', 'prox', 'proxima'
+    ];
+
+    /**
      * The prefix for callback queries.
      *
      * @var string

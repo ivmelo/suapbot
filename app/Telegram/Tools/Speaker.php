@@ -114,7 +114,7 @@ class Speaker
         // keyboard system...
         $keyboard = [
             ['aulas', 'boletim', 'turmas'], // add proxaula
-            ['aulas de amanhã', 'calendario', 'ajustes'], // add config
+            ['aulas de amanhã', 'calendário', 'ajustes'], // add config
         ];
 
         $reply_markup = Telegram::replyKeyboardMarkup([
