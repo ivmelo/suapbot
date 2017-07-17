@@ -8,23 +8,19 @@ use Telegram\Bot\Keyboard\Keyboard;
 
 
 /**
- * Settings Command.
+ * Shows the settings panel, and handles settings updates.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class SettingsCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'ajustes';
 
     /**
-     * The aliases of this command.
-     *
-     * @var array
+     * {@inheritDoc}
      */
     const ALIASES = [
         'configurações', 'configuracoes', 'notificações',
@@ -32,27 +28,17 @@ class SettingsCommand extends Command
     ];
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const PREFIX = 'settings';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Mostra painel de ajustes.';
 
-    const CLASSES_SETTINGS = 'settings.classes.toggle';
-    const ATTENDANCE_SETTINGS = 'settings.attendance.toggle';
-    const GRADES_SETTINGS = 'settings.grades.toggle';
-
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
@@ -77,10 +63,7 @@ class SettingsCommand extends Command
     }
 
     /**
-     * Handles a callback query.
-     * This method MUST be implemented, even if it's not used.
-     *
-     * @param  string $callback_data
+     * {@inheritDoc}
      */
     protected function handleCallback($callback_data)
     {
@@ -92,13 +75,13 @@ class SettingsCommand extends Command
         if ($user) {
             // Find out which setting the user is toggling.
             switch ($callback_data) {
-                case self::CLASSES_SETTINGS:
+                case self::PREFIX . '.classes':
                     $user->settings->classes = ! $user->settings->classes;
                     break;
-                case self::GRADES_SETTINGS:
+                case self::PREFIX . '.grades':
                     $user->settings->grades = ! $user->settings->grades;
                     break;
-                case self::ATTENDANCE_SETTINGS:
+                case self::PREFIX . '.attendance':
                     $user->settings->attendance = ! $user->settings->attendance;
                     break;
             }
@@ -116,17 +99,24 @@ class SettingsCommand extends Command
         }
     }
 
+    /**
+     * Return an updated version of the keyboard
+     * according to the settings object passed.
+     *
+     * @param  App\settings $settings The settings object.
+     * @return \Telegram\Bot\Keyboard\Keyboard The keyboard object.
+     */
     private function getKeyboard($settings) {
         return Keyboard::make()->inline()
             ->row(Keyboard::inlineButton([
                 'text' => $settings->classes ? '✅ Aulas' : '🚫 Aulas',
-                'callback_data' => self::CLASSES_SETTINGS,
+                'callback_data' => self::PREFIX . '.classes',
             ]))->row(Keyboard::inlineButton([
                 'text' => $settings->grades ? '✅ Notas' : '🚫 Notas',
-                'callback_data' => self::GRADES_SETTINGS,
+                'callback_data' => self::PREFIX . '.grades',
             ]))->row(Keyboard::inlineButton([
                 'text' => $settings->attendance ? '✅ Faltas' : '🚫 Faltas',
-                'callback_data' => self::ATTENDANCE_SETTINGS,
+                'callback_data' => self::PREFIX . '.attendance',
             ]));
     }
 }
