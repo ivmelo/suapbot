@@ -48,9 +48,8 @@ class SUAPBotController extends Controller
     }
 
     /**
-     * The public constructor of this class.
-     *
-     * @param \Telegram\Bot\Api $telegram
+     * Handles the webhook update.
+     * This is where you register and execute a command.
      */
     public function handleWebhook()
     {

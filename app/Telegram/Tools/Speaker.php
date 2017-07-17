@@ -5,8 +5,7 @@ namespace App\Telegram\Tools;
 use Telegram;
 
 /**
- * This class provides strings for the most common messages used through the application.
- * It avoids duplicating them, and helps keep the code clean.
+ * This class provides strings for the most common bot answers.
  */
 class Speaker
 {

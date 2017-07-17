@@ -144,7 +144,7 @@ class ReportCardCommand extends Command
      */
     protected function handleCallback($callback_data)
     {
-        # This method must be implemented...
+        // This method must be implemented...
         return;
     }
 }
