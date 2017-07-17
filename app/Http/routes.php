@@ -11,10 +11,10 @@
 |
 */
 
-Route::post('webhooks/' . env('TELEGRAM_WEBHOOK_SECRET') . '/telegram', 'SUAPBotController@handleWebhook');
+Route::post('webhooks/' . config('app.telegram_webhook_secret') . '/telegram', 'SUAPBotController@handleWebhook');
 
 Route::post('webhooks/telegram/setup', function(){
-    $url = secure_url('webhooks/' . env('TELEGRAM_WEBHOOK_SECRET') . '/telegram');
+    $url = secure_url('webhooks/' . config('app.telegram_webhook_secret') . '/telegram');
     try {
         $response = Telegram::setWebhook(['url' => $url]);
         return response()->json('Ok!', 200);
