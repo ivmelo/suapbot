@@ -3,41 +3,6 @@
 @section('content')
     <div class="container">
 
-        {{-- <div class="ui four statistics">
-            <div class="statistic">
-                <div class="value">
-                    {{ $stats['total'] }}
-                </div>
-                <div class="label">
-                    Users
-                </div>
-            </div>
-            <div class="statistic">
-                <div class="value">
-                    {{ $stats['active'] }}
-                </div>
-                <div class="label">
-                    Active Users
-                </div>
-            </div>
-            <div class="statistic">
-                <div class="value">
-                    {{ $stats['today'] }}
-                </div>
-                <div class="label">
-                    New Today
-                </div>
-            </div>
-            <div class="statistic">
-                <div class="value">
-                    {{ $stats['week'] }}
-                </div>
-                <div class="label">
-                    New This Week
-                </div>
-            </div>
-        </div> --}}
-
         <table class="table">
             <thead>
                 <tr>
@@ -45,7 +10,9 @@
                     <th>Gravatar</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Not.</th>
+                    <th>Gra</th>
+                    <th>Cla</th>
+                    <th>Att</th>
                     <th>Created</th>
                     <th>Updated</th>
                 </tr>
@@ -63,12 +30,24 @@
                         </td>
                         <td>{{ $user->email }}</td>
                         <td>
-                            @if($user->suap_id)
-                                @if($user->notify)
-                                    <span class="led on"></span>
-                                @else
-                                    <span class="led off"></span>
-                                @endif
+                            @if($user->settings->grades)
+                                <span class="led on"></span>
+                            @else
+                                <span class="led off"></span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($user->settings->classes)
+                                <span class="led on"></span>
+                            @else
+                                <span class="led off"></span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($user->settings->attendance)
+                                <span class="led on"></span>
+                            @else
+                                <span class="led off"></span>
                             @endif
                         </td>
                         <td>{{ $user->created_at->format('d/m/Y H:i:s') }}</td>

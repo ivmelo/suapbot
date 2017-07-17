@@ -2,10 +2,10 @@
 
 namespace App\Telegram\Commands;
 
-use Telegram\Bot\Keyboard\Keyboard;
-
 /**
  * Implements an easy way to handle bot commands.
+ * This is an abstract class, all commands should inherit it
+ * and implement the two abstract methods defined below.
  */
 abstract class Command
 {
@@ -14,6 +14,12 @@ abstract class Command
      * @var string
      */
     const NAME = '';
+
+    /**
+     * The aliases of this command.
+     * @var array
+     */
+    const ALIASES = [];
 
     /**
      * Stores the description of the command.
@@ -35,7 +41,7 @@ abstract class Command
 
     /**
      * The arguments of the command.
-     * @var Array
+     * @var array
      */
     protected $arguments;
 
@@ -76,19 +82,20 @@ abstract class Command
     /**
      * Handles a command sent by the user.
      *
-     * @param string $message
+     * @param string $message The message sent by the user.
      */
     abstract protected function handleCommand($message);
 
     /**
      * Handles a callback_query sent by the user.
+     * Callback queries are sent when an inline button is pressed.
      *
      * @param string $callback_data
      */
     abstract protected function handleCallback($callback_data);
 
     /**
-     * Handles the command.
+     * Handles the command according to the type of the update.
      */
     public function handle()
     {
@@ -100,9 +107,9 @@ abstract class Command
     }
 
     /**
-     * Replies to the user with a message.
+     * Replies with a message.
      *
-     * @param  Array $params The params for the message.
+     * @param  array $params The params for the message.
      */
     protected function replyWithMessage($params)
     {
@@ -113,7 +120,7 @@ abstract class Command
     /**
      * Replies with an edited message.
      *
-     * @param  Array $params The params for the message.
+     * @param  array $params The params for the message.
      */
     protected function replyWithEditedMessage($params)
     {
@@ -124,7 +131,7 @@ abstract class Command
     /**
      * Replies with a chat action.
      *
-     * @param  Array $params The params for the message.
+     * @param  array $params The params for the message.
      */
     protected function replyWithChatAction($params) {
         $params = $this->prepareParams($params);
@@ -132,10 +139,10 @@ abstract class Command
     }
 
     /**
-     * Prepare the params, and add required fields.
+     * Prepare the params, and add required fields such as chat_id and user_id.
      *
-     * @param  Array $params The params to be used to call the Telegram API.
-     * @return Array
+     * @param  array $params The params to be used to call the Telegram API.
+     * @return array
      */
     private function prepareParams($params) {
         if ($this->update->isType('callback_query')) {
@@ -149,11 +156,13 @@ abstract class Command
 
     /**
      * Defines the rules for when this command should be executed.
-     * The default is: The name of the command is sent,
-     * or there's a callback query using the defined prefix.
+     * By default it will return true if the name of the command
+     * or one of the aliases are found in the user message.
+     * It will also be execued if there's a callback query
+     * using the defined prefix at the beginning.
      *
-     * @param  Update $update The Telegram update object.
-     * @return boolean         Whether the command should be executed.
+     * @param  Telegram\Bot\Objects\Update $update The Telegram update object.
+     * @return boolean  Whether the command should be executed.
      */
     public static function shouldExecute($update) {
         if ($update->isType('callback_query')) {
@@ -163,11 +172,12 @@ abstract class Command
             if ($action == static::PREFIX) {
                 return true;
             }
-        } elseif (
-            isset($update['message']['text']) &&
-            explode(' ', $update['message']['text'])[0] == '/' . static::NAME
-        ) {
-            return true;
+        } elseif (isset($update['message']['text'])) {
+            if (str_contains($update['message']['text'], static::NAME)) {
+                return true;
+            } elseif (str_contains($update['message']['text'], static::ALIASES)) {
+                return true;
+            }
         }
         return false;
     }

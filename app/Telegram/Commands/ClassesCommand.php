@@ -8,43 +8,43 @@ use Ivmelo\SUAP\SUAP;
 use App\User;
 
 /**
- * Classes Command.
+ * Show classes, class materials, the registered students,
+ * class schedules, class details and a bunch of other information.
+ * Uses the "Turmas Virtuais" endpoint from the SUAP API.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class ClassesCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'turmas';
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
+     */
+    const ALIASES = [
+        'materiais', 'material', 'alunos',
+        'colega', 'colegas', 'turma'
+    ];
+
+    /**
+     * {@inheritDoc}
      */
     const PREFIX = 'classes';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Mostra as turmas virtuais incluindo material e alunos.';
 
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
-        $this->replyWithChatAction([
-            'action' => 'typing',
-        ]);
+        $this->replyWithChatAction(['action' => 'typing',]);
 
         $user = User::with('settings')->where(
             'telegram_id',
@@ -85,10 +85,7 @@ class ClassesCommand extends Command
     }
 
     /**
-     * Handles a callback query.
-     * This method MUST be implemented, even if it's not used.
-     *
-     * @param  string $callback_data
+     * {@inheritDoc}
      */
     protected function handleCallback($callback_data)
     {
@@ -125,7 +122,11 @@ class ClassesCommand extends Command
         }
     }
 
-
+    /**
+     * Shows all the given glasses, with date and info.
+     *
+     * @param  array $turma The "turma" object.
+     */
     private function showAulas($turma)
     {
         $response = "🎒 *Aulas da Disciplina:*\n\n";
@@ -137,13 +138,18 @@ class ClassesCommand extends Command
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'text'       => $response,
             'parse_mode' => 'markdown',
-            'disable_web_page_preview' => 'true',
+            'disable_web_page_preview' => 'true', // Removes preview for web links.
             'reply_markup' => $this->getNavigationKeyboard($turma, 'aulas')
         ]);
     }
 
+    /**
+     * Shows a listing of class materials and URLs to download them.
+     *
+     * @param  array $turma The "turma" object.
+     */
     private function showMateriais($turma)
     {
         $response = "📚 *Materiais de Aula:*\n\n";
@@ -155,13 +161,18 @@ class ClassesCommand extends Command
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'text'       => $response,
             'parse_mode' => 'markdown',
             'disable_web_page_preview' => 'true',
             'reply_markup' => $this->getNavigationKeyboard($turma, 'material')
         ]);
     }
 
+    /**
+     * Shows the names all students registered in the class, and their contact info.
+     *
+     * @param  array $turma The "turma" object.
+     */
     private function showAlunos($turma)
     {
         $response = "👩‍🎓👨‍🎓 *Alunos*:\n\n";
@@ -173,12 +184,17 @@ class ClassesCommand extends Command
         }
 
         $this->replywithEditedMessage([
-            'text'       => $response, //Markify::parseBoletim($reportCard),
+            'text'       => $response,
             'parse_mode' => 'markdown',
             'reply_markup' => $this->getNavigationKeyboard($turma, 'alunos')
         ]);
     }
 
+    /**
+     * Shows class details.
+     *
+     * @param  array $turma The "turma" object.
+     */
     private function showTurma($turma)
     {
         $response = '';
@@ -202,6 +218,13 @@ class ClassesCommand extends Command
         ]);
     }
 
+    /**
+     * Returns a navigation keyboard for class info.
+     *
+     * @param array $turma The "turma" object.
+     * @param string $action The current displayed option to hide.
+     * @return \Telegram\Bot\Keyboard\Keyboard $keyboard
+     */
     private function getNavigationKeyboard($turma, $action = false)
     {
         $keyboard = Keyboard::make()->inline();
@@ -249,6 +272,12 @@ class ClassesCommand extends Command
         return $keyboard;
     }
 
+    /**
+     * Returns an inline keyboard with one class per row.
+     *
+     * @param array $turma The "turma" object.
+     * @return \Telegram\Bot\Keyboard\Keyboard $keyboard
+     */
     private function getKeyboard($turmas) {
 
         $keyboard = Keyboard::make()->inline();
@@ -263,6 +292,12 @@ class ClassesCommand extends Command
         return $keyboard;
     }
 
+    /**
+     * Parse a date to DD/MM/YYYY.
+     *
+     * @param  string $date The date to be parsed.
+     * @return string The parsed date.
+     */
     private function parseDate($date)
     {
         $arr_date = explode('-', $date);

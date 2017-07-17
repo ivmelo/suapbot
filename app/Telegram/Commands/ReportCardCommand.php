@@ -10,37 +10,37 @@ use Ivmelo\SUAP\SUAP;
 use View;
 
 /**
- * Report Card Command.
+ * Shows a student report card with grades, attendance and other info.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class ReportCardCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'boletim';
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
+     */
+    const ALIASES = [
+        'notas', 'faltas',
+        'presença', 'frequência'
+    ];
+
+    /**
+     * {@inheritDoc}
      */
     const PREFIX = 'reportcard';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Mostra o boletim com notas, aulas e frequência.';
 
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
@@ -96,14 +96,21 @@ class ReportCardCommand extends Command
         }
     }
 
-    private function calculateStats($grades)
+    /**
+     * Calculates the total course hours, attendance, classes given
+     * and skipped classes of a studen, given their report card.
+     *
+     * @param  array $reportCard The student's report card.
+     * @return array    The calculated stats.
+     */
+    private function calculateStats($reportCard)
     {
         $totalCargaHoraria = 0;
         $totalAulas = 0;
         $totalFaltas = 0;
         $attendance = 0;
 
-        foreach ($grades as $grade) {
+        foreach ($reportCard as $grade) {
             // Add to stats.
             if (isset($grade['carga_horaria'])) {
                 # code...
@@ -133,14 +140,11 @@ class ReportCardCommand extends Command
     }
 
     /**
-     * Handles a callback query.
-     * This method MUST be implemented, even if it's not used.
-     *
-     * @param  string $callback_data
+     * {@inheritDoc}
      */
     protected function handleCallback($callback_data)
     {
-        # This method must be implemented...
+        // This method must be implemented...
         return;
     }
 }

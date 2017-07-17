@@ -17,7 +17,6 @@ Route::auth();
 
 Route::get('home', 'HomeController@index');
 Route::post('home', 'HomeController@sendMessage');
-Route::get('users', 'UserController@index');
 
 Route::get('auth/{telegram_id}', 'SUAPBotController@getAuth');
 Route::post('auth/{telegram_id}', 'SUAPBotController@postAuth');

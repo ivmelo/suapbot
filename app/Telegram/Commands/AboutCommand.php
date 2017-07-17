@@ -5,37 +5,29 @@ namespace App\Telegram\Commands;
 use App\Telegram\Tools\Speaker;
 
 /**
- * About Command.
+ * This command shows an About page with some basic info about the bot.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class AboutCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'sobre';
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const PREFIX = 'about';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Mostra info do bot.';
 
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
@@ -51,14 +43,11 @@ class AboutCommand extends Command
     }
 
     /**
-     * Handles a callback query.
-     * This method MUST be implemented, even if it's not used.
-     *
-     * @param  string $callback_data
+     * {@inheritDoc}
      */
     protected function handleCallback($callback_data)
     {
-        # This method must be implemented...
+        // This method must be implemented...
         return;
     }
 }

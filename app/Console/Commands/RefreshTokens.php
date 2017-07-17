@@ -75,7 +75,6 @@ class RefreshTokens extends Command
      * Refresh token for a specified user.
      *
      * @param App\User $user The user to have the token refreshed.
-     *
      * @return bool Whether the token was refreshed or not.
      */
     private function refreshTokenFor($user)

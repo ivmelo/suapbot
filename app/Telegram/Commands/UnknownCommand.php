@@ -5,44 +5,36 @@ namespace App\Telegram\Commands;
 use App\Telegram\Tools\Speaker;
 
 /**
- * Unknown Command.
+ * Unknown Command. The name says it all.
+ * This command is executed whenever the user sends an unknown message.
  *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class UnknownCommand extends Command
 {
     /**
-     * The name of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const NAME = 'unknown';
 
     /**
-     * The prefix for callback queries.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const PREFIX = 'unknown';
 
     /**
-     * The description of the command.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     const DESCRIPTION = 'Comando não reconhecido.';
 
     /**
-     * Handles a command call.
-     *
-     * @param string $message
+     * {@inheritDoc}
      */
     protected function handleCommand($message)
     {
-        // Type.
         $this->replyWithChatAction(['action' => 'typing']);
 
-        // And send message.
+        // Shows the user a brief "how to".
         $this->replyWithMessage([
             'text'       => Speaker::unknown(),
             'parse_mode' => 'markdown',
@@ -51,14 +43,11 @@ class UnknownCommand extends Command
     }
 
     /**
-     * Handles a callback query.
-     * This method MUST be implemented, even if it's not used.
-     *
-     * @param  string $callback_data
+     * {@inheritDoc}
      */
     protected function handleCallback($callback_data)
     {
-        # This method must be implemented...
+        // This method must be implemented...
         return;
     }
 }

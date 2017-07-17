@@ -3,7 +3,8 @@
 namespace App\Telegram\Tools;
 
 /**
- * Markify provides helpers to parse boletim data into a readable and organized format.
+ * Markify provides helpers to parse boletim data
+ * into a readable and organized format.
  */
 class Markify
 {
