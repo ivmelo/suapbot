@@ -48,7 +48,29 @@ class SUAPBotController extends Controller
      */
     public function handleWebhook()
     {
+        // Get the command that will be executed
+        // according to the message sent by the user.
+        $command = $this->getCommand();
 
+        // Run the command:
+        if (isset($command) && $command instanceof Command) {
+            $command->handle();
+        }
+
+        return response()->json([
+            'SUAPBot',
+        ], 200);
+    }
+
+    /**
+     * "Abstract Factory" for commands.
+     * Finds out which command should be executed
+     * according to the message sent by the user.
+     *
+     * @return App\Telegram\Commands\Command The command to be executed.
+     */
+    private function getCommand()
+    {
         // Register commands...
         if (SettingsCommand::shouldExecute($this->update)) {
             $command = new SettingsCommand($this->telegram, $this->update);
@@ -69,14 +91,7 @@ class SUAPBotController extends Controller
             $command = new UnknownCommand($this->telegram, $this->update);
         }
 
-        // Run the command:
-        if (isset($command) && $command instanceof Command) {
-            $command->handle();
-        }
-
-        return response()->json([
-            'SUAPBot',
-        ], 200);
+        return $command;
     }
 
     /**

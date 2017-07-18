@@ -3,10 +3,12 @@
 namespace App;
 
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
 use Bugsnag;
 use Illuminate\Database\Eloquent\Model;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
+use View;
 
 class ReportCard extends Model
 {
@@ -88,16 +90,23 @@ class ReportCard extends Model
                         }
                     }
 
-                    // Check if there is updates (just to make sure...).
+                    // Check if there are updates (just to make sure...).
                     if (count($updates) > 0) {
                         $status = self::UPDATED;
+
+                        $reportCard = View::make('telegram.reportcard', [
+                            'grades' => $updates,
+                            'stats'  => ReportCard::calculateStats($newData),
+                            'update' => true,
+                        ])->render();
 
                         // Notify user if set to do so.
                         if ($notify) {
                             Telegram::sendMessage([
                                 'chat_id'      => $this->user->telegram_id,
                                 'parse_mode'   => 'markdown',
-                                'text'         => Markify::parseBoletim($updates),
+                                'text'         => $reportCard,
+                                'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                             ]);
                         }
                     }
@@ -115,6 +124,50 @@ class ReportCard extends Model
         }
 
         return $status;
+    }
+
+    /**
+     * Calculates the total course hours, attendance, classes given
+     * and skipped classes of a studen, given their report card.
+     *
+     * @param array $reportCard The student's report card.
+     *
+     * @return array The calculated stats.
+     */
+    public static function calculateStats($reportCard)
+    {
+        $totalCargaHoraria = 0;
+        $totalAulas = 0;
+        $totalFaltas = 0;
+        $attendance = 0;
+
+        foreach ($reportCard as $grade) {
+            // Add to stats.
+            if (isset($grade['carga_horaria'])) {
+                // code...
+                $totalCargaHoraria += $grade['carga_horaria'];
+                $totalAulas += $grade['carga_horaria_cumprida'];
+                $totalFaltas += $grade['numero_faltas'];
+            }
+        }
+
+        if ($totalCargaHoraria != 0) {
+            // Calculate total attendance.
+            if ($totalFaltas == 0) {
+                $attendance = 100;
+            } else {
+                $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
+            }
+        }
+
+        $stats = [
+            'total_carga_horaria' => $totalCargaHoraria,
+            'total_aulas'         => $totalAulas,
+            'total_faltas'        => $totalFaltas,
+            'frequencia'          => $attendance,
+        ];
+
+        return $stats;
     }
 
     /**
