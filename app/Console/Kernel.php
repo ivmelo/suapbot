@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Update the access token of every user.
+        // Update the access token of every user twice, daily.
         $schedule->call(function () {
             Artisan::call('suapbot:refreshtoken', ['--all' => true]);
         })->dailyAt('05:15');
@@ -39,5 +39,13 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Artisan::call('suapbot:refreshtoken', ['--all' => true]);
         })->dailyAt('17:15');
+
+        // Compare user report cards every twenty minutes.
+        $schedule->call(function () {
+            Artisan::call('suapbot:updatereportcard', [
+                '--all' => true,
+                '--notify' => true
+            ]);
+        })->everyThirtyMinutes();
     }
 }

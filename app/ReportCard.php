@@ -3,10 +3,12 @@
 namespace App;
 
 use App\Telegram\Tools\Markify;
+use App\Telegram\Tools\Speaker;
 use Bugsnag;
 use Illuminate\Database\Eloquent\Model;
 use Ivmelo\SUAP\SUAP;
 use Telegram;
+use View;
 
 class ReportCard extends Model
 {
@@ -68,7 +70,7 @@ class ReportCard extends Model
                         Telegram::sendMessage([
                             'chat_id'      => $this->user->telegram_id,
                             'parse_mode'   => 'markdown',
-                            'text'         => "ℹ️ Novas disciplinas foram adicionadas ou removidas do seu boletim. \n\nDigite /boletim para ver detalhes.",
+                            'text'         => "ℹ️ Disciplinas foram adicionadas ou removidas do seu boletim. \n\nDigite /boletim para ver detalhes.",
                         ]);
                     }
                 } else {
@@ -88,21 +90,17 @@ class ReportCard extends Model
                         }
                     }
 
-                    // Check if there is updates (just to make sure...).
+                    // Check if there are updates (just to make sure...).
                     if (count($updates) > 0) {
                         $status = self::UPDATED;
 
-                        // Notify user if set to do so.
-                        if ($notify) {
-                            Telegram::sendMessage([
-                                'chat_id'      => $this->user->telegram_id,
-                                'parse_mode'   => 'markdown',
-                                'text'         => Markify::parseBoletim($updates),
-                            ]);
+                        // For debuging.
+                        print_r($updates);
+
+                        if ($notify && $this->shouldNotifyUser($updates, $this->user->settings)) {
+                            $this->notifyUser($updates, $newData);
                         }
                     }
-
-                    print_r($updates);
                 }
             } else {
                 // No changes.
@@ -115,6 +113,106 @@ class ReportCard extends Model
         }
 
         return $status;
+    }
+
+    /**
+     * Finds out if the user should be notified
+     * according to their notification settings.
+     *
+     * @param  array $updates The report card diff.
+     * @param  App\Settings $settings   The Settings object of the user.
+     * @return boolean  Whether the user should be notified.
+     */
+    private function shouldNotifyUser($updates, $settings)
+    {
+        // Check if the user allowed notifications
+        // for the kind of update that just happened.
+        foreach ($updates as $update) {
+            if (isset($update['carga_horaria_cumprida'])) {
+                if ($settings->classes) {
+                    return true;
+                }
+            }
+
+            if (isset($update['numero_faltas'])) {
+                if ($settings->attendance) {
+                    return true;
+                }
+            }
+
+            if (isset($update['media_final_disciplina'])) {
+                if ($settings->grades) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Notifies a user about changes in his report card.
+     */
+    private function notifyUser($updates, $newData)
+    {
+        // Render report card.
+        $reportCard = View::make('telegram.reportcard', [
+            'grades' => $updates,
+            'stats'  => ReportCard::calculateStats($newData),
+            'update' => true,
+        ])->render();
+
+        // Notify user if set to do so.
+        Telegram::sendMessage([
+            'chat_id'      => $this->user->telegram_id,
+            'parse_mode'   => 'markdown',
+            'text'         => $reportCard,
+            'reply_markup' => Speaker::getReplyKeyboardMarkup(),
+        ]);
+    }
+
+    /**
+     * Calculates the total course hours, attendance, classes given
+     * and skipped classes of a studen, given their report card.
+     *
+     * @param array $reportCard The student's report card.
+     *
+     * @return array The calculated stats.
+     */
+    public static function calculateStats($reportCard)
+    {
+        $totalCargaHoraria = 0;
+        $totalAulas = 0;
+        $totalFaltas = 0;
+        $attendance = 0;
+
+        foreach ($reportCard as $grade) {
+            // Add to stats.
+            if (isset($grade['carga_horaria'])) {
+                // code...
+                $totalCargaHoraria += $grade['carga_horaria'];
+                $totalAulas += $grade['carga_horaria_cumprida'];
+                $totalFaltas += $grade['numero_faltas'];
+            }
+        }
+
+        if ($totalCargaHoraria != 0) {
+            // Calculate total attendance.
+            if ($totalFaltas == 0) {
+                $attendance = 100;
+            } else {
+                $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
+            }
+        }
+
+        $stats = [
+            'total_carga_horaria' => $totalCargaHoraria,
+            'total_aulas'         => $totalAulas,
+            'total_faltas'        => $totalFaltas,
+            'frequencia'          => $attendance,
+        ];
+
+        return $stats;
     }
 
     /**

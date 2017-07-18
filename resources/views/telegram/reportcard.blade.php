@@ -1,4 +1,5 @@
-📚 Suas notas, aulas e faltas:
+@if($update) 📚 *BOLETIM ATUALIZADO:* @else 📚 *BOLETIM:* @endif
+
 
 @foreach ($grades as $grade)
 *📓 {!! explode( ' - ', $grade['disciplina'])[1] !!}*
@@ -44,3 +45,5 @@ Situação: {{ ucfirst($grade['situacao']) }}
 *{{ $stats['total_aulas'] }} aulas, {{ $stats['total_faltas'] }} faltas.
 {{ round($stats['frequencia'], 1) }}% de frequência.
 CH Total: {{ $stats['total_carga_horaria'] }} aulas.*
+
+@if($update)Digite /boletim para ver o seu boletim completo ou /ajustes para configurar as notificações. @endif

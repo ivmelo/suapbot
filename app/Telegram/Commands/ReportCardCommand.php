@@ -4,6 +4,7 @@ namespace App\Telegram\Commands;
 
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
+use App\ReportCard;
 use App\User;
 use Bugsnag;
 use Ivmelo\SUAP\SUAP;
@@ -67,15 +68,14 @@ class ReportCardCommand extends Command
                     $user->updateLastRequest();
                     $user->save();
 
-                    $view = View::make('telegram.reportcard', [
+                    $reportCard = View::make('telegram.reportcard', [
                         'grades' => $reportCard,
-                        'stats'  => $this->calculateStats($reportCard),
-                    ]);
-
-                    $parsed = $view->render();
+                        'stats'  => reportCard::calculateStats($reportCard),
+                        'update' => false,
+                    ])->render();
 
                     $this->replyWithMessage([
-                        'text'         => $parsed, //Markify::parseBoletim($reportCard),
+                        'text'         => $reportCard, //Markify::parseBoletim($reportCard),
                         'parse_mode'   => 'markdown',
                         'reply_markup' => Speaker::getReplyKeyboardMarkup(),
                     ]);
@@ -92,50 +92,6 @@ class ReportCardCommand extends Command
             // User was not found.
             $this->replyWithMessage(['text' => Speaker::userNotFound()]);
         }
-    }
-
-    /**
-     * Calculates the total course hours, attendance, classes given
-     * and skipped classes of a studen, given their report card.
-     *
-     * @param array $reportCard The student's report card.
-     *
-     * @return array The calculated stats.
-     */
-    private function calculateStats($reportCard)
-    {
-        $totalCargaHoraria = 0;
-        $totalAulas = 0;
-        $totalFaltas = 0;
-        $attendance = 0;
-
-        foreach ($reportCard as $grade) {
-            // Add to stats.
-            if (isset($grade['carga_horaria'])) {
-                // code...
-                $totalCargaHoraria += $grade['carga_horaria'];
-                $totalAulas += $grade['carga_horaria_cumprida'];
-                $totalFaltas += $grade['numero_faltas'];
-            }
-        }
-
-        if ($totalCargaHoraria != 0) {
-            // Calculate total attendance.
-            if ($totalFaltas == 0) {
-                $attendance = 100;
-            } else {
-                $attendance = 100 * ($totalAulas - $totalFaltas) / $totalAulas;
-            }
-        }
-
-        $stats = [
-            'total_carga_horaria' => $totalCargaHoraria,
-            'total_aulas'         => $totalAulas,
-            'total_faltas'        => $totalFaltas,
-            'frequencia'          => $attendance,
-        ];
-
-        return $stats;
     }
 
     /**
