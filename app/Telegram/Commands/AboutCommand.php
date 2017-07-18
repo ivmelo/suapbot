@@ -19,6 +19,14 @@ class AboutCommand extends Command
     /**
      * {@inheritdoc}
      */
+    const ALIASES = [
+        'sobre', 'quem', 'ajuda', 'apagar', 'help',
+        'remover', 'deletar', 'feedback', 'sair',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
     const PREFIX = 'about';
 
     /**

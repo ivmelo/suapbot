@@ -27,14 +27,6 @@ class StartCommand extends Command
     /**
      * {@inheritdoc}
      */
-    const ALIASES = [
-        'sobre', 'quem', 'ajuda', 'apagar', 'help',
-        'remover', 'deletar', 'feedback', 'sair',
-    ];
-
-    /**
-     * {@inheritdoc}
-     */
     const DESCRIPTION = 'Inicia a interação com o bot e mostra o tutorial.';
 
     /**
