@@ -2,9 +2,9 @@
 
 namespace App\Telegram\Commands;
 
+use App\ReportCard;
 use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
-use App\ReportCard;
 use App\User;
 use Bugsnag;
 use Ivmelo\SUAP\SUAP;
