@@ -188,9 +188,9 @@ abstract class Command
                 return true;
             }
         } elseif (isset($update['message']['text'])) {
-            if (str_contains($update['message']['text'], static::NAME)) {
+            if (str_contains(strtolower($update['message']['text']), static::NAME)) {
                 return true;
-            } elseif (str_contains($update['message']['text'], static::ALIASES)) {
+            } elseif (str_contains(strtolower($update['message']['text']), static::ALIASES)) {
                 return true;
             }
         }
