@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Telegram\Tools\Markify;
 use App\Telegram\Tools\Speaker;
 use Bugsnag;
 use Illuminate\Database\Eloquent\Model;
@@ -119,9 +118,10 @@ class ReportCard extends Model
      * Finds out if the user should be notified
      * according to their notification settings.
      *
-     * @param  array $updates The report card diff.
-     * @param  App\Settings $settings   The Settings object of the user.
-     * @return boolean  Whether the user should be notified.
+     * @param array        $updates  The report card diff.
+     * @param App\Settings $settings The Settings object of the user.
+     *
+     * @return bool Whether the user should be notified.
      */
     private function shouldNotifyUser($updates, $settings)
     {
@@ -158,7 +158,7 @@ class ReportCard extends Model
         // Render report card.
         $reportCard = View::make('telegram.reportcard', [
             'grades' => $updates,
-            'stats'  => ReportCard::calculateStats($newData),
+            'stats'  => self::calculateStats($newData),
             'update' => true,
         ])->render();
 
