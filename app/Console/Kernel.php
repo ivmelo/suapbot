@@ -42,7 +42,10 @@ class Kernel extends ConsoleKernel
 
         // Compare user report cards every twenty minutes.
         $schedule->call(function () {
-            Artisan::call('suapbot:updatereportcard', ['--all' => true]);
-        })->everyTenMinutes();
+            Artisan::call('suapbot:updatereportcard', [
+                '--all' => true,
+                '--notify' => true
+            ]);
+        })->everyThirtyMinutes();
     }
 }

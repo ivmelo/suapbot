@@ -46,4 +46,4 @@ Situação: {{ ucfirst($grade['situacao']) }}
 {{ round($stats['frequencia'], 1) }}% de frequência.
 CH Total: {{ $stats['total_carga_horaria'] }} aulas.*
 
-@if($update) Digite /boletim para ver o seu boletim completo ou /ajustes para configurar as notificações. @endif
+@if($update)Digite /boletim para ver o seu boletim completo ou /ajustes para configurar as notificações. @endif
