@@ -2,14 +2,14 @@
 
 [![StyleCI](https://styleci.io/repos/65643183/shield?branch=master)](https://styleci.io/repos/65643183)
 
-Bot do SUAP para telegram. Mostra boletim (notas, faltas, frequência), horários, locais de aula, turmas virtuais (materiais de aula, colegas de classe, detalhes de aulas) e calendário acadêmico. Também envia notificações quando novas informações são inseridas no boletim.
+Bot do SUAP para telegram. Mostra boletim (notas, faltas, frequência), horários, locais de aula, turmas virtuais (materiais de aula, colegas de classe, detalhes de aulas) e calendário acadêmico. Também envia notificações quando novas informações são inseridas no boletim. Funciona apenas para o SUAP do IFRN, mas pode ser modificado para funcionar com outras instituições.
 
 Utiliza a [SUAP API PHP](https://github.com/ivmelo/suap-api-php) para acessar os dados do SUAP.
 
-O projeto é open-source e contribuiçes de alunos do IFRN são muito bem-vindas.
+O projeto é open-source e contribuições de alunos do IFRN são muito bem-vindas.
 
 ## Vantagens do SUAP Bot
-- Planejado para ser compatível com todos os cursos tecnicos e superiores do IFRN;
+- Desenvolvido para ser compatível com todos os cursos tecnicos e superiores do IFRN;
 - Sua privacidade é mantida e suas conversas com o bot não são armazenadas nem visualizadas;
 - O código é open source, qualquer pessoa pode utilizar, modificar, distribuir, inspecionar, basta que siga os termos da licença (GNU Affero).
 
