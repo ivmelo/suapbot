@@ -74,7 +74,7 @@ Os requests são passados para a aplicação através de um webhook entre o tele
 ```
 curl -X POST --data "url=https://url.da.sua.aplicacao/webhooks/TELEGRAM_WEBHOOK_SECRET/telegram" https://api.telegram.org/botSEU_BOT_TOKEN/setWebhook
 ```
-Não esqueça de substituir `TELEGRAM_WEBHOOK_SECRET` pelo segredo inserido no arquivo `.env` da sua aplicação e `SEU_BOT_TOKEN` pelo token do seu bot, _obvio_.
+Não esqueça de substituir `TELEGRAM_WEBHOOK_SECRET` pelo segredo inserido no arquivo `.env` da sua aplicação e `SEU_BOT_TOKEN` pelo token do seu bot, _óbvio_.
 
 OBS: Durante o desenvolvimento, você não pode simplesmente mandar o telegram enviar os requests para localhost da sua máquina. É necessário o uso de uma ferramenta de tunelamento que possa criar um túnel entre a sua máquina e os servidores do Telegram. Para isso, recomendo a ferramenta [ngrok](https://ngrok.com).
 
