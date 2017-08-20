@@ -80,7 +80,7 @@ OBS: Durante o desenvolvimento, você não pode simplesmente mandar o telegram e
 
 
 ## Contribuições
-Antes de enviar contribuições com novas funcionalidades ou comandos, recomendo abrir um issue para discutir-mos a utilidade da funcionalidade proposta. Para o conserto de bugs ou alterações menores, favor enviar o pull request diretamente.
+Antes de enviar contribuições com novas funcionalidades ou comandos, recomendo abrir um issue para discutirmos a utilidade da funcionalidade proposta. Para o conserto de bugs ou alterações menores, favor enviar o pull request diretamente.
 
 ## Aviso
 Este é o meu último ano no curso de TADS e consequentemente no IFRN; portanto, em breve não terei mais tempo (nem interesse) em manter este projeto. Por isso, estou deixando o código open-source para aqueles que como eu, não utilizam Facebook ou simplesmente gostam mais do SUAP Bot do que das alternativas.

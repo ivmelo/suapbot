@@ -31,6 +31,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // Update the school year of each user every day.
+        $schedule->call(function () {
+            Artisan::call('suapbot:updateschoolyear', ['--all' => true]);
+        })->dailyAt('05:45');
+
         // Update the access token of every user twice, daily.
         $schedule->call(function () {
             Artisan::call('suapbot:refreshtoken', ['--all' => true]);
