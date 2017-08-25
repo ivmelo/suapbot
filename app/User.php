@@ -157,8 +157,10 @@ class User extends Authenticatable
                 $this->suap_key = $suap_key;
                 $this->email = $suap_data['email'];
 
+                $this->updateSchoolYear();
+
                 // Get course data for the first access.
-                $course_data = $client->getMeuBoletim(2017, 1);
+                $course_data = $client->getMeuBoletim($this->school_year, $this->school_term);
                 $course_data_json = json_encode($course_data);
 
                 $this->save();
@@ -167,8 +169,6 @@ class User extends Authenticatable
                     'course_data' => $course_data_json,
                 ]);
             }
-
-            $this->updateSchoolYear();
 
             // Grab user info for display.
             $name = $suap_data['nome_usual'];
